@@ -80,7 +80,7 @@ public class Producto {
 	public Double calularPrecioVenta() {
 		Double temp = (precioCosto.get() * recargo.get()) / 100; 
 		
-		return precioCosto.get() + temp; 
+		return  temp+precioCosto.get(); 
 	}
 	
 }

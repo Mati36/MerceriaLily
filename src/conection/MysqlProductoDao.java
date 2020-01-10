@@ -32,17 +32,16 @@ public class MysqlProductoDao  {
 	final private int INDEX_NOMBRE_PRODUCTO = 3;
 	final private int INDEX_PRECIO_COSTO = 4;
 	final private int INDEX_PRECIO_VENTA = 5;
-	final private int INDEX_RECARGO = 6;
-	final private int INDEX_PRECIO_CANTIDAD = 7;
-	final private int INDEX_COL_LAST = 8;	
+	final private int INDEX_RECARGO = 7;
+	final private int INDEX_PRECIO_CANTIDAD = 6;
 	
-	final private String INSERT ="INSERT Into "+NAME_TABLE+" ( "+COL_ID_NEGOCIO+","+COL_ID_EMPRESA+","+COL_NOMBRE_PRODUCTO+","+COL_PRECIO_COSTO+
-								","+COL_PRECIO_VENTA+","+COL_RECARGO+","+COL_PRECIO_CANTIDAD+" ) VALUES (?,?,?,?,?,?,?);"; 
+	final private String INSERT ="INSERT Into "+NAME_TABLE+" ( "+COL_ID_NEGOCIO+","+COL_ID_EMPRESA+","+COL_NOMBRE_PRODUCTO+","+COL_PRECIO_COSTO
+												+","+COL_PRECIO_VENTA+","+COL_RECARGO+","+COL_PRECIO_CANTIDAD+" ) VALUES (?,?,?,?,?,?,?);"; 
 	
-	final private String UPDATE ="UPDATE "+NAME_TABLE+" SET "+COL_ID_NEGOCIO+"=?,"+COL_ID_EMPRESA+"=?,"+COL_NOMBRE_PRODUCTO+"=?,"+COL_PRECIO_COSTO+
-								"=?,"+COL_PRECIO_VENTA+"=?,"+COL_RECARGO+"=?,"+COL_PRECIO_CANTIDAD+"=? WHERE " +COL_ID_NEGOCIO+"=?" ; 
+	final private String UPDATE ="UPDATE "+NAME_TABLE+" SET "+COL_ID_NEGOCIO+"=?,"+COL_ID_EMPRESA+"=?,"+COL_NOMBRE_PRODUCTO+"=?,"+COL_PRECIO_COSTO
+											+"=?,"+COL_PRECIO_VENTA+"=?,"+COL_RECARGO+"=?,"+COL_PRECIO_CANTIDAD+"=? WHERE " +COL_ID_NEGOCIO+"=?" ; 
 	
-	final private String DELETE = "DELETE FROM "+NAME_TABLE+" WHERE "+COL_ID_NEGOCIO+"=?";
+	final private String DELETE = "DELETE FROM "+NAME_TABLE+" WHERE "+"idNegocio"+"=?";
 	final private String GETALL = "SELECT* FROM "+NAME_TABLE;
 	final private String GETONE = "SELECT* FROM "+NAME_TABLE+" WHERE "+COL_ID_NEGOCIO+"=?";
 	
@@ -65,7 +64,7 @@ public class MysqlProductoDao  {
 				start.setDouble(INDEX_RECARGO,producto.getRecargo()); 
 				start.setDouble(INDEX_PRECIO_CANTIDAD,producto.getPrecioCantidad()); 
 				if (start.executeUpdate() == 0)
-					errorDialog("Error puede que no se actualizo");
+					errorDialog("Error puede que no se actualizo ");
 					//System.out.println("Error puede que no se actualizo");
 			
 			}catch (SQLException e) { 
@@ -81,46 +80,34 @@ public class MysqlProductoDao  {
 	public void update(Producto producto, String idNegocio) {
 		PreparedStatement start = conectar(UPDATE);
 		// para probar que los valores son distintos
-//		System.out.println("IdNegocio original "+string);
-//		System.out.println("IdNegocio modificadp "+producto.getIdNegocio()); 
-		if (start != null) {
-			try {
-				start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
-				start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
-				start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
-				start.setDouble(INDEX_PRECIO_COSTO,producto.getPrecioCosto());
-				start.setDouble(INDEX_PRECIO_VENTA,producto.getPrecioVenta());
-				start.setDouble(INDEX_RECARGO,producto.getRecargo());
-				start.setDouble(INDEX_PRECIO_CANTIDAD,producto.getPrecioCantidad());
-				start.setString(8,idNegocio); // busca en la Bd, para que funcione, el ultimo dato es el que usamos para seleccionar el elemento en la base de datos
+		try {
+			start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
+			start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
+			start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
+			start.setDouble(INDEX_PRECIO_COSTO,producto.getPrecioCosto());
+			start.setDouble(INDEX_PRECIO_VENTA,producto.getPrecioVenta());
+			start.setDouble(INDEX_RECARGO,producto.getRecargo()); 
+			start.setDouble(INDEX_PRECIO_CANTIDAD,producto.getPrecioCantidad()); 
+			start.setString(8,idNegocio); // busca en la Bd, para que funcione, el ultimo dato es el que usamos para seleccionar el elemento en la base de datos
+			
+			if (start.executeUpdate() == 0) 
 				
-				if (start.executeUpdate() == 0) 
-					errorDialog("Error puede que no se actualizo");
-					//System.out.println("Error puede que no se actualizo");
-				
-			} catch (SQLException e) {
-				errorDialog("Error al ingresar los datos a la base de datos, "+e.getMessage());
-				System.out.println("Error al ingresar los datos a la base de datos, "+e.getMessage());
-			}
+				errorDialog("Error puede que no se actualizo");
+				//System.out.println("Error puede que no se actualizo");
+			
+		} catch (SQLException e) {
+			errorDialog("Error al ingresar los datos a la base de datos, "+e.getMessage());
+			System.out.println("Error al ingresar los datos a la base de datos, "+e.getMessage());
 		}
+		
 		close(start, connection);
 	}
 	
-	public void delete(Producto producto) {
+	public void delete(Producto producto) throws SQLException {
 		PreparedStatement start = conectar(DELETE);
-		if (start != null) {
-			try {
-				//System.out.println("Eliminar "+producto.getNombre());
-				start.setString(INDEX_ID_NEGOCIO, producto.getIdNegocio());
-				
-				if (start.executeUpdate() == 0) 	
-					errorDialog("Error al ejecutar consulta (eliminacion)");
-					//System.out.println("Error al ejecutar consulta (eliminacion)");
-					
-			} catch (SQLException e) { 
-				errorDialog("No selecciono el elemento  idNegocio "+producto.getIdNegocio()+", Nombre "+producto.getNombre()+" en la base de datos "+NAME_TABLE);
-				System.out.println("No selecciono el elemento  idNegocio "+producto.getIdNegocio()+", Nombre "+producto.getNombre()+" en la base de datos "+NAME_TABLE);
-			}		
+		start.setString(INDEX_ID_NEGOCIO, producto.getIdNegocio());
+		if (start.executeUpdate() == 0) {
+			errorDialog("Error al ejecutar delete sql, no se puedo eliminar, "+producto.getNombre());
 		}
 		close(start, connection);
 	}
@@ -245,14 +232,15 @@ public class MysqlProductoDao  {
 //	}
 
 	// metodo de test 
-	private void mostrarProductoConsola(Producto prod) { 
-		System.out.println(prod.getNombre());
-		System.out.println(prod.getIdEmpresa());
-		System.out.println(prod.getIdNegocio());
-		System.out.println(prod.getPrecioCosto());
-		System.out.println(prod.getPrecioVenta());
-		System.out.println(prod.getPrecioCantidad());
-		System.out.println(prod.getRecargo());
+	private void mostrarProductoConsola(String string, Producto prod) { 
+		System.out.println(string);
+		System.out.println("Nombre: "+prod.getNombre());
+		System.out.println("Id empresa "+prod.getIdEmpresa());
+		System.out.println("Id negocio "+prod.getIdNegocio());
+		System.out.println("precio costo "+prod.getPrecioCosto());
+		System.out.println("precio venta "+prod.getPrecioVenta());
+		System.out.println("precio cantidad "+prod.getPrecioCantidad());
+		System.out.println();
 	}
 	
 	private boolean errorDialog(String content) {

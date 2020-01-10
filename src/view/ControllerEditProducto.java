@@ -49,14 +49,6 @@ public class ControllerEditProducto implements Initializable {
 	private Stage dialogStage;
 	
 	
-	public Stage getDialogStage() {
-		return dialogStage;
-	}
-
-	public void setDialogStage(Stage dialogStage) {
-		this.dialogStage = dialogStage;
-	}
-
 	public ControllerEditProducto() {
 		this.txtNombre = new TextField();
 		this.txtIdEmpresa = new TextField();
@@ -76,21 +68,42 @@ public class ControllerEditProducto implements Initializable {
 		
 	}
 	
+
+	public Stage getDialogStage() {
+		return dialogStage;
+	}
+
+	public void setDialogStage(Stage dialogStage) {
+		this.dialogStage = dialogStage;
+	}
+
 	public void setControllerPrincipal(ControllerPrincipal controllerPrincipal) {
 		this.controllerPrincipal = controllerPrincipal;
 	}
 	
 	public void setProducto(Producto producto) {
 		this.producto = producto;
-		System.out.println(!producto.isEmpty());
 		inicio();
 		
+	}
+	
+	public boolean getIsOnclickAceptar() {
+		return this.isOnClickAceptar;
+		
+	}
+
+	public boolean isOnClickAceptar() {
+		return isOnClickAceptar;
+	}
+
+	public void setOnClickAceptar(boolean isOnClickAceptar) {
+		this.isOnClickAceptar = isOnClickAceptar;
 	}
 	
 	@FXML
 	public void clickAceptar() {
 		isOnClickAceptar = true;
-		textFieldInToProdructo();
+		cargarDatosProductos();
 		// llena la tabla con los productos de la base de datos
 		if (isOnClickAceptar)
 			controllerPrincipal.getMainApp().closeEditProducto(); // cierra esta ventana 
@@ -102,30 +115,36 @@ public class ControllerEditProducto implements Initializable {
 		
 	}
 
-	private void textFieldInToProdructo() {
-		// carga el producto con los datos ingresados
-		//mostrarProductoConsola(producto); // para test
+	
+	@FXML // actualiza el precio de venta
+	public void keyReleased() {
+		String precioCosto = txtPrecioCosto.getText().trim();
+		String recargo = txtRecargo.getText().trim();
+			
+		if (!precioCosto.isEmpty() && !recargo.isEmpty()) {
+			producto.setPrecioCosto(stringToDouble(precioCosto,"PrecioCosto"));
+			producto.setRecargo(stringToDouble(recargo,"Recargo"));
+			txtPrecioVenta.setText(Double.toString(producto.calularPrecioVenta()));
+		}
+		else 
+			txtPrecioVenta.setText(Double.toString(0.0));
+	}
+	
+	// se llama cuado hago click en aceptar
+	private void cargarDatosProductos() { 
 		producto.setIdEmpresa(txtIdEmpresa.getText().trim());
 		producto.setIdNegocio(txtIdNegocio.getText().trim());
 		producto.setNombre(txtNombre.getText().trim());
-	
 		String precioCantidad = txtPrecioCantidad.getText().trim();
+		producto.setPrecioCosto(stringToDouble(txtPrecioCosto.getText(),"PrecioCosto"));
+		producto.setRecargo(stringToDouble(txtRecargo.getText(),"Recargo"));
+		producto.setPrecioVenta(stringToDouble(txtPrecioVenta.getText(), "Precio venta"));
 		producto.setPrecioCantidad(stringToDouble(precioCantidad,"Precio de costo"));
-		//producto.setPrecioVenta(producto.calularPrecioVenta());
 		
 	}	
 	
-	private void mostrarProductoConsola(Producto prod) { // de test 
-		System.out.println(txtIdEmpresa.getText().trim());
-		System.out.println(txtIdNegocio.getText().trim());
-		System.out.println(txtNombre.getText().trim());
-		System.out.println(Double.parseDouble(txtPrecioCosto.getText().trim()));
-		//System.out.println(Double.parseDouble(txtPrecioVenta.getText().trim()));
-		System.out.println(Double.parseDouble(txtPrecioCantidad.getText().trim()));
-		
-	}
-	
 	public void inicio() {
+				
 		if (!producto.isEmpty()) {
 			txtIdEmpresa.setText(producto.getIdEmpresa());
 			txtIdNegocio.setText(producto.getIdNegocio());
@@ -143,53 +162,15 @@ public class ControllerEditProducto implements Initializable {
 			txtRecargo.setText("");
 			txtPrecioCantidad.setText("");
 			txtPrecioVenta.setText("0.0");
-			//cargarProducto();
 		}
 	}
 	
-	public boolean getIsOnclickAceptar() {
-		return this.isOnClickAceptar;
-		
-	}
-
-	public boolean isOnClickAceptar() {
-		return isOnClickAceptar;
-	}
-
-	public void setOnClickAceptar(boolean isOnClickAceptar) {
-		this.isOnClickAceptar = isOnClickAceptar;
-	}
-	
-	private void cargarProducto() {
-		txtIdEmpresa.setText("ms 39/0");
-		txtIdNegocio.setText("A-01");
-		txtNombre.setText("Ahujas");
-		txtPrecioCosto.setText("5");
-		txtPrecioCantidad.setText("20");
-		
-	}
-	
-	@FXML // actualiza el precio de venta
-	public void keyReleased() {
-		String precioCosto = txtPrecioCosto.getText().trim();
-		String recargo = txtRecargo.getText().trim();
-			
-		if (!precioCosto.isEmpty() && !recargo.isEmpty()) {
-			producto.setPrecioCosto(stringToDouble(precioCosto,"PrecioCosto"));
-			producto.setRecargo(stringToDouble(recargo,"Recargo"));
-			double precioVenta  = producto.calularPrecioVenta();	
-			txtPrecioVenta.setText(Double.toString(precioVenta));
-		}else 
-			txtPrecioVenta.setText(Double.toString(0.0));
-		
-				
-	}
 	
 	private  Double stringToDouble(String number,String dato) {
 		Double num = 0.0;
 		
 		try {
-			 num = Double.parseDouble(number);
+			 num = Double.parseDouble(number.trim());
 			
 		} catch (Exception e) {
 			errorDialog("Error el dato "+dato+" no es un numero ");
@@ -203,4 +184,26 @@ public class ControllerEditProducto implements Initializable {
 		DialogAlert dialogAlert = new DialogAlert(content, "Error",new Alert(AlertType.ERROR));
 		return dialogAlert.getResultOption();
 	}
+	
+	// metodos de test
+	private void mostrarProductoConsola(String string, Producto prod) { 
+		System.out.println(string);
+		System.out.println("Nombre: "+prod.getNombre());
+		System.out.println("Id empresa "+prod.getIdEmpresa());
+		System.out.println("Id negocio "+prod.getIdNegocio());
+		System.out.println("precio costo "+prod.getPrecioCosto());
+		System.out.println("precio venta "+prod.getPrecioVenta());
+		System.out.println("precio cantidad "+prod.getPrecioCantidad());
+		System.out.println();
+	}
+	
+	private void cargarProducto() {
+		txtIdEmpresa.setText("ms 39/0");
+		txtIdNegocio.setText("A-01");
+		txtNombre.setText("Ahujas");
+		txtPrecioCosto.setText("5");
+		txtPrecioCantidad.setText("20");
+	}
+		
+	
 }

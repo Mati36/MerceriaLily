@@ -85,8 +85,7 @@ public class ControllerPrincipal {
 		Producto prod = new Producto();
 		try {
 			app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
-			app.getStageEditProducto().close();
-			
+						
 			if (app.isOnClickConfirmation()) { 
 				getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
 				refrshTable();
@@ -132,9 +131,16 @@ public class ControllerPrincipal {
 			boolean confirmation= dialogAlert("Confirmation", "¿ Quieres eliminar el producto de Nombre: "+productoSelect.getNombre()
 											+" y Codigo: "+productoSelect.getIdNegocio()+" ?", new Alert(AlertType.CONFIRMATION));
 			if (confirmation) {
-				mysqlProductoDao.delete(productoSelect);
-				refrshTable();
-				//tableProducto.getItems().remove(selectIndex);
+				try {
+					mysqlProductoDao.delete(productoSelect);
+					refrshTable();
+					//tableProducto.getItems().remove(selectIndex);
+				} catch (SQLException e) {
+					dialogAlert("Error","Error al eliminar en base de datos,"+e.getMessage()+" "+e.getStackTrace(), new Alert(AlertType.ERROR));
+					
+				}
+				
+				
 			}
 				
 		}
@@ -250,4 +256,17 @@ public class ControllerPrincipal {
 		row.createCell(4).setCellValue("Precio Venta");
 		row.createCell(5).setCellValue("Precio Cantidad");
 	}
+	
+	// metodos de test
+	private void mostrarProductoConsola(String string, Producto prod) { 
+		System.out.println(string);
+		System.out.println("Nombre: "+prod.getNombre());
+		System.out.println("Id empresa "+prod.getIdEmpresa());
+		System.out.println("Id negocio "+prod.getIdNegocio());
+		System.out.println("precio costo "+prod.getPrecioCosto());
+		System.out.println("precio venta "+prod.getPrecioVenta());
+		System.out.println("precio cantidad "+prod.getPrecioCantidad());
+		System.out.println();
+	}
+	
 }
