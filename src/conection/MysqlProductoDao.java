@@ -81,9 +81,9 @@ public class MysqlProductoDao  {
 		PreparedStatement start = conectar(UPDATE);
 		// para probar que los valores son distintos
 		try {
-//			start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
-//			start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
-//			start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
+			start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
+			start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
+			start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
 			start.setDouble(INDEX_PRECIO_COSTO,producto.getPrecioCosto());
 			start.setDouble(INDEX_PRECIO_VENTA,producto.getPrecioVenta());
 			start.setDouble(INDEX_RECARGO,producto.getRecargo()); 
