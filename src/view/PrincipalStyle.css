@@ -1,0 +1,37 @@
+
+.background{
+	-fx-background-color: black;
+}
+
+.lbl{
+	-fx-font-family:  Verdana,sans-serif,Times New Roman;
+	-fx-font-size: 11pt;
+	-fx-alignment: center-left;
+	
+}
+
+.tetxField{
+	
+}
+
+.menuBar{
+	
+}
+
+.table{
+	
+}
+
+.buttonStyle{
+	
+    
+   
+   
+}
+
+.titelLabel{
+	-fx-font-family:  sans-serif,Times New Roman,Verdana;
+	-fx-font-size: 18pt;
+	-fx-text-alignment: center;
+}
+
