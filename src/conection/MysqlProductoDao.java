@@ -93,7 +93,7 @@ public class MysqlProductoDao  {
 				errorDialog("Error al ejecutar delete sql, no se puedo eliminar, "+producto.getNombre());
 			
 		} catch (SQLException e) {
-			errorDialog("Error al eliminar en base de datos,"+e.getMessage()+");
+			errorDialog("Error al eliminar en base de datos,"+e.getMessage());
 		}
 		
 		close(start, connection);
@@ -120,8 +120,6 @@ public class MysqlProductoDao  {
 			
 		}
 		close(start, connection);
-		
-		
 		return producto;
 	}
 		
@@ -151,7 +149,6 @@ public class MysqlProductoDao  {
 		} catch (SQLException e) {
 			errorDialog("Error al llenar el producto "+e.getMessage());
 			System.out.println("Error al llenar el producto "+e.getMessage());
-			
 		}
 		
 	}
@@ -224,9 +221,9 @@ public class MysqlProductoDao  {
 	
 	private void cargarExelHoja(Sheet sheet, int i, Producto producto) {
 		Row row = sheet.createRow(i);
-		
-		row.createCell(INDEX_ID_NEGOCIO - 1).setCellValue(producto.getIdNegocio());
-		row.createCell(INDEX_ID_EMPRESA - 1).setCellValue(producto.getIdEmpresa());
+		// el codigo de negocio seria el codigo empresa 
+		row.createCell(INDEX_ID_NEGOCIO - 1).setCellValue(producto.getIdEmpresa());
+		row.createCell(INDEX_ID_EMPRESA - 1).setCellValue(producto.getIdNegocio());
 		row.createCell(INDEX_NOMBRE_PRODUCTO  - 1).setCellValue(producto.getNombre());
 		row.createCell(INDEX_PRECIO_COSTO - 1).setCellValue(producto.getPrecioCosto());
 		row.createCell(INDEX_PRECIO_VENTA - 1).setCellValue(producto.getPrecioVenta());
