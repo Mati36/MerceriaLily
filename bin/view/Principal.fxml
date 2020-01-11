@@ -53,7 +53,7 @@
                   </MenuBar>
                   <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" stylesheets="@PrincipalStyle.css">
                      <children>
-                        <Label fx:id="lblSearch" contentDisplay="CENTER" text="Buscar Producto: ">
+                        <Label contentDisplay="CENTER" text="Buscar Producto: ">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>

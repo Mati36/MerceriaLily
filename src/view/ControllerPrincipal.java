@@ -135,12 +135,10 @@ public class ControllerPrincipal {
 					mysqlProductoDao.delete(productoSelect);
 					refrshTable();
 					//tableProducto.getItems().remove(selectIndex);
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					dialogAlert("Error","Error al eliminar en base de datos,"+e.getMessage()+" "+e.getStackTrace(), new Alert(AlertType.ERROR));
 					
 				}
-				
-				
 			}
 				
 		}
@@ -203,7 +201,7 @@ public class ControllerPrincipal {
 	}
 	
 	
-	@FXML
+	@FXML // falta optimizar 
 	public void saveExel() {
 		JFileChooser jFileChooser = new JFileChooser("Nuevo.xls");
 		jFileChooser.setDialogTitle("Guardar archivo");;
@@ -212,13 +210,26 @@ public class ControllerPrincipal {
 		if (result == jFileChooser.APPROVE_OPTION) {
 			try {
 				String path = jFileChooser.getSelectedFile().getPath();
-				// Crea y cargo la hoja con la base de datos
-				mysqlProductoDao.mySqlToExelLoad(fileExelCreate(path, "Productos"));
+				Workbook book = new XSSFWorkbook();
+				Sheet sheet = book.createSheet("Productos");
+				Row row = sheet.createRow(0);
+				rowSheetCreate(row);
+				
+				if(!path.endsWith(".xls")) 	
+					path+=".xls";
+				
+				mysqlProductoDao.mySqlToExelLoad(sheet);
+				
+				FileOutputStream newFile = new FileOutputStream(path);
+				book.write(newFile);
+				
+				newFile.close();
+				book.close();
 			
 			} catch (IOException | SQLException e) {
 				dialogAlert("Error", "Error al guardar Archivo, "+e.getMessage(), new Alert(AlertType.ERROR));
-			} 
-		}
+			}
+		}	
 	}
 	
 	@FXML
@@ -231,22 +242,6 @@ public class ControllerPrincipal {
 		return  dialogAlert.getResultOption();
 	}
 	
-	private Sheet fileExelCreate(String path,String sheetName) throws IOException {
-		Workbook book = new XSSFWorkbook();
-		Sheet sheet = book.createSheet(sheetName);
-		Row row = sheet.createRow(0);
-		rowSheetCreate(row);
-		
-		if(!path.endsWith(".xls")) 	
-			path+=".xls";
-		
-		FileOutputStream newFile = new FileOutputStream(path);
-		newFile.close();
-		
-		book.write(newFile);
-		book.close();
-		return book.getSheet(sheetName);
-	}
 	
 	private void rowSheetCreate(Row row) {
 		row.createCell(0).setCellValue("Codigo Empresa");

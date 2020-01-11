@@ -2,12 +2,8 @@ package conection;
 
 import java.sql.*;
 
-import javax.security.sasl.SaslException;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.xmlbeans.impl.xb.xsdschema.WhiteSpaceDocument.WhiteSpace.Value;
-
 import app.Producto;
 import controller.DialogAlert;
 import javafx.collections.ObservableList;
@@ -32,8 +28,9 @@ public class MysqlProductoDao  {
 	final private int INDEX_NOMBRE_PRODUCTO = 3;
 	final private int INDEX_PRECIO_COSTO = 4;
 	final private int INDEX_PRECIO_VENTA = 5;
-	final private int INDEX_RECARGO = 7;
 	final private int INDEX_PRECIO_CANTIDAD = 6;
+	final private int INDEX_RECARGO = 7;
+	final private int INDEX_LAST = 8;
 	
 	final private String INSERT ="INSERT Into "+NAME_TABLE+" ( "+COL_ID_NEGOCIO+","+COL_ID_EMPRESA+","+COL_NOMBRE_PRODUCTO+","+COL_PRECIO_COSTO
 												+","+COL_PRECIO_VENTA+","+COL_RECARGO+","+COL_PRECIO_CANTIDAD+" ) VALUES (?,?,?,?,?,?,?);"; 
@@ -56,17 +53,9 @@ public class MysqlProductoDao  {
 		
 		if (start != null) {
 			try {
-				start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
-				start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
-				start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
-				start.setDouble(INDEX_PRECIO_COSTO,producto.getPrecioCosto());
-				start.setDouble(INDEX_PRECIO_VENTA,producto.getPrecioVenta());
-				start.setDouble(INDEX_RECARGO,producto.getRecargo()); 
-				start.setDouble(INDEX_PRECIO_CANTIDAD,producto.getPrecioCantidad()); 
+				productoToResultSEt(start, producto);
 				if (start.executeUpdate() == 0)
 					errorDialog("Error puede que no se actualizo ");
-					//System.out.println("Error puede que no se actualizo");
-			
 			}catch (SQLException e) { 
 				errorDialog("Error al ingresar los datos a la base de datos, "+e.getMessage());
 				//System.out.println("Error al ingresar los datos a la base de datos, "+e.getMessage());
@@ -81,17 +70,10 @@ public class MysqlProductoDao  {
 		PreparedStatement start = conectar(UPDATE);
 		// para probar que los valores son distintos
 		try {
-			start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
-			start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
-			start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
-			start.setDouble(INDEX_PRECIO_COSTO,producto.getPrecioCosto());
-			start.setDouble(INDEX_PRECIO_VENTA,producto.getPrecioVenta());
-			start.setDouble(INDEX_RECARGO,producto.getRecargo()); 
-			start.setDouble(INDEX_PRECIO_CANTIDAD,producto.getPrecioCantidad()); 
-			start.setString(8,idNegocio); // busca en la Bd, para que funcione, el ultimo dato es el que usamos para seleccionar el elemento en la base de datos
+			productoToResultSEt(start, producto);
+			start.setString(INDEX_LAST,idNegocio); // busca en la Bd, para que funcione, el ultimo dato es el que usamos para seleccionar el elemento en la base de datos
 			
 			if (start.executeUpdate() == 0) 
-				
 				errorDialog("Error puede que no se actualizo");
 				//System.out.println("Error puede que no se actualizo");
 			
@@ -103,12 +85,17 @@ public class MysqlProductoDao  {
 		close(start, connection);
 	}
 	
-	public void delete(Producto producto) throws SQLException {
+	public void delete(Producto producto)  {
 		PreparedStatement start = conectar(DELETE);
-		start.setString(INDEX_ID_NEGOCIO, producto.getIdNegocio());
-		if (start.executeUpdate() == 0) {
-			errorDialog("Error al ejecutar delete sql, no se puedo eliminar, "+producto.getNombre());
+		try {
+			start.setString(INDEX_ID_NEGOCIO, producto.getIdNegocio());
+			if (start.executeUpdate() == 0) 
+				errorDialog("Error al ejecutar delete sql, no se puedo eliminar, "+producto.getNombre());
+			
+		} catch (SQLException e) {
+			errorDialog("Error al eliminar en base de datos,"+e.getMessage()+");
 		}
+		
 		close(start, connection);
 	}
 	
@@ -118,10 +105,10 @@ public class MysqlProductoDao  {
 		Producto producto = null;
 		if (start != null) {
 			try {
-				start.setString(1, idNegocio);
+				start.setString(INDEX_ID_NEGOCIO, idNegocio);
 				result = start.executeQuery();
 				if (result.next())
-					producto = resultSetParseProducto(result);
+					producto = resultSetToProducto(result);
 				else 
 					errorDialog("Error codigo incorrecto, vuelva a intentarlo");
 					//System.out.println("Error codigo incorrecto");
@@ -160,7 +147,7 @@ public class MysqlProductoDao  {
 
 	private void llenarTabla(ResultSet resultSet,ObservableList<Producto> table) {
 		try {
-			table.add(resultSetParseProducto(resultSet)); // agrega los productos a la tabla
+			table.add(resultSetToProducto(resultSet)); // agrega los productos a la tabla
 		} catch (SQLException e) {
 			errorDialog("Error al llenar el producto "+e.getMessage());
 			System.out.println("Error al llenar el producto "+e.getMessage());
@@ -169,7 +156,17 @@ public class MysqlProductoDao  {
 		
 	}
 	
-	private Producto resultSetParseProducto(ResultSet rs) throws SQLException {
+	private void productoToResultSEt(PreparedStatement start,Producto producto) throws SQLException {
+		start.setString(INDEX_ID_NEGOCIO,producto.getIdNegocio());
+		start.setString(INDEX_ID_EMPRESA,producto.getIdEmpresa());
+		start.setString(INDEX_NOMBRE_PRODUCTO,producto.getNombre());
+		start.setDouble(INDEX_PRECIO_COSTO,producto.getPrecioCosto());
+		start.setDouble(INDEX_PRECIO_VENTA,producto.getPrecioVenta());
+		start.setDouble(INDEX_RECARGO,producto.getRecargo()); 
+		start.setDouble(INDEX_PRECIO_CANTIDAD,producto.getPrecioCantidad()); 
+	}
+	
+	private Producto resultSetToProducto(ResultSet rs) throws SQLException {
 		Producto prod  = new Producto();
 		prod.setIdEmpresa(rs.getString(INDEX_ID_NEGOCIO));
 		prod.setIdNegocio(rs.getString(INDEX_ID_EMPRESA));
@@ -205,31 +202,37 @@ public class MysqlProductoDao  {
 		
 	}
 
+	// cargar la hoja
 	public void mySqlToExelLoad(Sheet sheet) throws SQLException {
-		// cargar la hoja
+		
 		PreparedStatement start = conectar(GETALL);
 		ResultSet resultSet = start.executeQuery();
 		if (resultSet != null) {
 			
-			for (int i = 0; resultSet.next(); i++) {
-				//cargarExelHoja(sheet,i,resultSetParseProducto(resultSet));
-			}
-			
+			for (int i = 1; resultSet.next(); i++)
+				try {
+					cargarExelHoja(sheet,i,resultSetToProducto(resultSet));
+				} catch (SQLException e) {
+					errorDialog("Error al guardar Archivo, "+e.getMessage());
+					
+				}
 		}
 		else
 			throw new SQLException("Error resultSet ");
+		
 	}
 	
-//	private void cargarExelHoja(Sheet sheet, int i, Producto producto) {
-//		Row row = sheet.createRow(i);
-//		
-//			row.createCell(INDEX_ID_NEGOCIO).setCellValue(COL_ID_NEGOCIO);
-//			row.createCell(INDEX_ID_EMPRESA).setCellValue(COL_ID_EMPRESA);
-//			row.createCell(In).setCellValue(COL_NOMBRE_PRODUCTO);
-//			row.createCell(j).setCellValue(COL_ID_);
-//		
-//		
-//	}
+	private void cargarExelHoja(Sheet sheet, int i, Producto producto) {
+		Row row = sheet.createRow(i);
+		
+		row.createCell(INDEX_ID_NEGOCIO - 1).setCellValue(producto.getIdNegocio());
+		row.createCell(INDEX_ID_EMPRESA - 1).setCellValue(producto.getIdEmpresa());
+		row.createCell(INDEX_NOMBRE_PRODUCTO  - 1).setCellValue(producto.getNombre());
+		row.createCell(INDEX_PRECIO_COSTO - 1).setCellValue(producto.getPrecioCosto());
+		row.createCell(INDEX_PRECIO_VENTA - 1).setCellValue(producto.getPrecioVenta());
+		row.createCell(INDEX_PRECIO_CANTIDAD - 1).setCellValue(producto.getPrecioCantidad());
+		
+	}
 
 	// metodo de test 
 	private void mostrarProductoConsola(String string, Producto prod) { 
