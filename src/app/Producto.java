@@ -74,7 +74,7 @@ public class Producto {
 	}
 	
 	private boolean emptyDoubleProperty(SimpleDoubleProperty number) {
-		return number == null || number.get() <= 0;
+		return number == null || number.get() < 0;
 	}
 	
 	public Double calularPrecioVenta() {

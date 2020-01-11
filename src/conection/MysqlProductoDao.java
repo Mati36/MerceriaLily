@@ -200,7 +200,7 @@ public class MysqlProductoDao  {
 	}
 
 	// cargar la hoja
-	public void mySqlToExelLoad(Sheet sheet) throws SQLException {
+	public void mySqlToExelSave(Sheet sheet) throws SQLException {
 		
 		PreparedStatement start = conectar(GETALL);
 		ResultSet resultSet = start.executeQuery();
@@ -219,15 +219,20 @@ public class MysqlProductoDao  {
 		
 	}
 	
+	public void mySqlToExelLoad(Sheet sheet) {
+		
+		
+	}
+	
+	
 	private void cargarExelHoja(Sheet sheet, int i, Producto producto) {
 		Row row = sheet.createRow(i);
 		// el codigo de negocio seria el codigo empresa 
-		row.createCell(INDEX_ID_NEGOCIO - 1).setCellValue(producto.getIdEmpresa());
-		row.createCell(INDEX_ID_EMPRESA - 1).setCellValue(producto.getIdNegocio());
-		row.createCell(INDEX_NOMBRE_PRODUCTO  - 1).setCellValue(producto.getNombre());
-		row.createCell(INDEX_PRECIO_COSTO - 1).setCellValue(producto.getPrecioCosto());
-		row.createCell(INDEX_PRECIO_VENTA - 1).setCellValue(producto.getPrecioVenta());
-		row.createCell(INDEX_PRECIO_CANTIDAD - 1).setCellValue(producto.getPrecioCantidad());
+		row.createCell(0).setCellValue(producto.getIdEmpresa());
+		row.createCell(1).setCellValue(producto.getIdNegocio());
+		row.createCell(2).setCellValue(producto.getNombre());
+		row.createCell(3).setCellValue(producto.getPrecioVenta());
+		row.createCell(4).setCellValue(producto.getPrecioCantidad());
 		
 	}
 
@@ -251,5 +256,6 @@ public class MysqlProductoDao  {
 	private void errorConectar() {
 		errorDialog("Error al Conectar en la base de datos, "+mysqlConnection.getNameBd());
 	}
-	
+
+
 }

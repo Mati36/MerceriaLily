@@ -32,8 +32,8 @@
                     <menus>
                       <Menu mnemonicParsing="false" text="Archivo">
                         <items>
-                          <MenuItem mnemonicParsing="false" onAction="#saveExel" text="Guardar" />
-                              <MenuItem mnemonicParsing="false" onAction="#loadExel" text="Cargar" />
+                          <MenuItem mnemonicParsing="false" onAction="#saveExel" text="Guardar Exel" />
+                              <MenuItem mnemonicParsing="false" onAction="#loadExel" text="Cargar Exel" />
                               <MenuItem mnemonicParsing="false" onAction="#closeClcik" text="Close" />
                         </items>
                       </Menu>

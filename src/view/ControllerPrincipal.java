@@ -1,11 +1,14 @@
 package view;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.swing.JFileChooser;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -218,7 +221,7 @@ public class ControllerPrincipal {
 				if(!path.endsWith(".xls")) 	
 					path+=".xls";
 				
-				mysqlProductoDao.mySqlToExelLoad(sheet);
+				mysqlProductoDao.mySqlToExelSave(sheet);
 				
 				FileOutputStream newFile = new FileOutputStream(path);
 				book.write(newFile);
@@ -235,6 +238,62 @@ public class ControllerPrincipal {
 	@FXML
 	public void loadExel() {
 		
+		JFileChooser jFileChooser = new JFileChooser("Nuevo.xls");
+		jFileChooser.setDialogTitle("Guardar archivo");;
+		int result = jFileChooser.showOpenDialog(null);
+		
+		if (result == jFileChooser.APPROVE_OPTION) {
+			String path = jFileChooser.getSelectedFile().getPath();
+			tableProducto.getItems().clear();
+			if(path.endsWith(".xls")) {
+				try {
+					FileInputStream fileExel = new FileInputStream(path);
+					XSSFWorkbook book = new XSSFWorkbook(fileExel);
+					Sheet sheet = book.getSheetAt(0);
+					exelToTable(sheet);
+					book.close();
+					fileExel.close();
+				} catch (FileNotFoundException e) {
+					dialogAlert("Error", "Error al abrir archivo, Error: (FileInputStream), "+e.getMessage(), new Alert(AlertType.ERROR));
+				} catch (IOException e) {
+					dialogAlert("Error", "Error al abrir archivo, Error: (XSSFWorkbook), "+e.getMessage(), new Alert(AlertType.ERROR));
+				}
+			}
+			else
+				dialogAlert("Error", "Error al abrir archivo, no es un archivo Exel", new Alert(AlertType.ERROR));
+		}
+		
+	}
+	
+	// no guarda exel en bd, solo lo muestra en la tabla
+	private void exelToTable(Sheet sheet) {
+		
+		for (int i = 1; i < sheet.getLastRowNum(); i++) {
+			Row fila = sheet.getRow(i);
+			if (fila != null) {
+				Producto producto = new Producto();
+				for (int j = 0; j < fila.getLastCellNum(); j++) {
+					Cell celda = fila.getCell(j);
+					switch (j) {
+						case 0:  producto.setIdEmpresa(celda.getStringCellValue());
+							break;
+						case 1: producto.setIdNegocio(celda.getStringCellValue());
+							break;
+						case 2: producto.setNombre(celda.getStringCellValue());
+							break;
+						case 3: producto.setPrecioVenta(celda.getNumericCellValue());
+							break;
+						case 4: producto.setPrecioCantidad(celda.getNumericCellValue());
+							break;
+							default: break;
+					}
+				}
+				producto.setPrecioCosto(0.0);
+				tableProducto.getItems().add(producto);
+			}
+			
+		}
+		
 	}
 	
 	private boolean dialogAlert(String titel, String content, Alert alertType) {
@@ -247,9 +306,8 @@ public class ControllerPrincipal {
 		row.createCell(0).setCellValue("Codigo Empresa");
 		row.createCell(1).setCellValue("Codigo Negocio");
 		row.createCell(2).setCellValue("Nombre Producto");
-		row.createCell(3).setCellValue("Precio Costo");
-		row.createCell(4).setCellValue("Precio Venta");
-		row.createCell(5).setCellValue("Precio Cantidad");
+		row.createCell(3).setCellValue("Precio Venta");
+		row.createCell(4).setCellValue("Precio Cantidad");
 	}
 	
 	// metodos de test
