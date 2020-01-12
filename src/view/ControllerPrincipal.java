@@ -171,7 +171,7 @@ public class ControllerPrincipal {
 			        SortedList<Producto> sortedList = new SortedList<>(filteredList);
 			        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
 			        tableProducto.setItems(sortedList);
-			       
+			        tableProducto.getSelectionModel().select(0);
 				});
 	} 
 	
