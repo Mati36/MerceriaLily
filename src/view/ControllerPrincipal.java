@@ -156,18 +156,22 @@ public class ControllerPrincipal {
 		txfSearch.textProperty()
 				.addListener((obsevable, oldvalue, newvalue) -> {
 			        filteredList.setPredicate(pers -> {
-			
+			        	
 			            if (newvalue == null || newvalue.isEmpty()) 
 			                return true;
 			            String typedText = newvalue.toLowerCase();
 			            if (pers.getIdNegocio().toLowerCase().indexOf(typedText) != -1) 
 			            	return true;
+			            if (pers.getNombre().toLowerCase().indexOf(typedText) !=-1 ) 
+			            	return true;
+			           
 			            return false;
 			        });
 		   
 			        SortedList<Producto> sortedList = new SortedList<>(filteredList);
 			        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
 			        tableProducto.setItems(sortedList);
+			       
 				});
 	} 
 	
