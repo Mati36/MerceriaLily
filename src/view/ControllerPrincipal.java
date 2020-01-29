@@ -78,7 +78,7 @@ public class ControllerPrincipal {
 	
 	public void setMainApp(Main mainApp) { // se llama de main 
 		this.app = mainApp;
-		mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
+		startTable();
 		tableProducto.setItems(app.getListProducto());
 		filteredList = new FilteredList<Producto>(tableProducto.getItems(), p -> true);
 		
@@ -204,7 +204,11 @@ public class ControllerPrincipal {
 	}
 	
 	private void refrshTable() {
-		mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
+		try {
+			mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
+		} catch (SQLException e) {
+			dialogAlert("Error", "Error al refrescar tabla", new Alert(AlertType.ERROR));
+		}
 		//filteredList.addAll(tableProducto.getItems()); // no hace falta la idea era refrescar la tabla
 	}
 	
@@ -228,26 +232,21 @@ public class ControllerPrincipal {
 			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
 			
 		}
-		
-		
 	}
-	
-	// no guarda exel en bd, solo lo muestra en la tabla
-	
-	
+		
 	private boolean dialogAlert(String titel, String content, Alert alertType) {
 		 DialogAlert dialogAlert = new DialogAlert(content, titel, alertType) ;
 		return  dialogAlert.getResultOption();
 	}
 	
-	
-	private void rowSheetCreate(Row row) {
-		row.createCell(0).setCellValue("Codigo Empresa");
-		row.createCell(1).setCellValue("Codigo Negocio");
-		row.createCell(2).setCellValue("Nombre Producto");
-		row.createCell(3).setCellValue("Precio Venta");
-		row.createCell(4).setCellValue("Precio Cantidad");
-	}
+	public void startTable() {
+		try {
+			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
+		} catch (SQLException e) {
+			loadExel();
+			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
+		}
+	}	
 	
 	// metodos de test
 	private void mostrarProductoConsola(String string, Producto prod) { 

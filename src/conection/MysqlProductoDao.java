@@ -119,33 +119,23 @@ public class MysqlProductoDao   {
 		return producto;
 	}
 		
-	public void mostrarProductoTabla(ObservableList<Producto> table) {
+	public void mostrarProductoTabla(ObservableList<Producto> table) throws SQLException {
 		table.clear(); // limpia la tabla (la tabla esta en main)
 		PreparedStatement start = conectar(GETALL);
 		ResultSet resultSet = null;
 		if (start != null) {
-			try {
-				resultSet = start.executeQuery();
-				while (resultSet.next()) 
-					llenarTabla(resultSet,table); 
+			resultSet = start.executeQuery();
+			while (resultSet.next()) 
+				llenarTabla(resultSet,table); 
 				
-			} catch (SQLException e) {
-				errorDialog("Error al ejecutar el resultSet "+e.getMessage());
-				System.out.println("Error al ejecutar el resultSet "+e.getMessage());
-			}
+			
 		}
 			
 		close(start, connection);
 	}
 
-	private void llenarTabla(ResultSet resultSet,ObservableList<Producto> table) {
-		try {
-			table.add(resultSetToProducto(resultSet)); // agrega los productos a la tabla
-		} catch (SQLException e) {
-			errorDialog("Error al llenar el producto "+e.getMessage());
-			System.out.println("Error al llenar el producto "+e.getMessage());
-		}
-		
+	private void llenarTabla(ResultSet resultSet,ObservableList<Producto> table) throws SQLException {
+		table.add(resultSetToProducto(resultSet)); // agrega los productos a la tabla
 	}
 	
 	public void savedSql(ObservableList<Producto> table) {
@@ -188,7 +178,7 @@ public class MysqlProductoDao   {
 		try {
 			preparedStatement = connection.prepareStatement(action);
 		} catch (SQLException e) {
-			errorDialog("Error al ingresar los datos a la base de datos, "+e.getMessage());
+			errorDialog("Error al ingresar a la base de dato, "+e.getMessage());
 //			System.out.println("Error a conectar a la base de tatos "+e.getMessage());
 		}
 		return  preparedStatement;
@@ -199,7 +189,7 @@ public class MysqlProductoDao   {
 			preparedStatement.close();
 			connection.close();
 		} catch (SQLException e) {
-			errorDialog("Error al cerrar base de datos "+e.getMessage());
+			errorDialog("Error al cerrar base de dato "+e.getMessage());
 			//System.out.println("Error al cerrar base de datos "+e.getMessage());			
 		}
 		
