@@ -3,7 +3,6 @@ package app;
 
 import java.io.IOException;
 
-import controller.DialogAlert;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -11,6 +10,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import model.DialogAlert;
+import model.Producto;
 import view.ControllerEditProducto;
 import view.ControllerPrincipal;
 import javafx.scene.Scene;

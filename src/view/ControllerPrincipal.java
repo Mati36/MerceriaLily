@@ -5,18 +5,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
-
 import javax.swing.JFileChooser;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import app.Main;
-import app.Producto;
 import conection.MysqlProductoDao;
-import controller.DialogAlert;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -26,6 +24,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import model.DialogAlert;
+import model.Producto;
+import model.SaveProducto;
 
 
 public class ControllerPrincipal {
@@ -210,95 +211,29 @@ public class ControllerPrincipal {
 	
 	@FXML // falta optimizar 
 	public void saveExel() {
-		JFileChooser jFileChooser = new JFileChooser("Nuevo.xls");
-		jFileChooser.setDialogTitle("Guardar archivo");;
-		int result = jFileChooser.showSaveDialog(null);
 		
-		if (result == jFileChooser.APPROVE_OPTION) {
-			try {
-				String path = jFileChooser.getSelectedFile().getPath();
-				Workbook book = new XSSFWorkbook();
-				Sheet sheet = book.createSheet("Productos");
-				Row row = sheet.createRow(0);
-				rowSheetCreate(row);
-				
-				if(!path.endsWith(".xls")) 	
-					path+=".xls";
-				
-				mysqlProductoDao.mySqlToExelSave(sheet);
-				
-				FileOutputStream newFile = new FileOutputStream(path);
-				book.write(newFile);
-				
-				newFile.close();
-				book.close();
+		try {
+			SaveProducto.exelSave(tableProducto.getItems());
+		} catch (IOException e) {
+			dialogAlert("Error", "Error al guardar archivo exel, "+e.getMessage(), new Alert(AlertType.ERROR));
 			
-			} catch (IOException | SQLException e) {
-				dialogAlert("Error", "Error al guardar Archivo, "+e.getMessage(), new Alert(AlertType.ERROR));
-			}
-		}	
+		}
 	}
-	
+
 	@FXML
 	public void loadExel() {
-		
-		JFileChooser jFileChooser = new JFileChooser("Nuevo.xls");
-		jFileChooser.setDialogTitle("Guardar archivo");;
-		int result = jFileChooser.showOpenDialog(null);
-		
-		if (result == jFileChooser.APPROVE_OPTION) {
-			String path = jFileChooser.getSelectedFile().getPath();
-			tableProducto.getItems().clear();
-			if(path.endsWith(".xls")) {
-				try {
-					FileInputStream fileExel = new FileInputStream(path);
-					XSSFWorkbook book = new XSSFWorkbook(fileExel);
-					Sheet sheet = book.getSheetAt(0);
-					exelToTable(sheet);
-					book.close();
-					fileExel.close();
-				} catch (FileNotFoundException e) {
-					dialogAlert("Error", "Error al abrir archivo, Error: (FileInputStream), "+e.getMessage(), new Alert(AlertType.ERROR));
-				} catch (IOException e) {
-					dialogAlert("Error", "Error al abrir archivo, Error: (XSSFWorkbook), "+e.getMessage(), new Alert(AlertType.ERROR));
-				}
-			}
-			else
-				dialogAlert("Error", "Error al abrir archivo, no es un archivo Exel", new Alert(AlertType.ERROR));
+		try {
+			SaveProducto.exelLoad(tableProducto.getItems());
+		} catch (InvalidFormatException | IOException e) {
+			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
+			
 		}
+		
 		
 	}
 	
 	// no guarda exel en bd, solo lo muestra en la tabla
-	private void exelToTable(Sheet sheet) {
-		
-		for (int i = 1; i < sheet.getLastRowNum(); i++) {
-			Row fila = sheet.getRow(i);
-			if (fila != null) {
-				Producto producto = new Producto();
-				for (int j = 0; j < fila.getLastCellNum(); j++) {
-					Cell celda = fila.getCell(j);
-					switch (j) {
-						case 0:  producto.setIdEmpresa(celda.getStringCellValue());
-							break;
-						case 1: producto.setIdNegocio(celda.getStringCellValue());
-							break;
-						case 2: producto.setNombre(celda.getStringCellValue());
-							break;
-						case 3: producto.setPrecioVenta(celda.getNumericCellValue());
-							break;
-						case 4: producto.setPrecioCantidad(celda.getNumericCellValue());
-							break;
-							default: break;
-					}
-				}
-				producto.setPrecioCosto(0.0);
-				tableProducto.getItems().add(producto);
-			}
-			
-		}
-		
-	}
+	
 	
 	private boolean dialogAlert(String titel, String content, Alert alertType) {
 		 DialogAlert dialogAlert = new DialogAlert(content, titel, alertType) ;

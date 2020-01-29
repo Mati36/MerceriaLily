@@ -1,27 +1,19 @@
 package conection;
 
 import java.sql.*;
-
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import app.Producto;
-import controller.DialogAlert;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import model.DialogAlert;
+import model.Producto;
+import model.SaveProducto;
 
-public class MysqlProductoDao  {
+public class MysqlProductoDao   {
 
 	final private String NAME_TABLE ="productos";
-	// columnas string
-	final private String COL_ID_NEGOCIO = "idNegocio";
-	final private String COL_ID_EMPRESA = "idEmpresa";
-	final private String COL_NOMBRE_PRODUCTO = "nombreProducto";
-	final private String COL_PRECIO_COSTO = "precioCosto";
-	final private String COL_PRECIO_VENTA = "precioVenta";
-	final private String COL_RECARGO= "recargo";
-	final private String COL_PRECIO_CANTIDAD = "precioCantidad";
-	
+
 	// index columnas
 	final private int INDEX_ID_NEGOCIO = 1;
 	final private int INDEX_ID_EMPRESA = 2;
@@ -31,16 +23,20 @@ public class MysqlProductoDao  {
 	final private int INDEX_PRECIO_CANTIDAD = 6;
 	final private int INDEX_RECARGO = 7;
 	final private int INDEX_LAST = 8;
+
+	final private String INSERT ="INSERT Into "+NAME_TABLE+" ( "
+								+SaveProducto.getRowIdNegocio()+","+SaveProducto.getRowIdEmpresa()+","+SaveProducto.getRowNombreProducto()+","
+								+SaveProducto.getRowPrecioVenta()+","+SaveProducto.getRowPrecioCantidad()+","+SaveProducto.getRowPrecioCosto()+","
+								+SaveProducto.getRowRecargo() +" ) VALUES (?,?,?,?,?,?,?); ";
 	
-	final private String INSERT ="INSERT Into "+NAME_TABLE+" ( "+COL_ID_NEGOCIO+","+COL_ID_EMPRESA+","+COL_NOMBRE_PRODUCTO+","+COL_PRECIO_COSTO
-												+","+COL_PRECIO_VENTA+","+COL_RECARGO+","+COL_PRECIO_CANTIDAD+" ) VALUES (?,?,?,?,?,?,?);"; 
-	
-	final private String UPDATE ="UPDATE "+NAME_TABLE+" SET "+COL_ID_NEGOCIO+"=?,"+COL_ID_EMPRESA+"=?,"+COL_NOMBRE_PRODUCTO+"=?,"+COL_PRECIO_COSTO
-											+"=?,"+COL_PRECIO_VENTA+"=?,"+COL_RECARGO+"=?,"+COL_PRECIO_CANTIDAD+"=? WHERE " +COL_ID_NEGOCIO+"=?" ; 
-	
-	final private String DELETE = "DELETE FROM "+NAME_TABLE+" WHERE "+"idNegocio"+"=?";
+	final private String UPDATE ="UPDATE "+NAME_TABLE
+								+" SET "+SaveProducto.getRowIdNegocio()+"=?"+SaveProducto.getRowIdEmpresa()+"=?"+SaveProducto.getRowNombreProducto()+"=?"
+										+SaveProducto.getRowPrecioVenta()+"=?"+SaveProducto.getRowPrecioCantidad()+"=?"+SaveProducto.getRowPrecioCosto()+"=?"
+										+SaveProducto.getRowRecargo()+"=? WHERE "+SaveProducto.getRowIdNegocio()+"=?" ;
+	final private String DELETE = "DELETE FROM "+NAME_TABLE+" WHERE "+SaveProducto.getRowIdNegocio()+"=?";
 	final private String GETALL = "SELECT* FROM "+NAME_TABLE;
-	final private String GETONE = "SELECT* FROM "+NAME_TABLE+" WHERE "+COL_ID_NEGOCIO+"=?";
+	final private String GETONE = "SELECT* FROM "+NAME_TABLE+" WHERE "+SaveProducto.getRowIdNegocio()+"=?";
+	
 	
 	final private MysqlConnection mysqlConnection = new MysqlConnection();
 	private Connection connection;	
@@ -88,7 +84,7 @@ public class MysqlProductoDao  {
 	public void delete(Producto producto)  {
 		PreparedStatement start = conectar(DELETE);
 		try {
-			start.setString(INDEX_ID_NEGOCIO, producto.getIdNegocio());
+			start.setString(SaveProducto.getIndexIdNegocio(), producto.getIdNegocio());
 			if (start.executeUpdate() == 0) 
 				errorDialog("Error al ejecutar delete sql, no se puedo eliminar, "+producto.getNombre());
 			
@@ -105,7 +101,7 @@ public class MysqlProductoDao  {
 		Producto producto = null;
 		if (start != null) {
 			try {
-				start.setString(INDEX_ID_NEGOCIO, idNegocio);
+				start.setString(SaveProducto.getIndexIdNegocio(), idNegocio);
 				result = start.executeQuery();
 				if (result.next())
 					producto = resultSetToProducto(result);
@@ -137,7 +133,6 @@ public class MysqlProductoDao  {
 				errorDialog("Error al ejecutar el resultSet "+e.getMessage());
 				System.out.println("Error al ejecutar el resultSet "+e.getMessage());
 			}
-			
 		}
 			
 		close(start, connection);
@@ -151,6 +146,16 @@ public class MysqlProductoDao  {
 			System.out.println("Error al llenar el producto "+e.getMessage());
 		}
 		
+	}
+	
+	public void savedSql(ObservableList<Producto> table) {
+		
+		for (Producto producto : table) {
+			if (getProductoSql(producto.getIdNegocio()) == null) {
+				insert(producto);
+			}
+			
+		}
 	}
 	
 	private void productoToResultSEt(PreparedStatement start,Producto producto) throws SQLException {
@@ -175,6 +180,7 @@ public class MysqlProductoDao  {
 		return prod;
 	}
 	
+		
 	private PreparedStatement conectar(String action) {
 		mysqlConnection.runConnection();
 		connection = mysqlConnection.getConnection();
@@ -219,12 +225,6 @@ public class MysqlProductoDao  {
 		
 	}
 	
-	public void mySqlToExelLoad(Sheet sheet) {
-		
-		
-	}
-	
-	
 	private void cargarExelHoja(Sheet sheet, int i, Producto producto) {
 		Row row = sheet.createRow(i);
 		// el codigo de negocio seria el codigo empresa 
@@ -257,5 +257,6 @@ public class MysqlProductoDao  {
 		errorDialog("Error al Conectar en la base de datos, "+mysqlConnection.getNameBd());
 	}
 
-
+	
+	
 }
