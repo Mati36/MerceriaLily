@@ -39,7 +39,7 @@ public class SaveProducto extends ExelFile {
 	
 	private final static String FILE_NAME = "MerceriaLili"; 
 	private final static String FILEPRINT_NAME = "MerceriaLili"; 
-	private static ProductoExel productoExel;
+	private static ProductoExel productoExel = new ProductoExel();
 	private MysqlProductoDao mysqlProductoDao;
 	
 	
@@ -110,6 +110,7 @@ public class SaveProducto extends ExelFile {
 	
 	/// seguir por aca, esta clase deveria pasar los datos de la tabla a ProductosExel y llamar a mySql
 	public static void exelSave(ObservableList<Producto> tableList) throws IOException {
+		
 		productoExel.exelSave(tableList, INDEX_LAST,FILE_NAME);
 	}
 	

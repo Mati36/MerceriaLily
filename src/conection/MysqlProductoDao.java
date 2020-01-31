@@ -121,7 +121,6 @@ public class MysqlProductoDao   {
 		
 	public void mostrarProductoTabla(ObservableList<Producto> table) throws SQLException {
 		table.clear(); // limpia la tabla (la tabla esta en main)
-		System.out.println("Ingreso");
 		PreparedStatement start = conectar(GETALL);
 		ResultSet resultSet = null;
 		if (start != null) {

@@ -18,9 +18,11 @@ public class ProductoExel extends ExelFile {
 	}
 	
 	public void exelSave(ObservableList<Producto> tableList,int idexLast,String fileName) throws IOException {
+				
 		String nameFile = fileName+".xls";
 		openExelFile("Guardando archivo..",nameFile );
 		setNameFile(nameFile);
+		System.out.println("Inicio tabla"+tableList != null);
 		if (isSaveApprove()) {
 			createBook();
 			createSheet("Productos");
@@ -33,6 +35,7 @@ public class ProductoExel extends ExelFile {
 			bookWrite(getFile());		
 			bookClose();
 			fileClose();
+			
 		}
 	}
 	
