@@ -1,5 +1,6 @@
 package model;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -9,142 +10,126 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExelFile {
 
 	// creara, y leera un archivo exel 
-	
-	private XSSFWorkbook book; // crea el libro
-	private FileInputStream file; // abre el archivo
-	private Sheet sheet; // crea la hoja
+	private JFileChooser jFileChooser;
+	private FileInputStream fileInput; // abre el archivo
+	private FileOutputStream fileOutput; // abre el archivo
 	private String nameFile;
 	private String path;
-	private JFileChooser jFileChooser;
+	private Workbook workbook;
+	private XSSFWorkbook book; // crea el libro
+	private Sheet sheet; // crea la hoja
+	private Row row;
+	private Cell cell;
 	
+	public ExelFile() {	}
+
+	public JFileChooser getjFileChooser() {return jFileChooser;	}
+
+	public void setjFileChooser(JFileChooser jFileChooser) {this.jFileChooser = jFileChooser;	}
+
+	public FileInputStream getFileInput() {return fileInput;	}
+
+	public void setFileInput(FileInputStream fileInput) {this.fileInput = fileInput;	}
+
+	public FileOutputStream getFileOutput() {return fileOutput;	}
+
+	public void setFileOutput(FileOutputStream fileOutput) {this.fileOutput = fileOutput;}
+
+	public String getNameFile() {return nameFile;}
+
+	public void setNameFile(String nameFile) {this.nameFile = nameFile;}
+
+	public String getPath() {return path;}
+
+	public void setPath(String path) {
+		this.path = path;
+		if (!this.path.endsWith(".xls"))
+			this.path+=".xls";
+	}
+
+	public Workbook getWorkbook() {return workbook;}
+
+	public void setWorkbook(Workbook workbook) {this.workbook = workbook;}
+
+	public XSSFWorkbook getBook() {return book;	}
+
+	public void setBook(XSSFWorkbook book) {this.book = book;}
+
+	public Sheet getSheet() {return sheet;}
+
+	public void setSheet(Sheet sheet) {this.sheet = sheet;}
+		
+	public Row getRow(int index) {return sheet.getRow(index);}
+
+	public void setRow(int index) {sheet.createRow(index);}
+
+//	public Cell getCell(int index) {return row.getCell(index);	}
+//
+//	public void setCell(int index) {row.createCell(index);}
+	// metodos
+	public void createFile(String filePath) throws FileNotFoundException {
+		fileOutput = new FileOutputStream(filePath);
+	}
 	
-	public ExelFile() {
+	public void fileOpen(String filePath) throws FileNotFoundException {
+		fileInput = new FileInputStream(filePath);
+	}
+	
+	public void fileClose() throws IOException {
+		if (fileInput != null) 
+			fileInput.close();
+		
+		if (fileOutput != null)
+			fileOutput.close();
 		
 	}
-	// metodos 
-	public void creteFile() throws FileNotFoundException {
-		file = new FileInputStream(this.path);
+	
+	public void dialogSelectorFile(String content) {
+		jFileChooser = new JFileChooser();
+		jFileChooser.setDialogTitle(content);
 	}
 	
-	public void createSheet(String titelSheet) {
-		book.createSheet(titelSheet);
-		
+	public boolean isLoadFile() {
+		return jFileChooser.showOpenDialog(null) == jFileChooser.APPROVE_OPTION;
+	}
+	
+	public boolean isSaveFile() {
+		return jFileChooser.showSaveDialog(null) == jFileChooser.APPROVE_OPTION;
+	}
+	
+	public void openBook(FileInputStream file) throws IOException {
+		book = new XSSFWorkbook(file);
 	}
 	
 	public void createBook() {
 		book = new XSSFWorkbook();
 	}
 	
-	public void openBook(FileInputStream fileOpen) throws InvalidFormatException, IOException {
-		book = new XSSFWorkbook(fileOpen);
-	}
-	
-	public void openExelFile(String content, String nameFile) {
-		jFileChooser = new JFileChooser(nameFile);
-		jFileChooser.setDialogTitle(content);
-		
-	}
-	
-	public Row createRow(int index) {
-		Row row = getSheet().createRow(index);
-		return row;
-	}
-	
-	public void roxCreateCell(int roxIdex,int cellIndex) {
-		sheet.getRow(roxIdex).createCell(cellIndex);
-	}
-	
-	public void bookWrite(FileOutputStream file) throws IOException {
-		book.write(file);
-	}
-	
-	public Cell getRowCell(int roxIdex,int cellIndex) {
-		return sheet.getRow(roxIdex).createCell(cellIndex);
-	}
-	
-	public Row getRow(int roxIdex) {
-		return sheet.getRow(roxIdex);
-	}
-	
-	public boolean isSaveApprove() {
-		return  jFileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION;
-	}
-	
-	public boolean isLoadApprove() {
-		return jFileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION;
-	}
-	
-	public boolean isExelFile() {
-		return path.endsWith(".xls");
-	}
-	
-	/// propiedades
-	public void fileClose() throws IOException {
-		file.close();
+	public void bookWrite(FileOutputStream fileOutput) throws IOException {
+		book.write(fileOutput);
 	}
 	
 	public void bookClose() throws IOException {
 		book.close();
 	}
-
-	public XSSFWorkbook getBook() {
-		return book;
-	}
-
-	public void setBook(XSSFWorkbook book) {
-		this.book = book;
-	}
-
-	public FileInputStream getFile() {
-		return file;
-	}
-
-	public void setFile(FileInputStream file) {
-		this.file = file;
-	}
-
-	public Sheet getSheet() {
-		return sheet;
-	}
-
-	public void setSheet(Sheet sheet) {
-		this.sheet = sheet;
-	}
-
-	public String getNameFile() {
-		return nameFile;
-	}
-
-	public void setNameFile(String nameFile) {
-		this.nameFile = nameFile;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		if(!path.endsWith(".xls")) 	
-			path+=".xls";
-		this.path = path;
+	public void openSheet(int indexSheet) {
+		sheet = book.getSheetAt(indexSheet);
 	}
 	
-	public void setfile(FileOutputStream file) {
-		this.file = file;
-	}
-
-	public JFileChooser getjFileChooser() {
-		return jFileChooser;
-	}
-
-	public void setjFileChooser(JFileChooser jFileChooser) {
-		this.jFileChooser = jFileChooser;
+	public void createSheet(String nameSheet) {
+		sheet = book.createSheet(nameSheet);
 	}
 	
+	public void createRow(int index) {
+		sheet.createRow(index);
+	}
+	
+
 	
 }

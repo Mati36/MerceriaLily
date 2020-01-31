@@ -228,6 +228,7 @@ public class ControllerPrincipal {
 	public void loadExel() {
 		try {
 			SaveProducto.exelLoad(tableProducto.getItems());
+			
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
 			
