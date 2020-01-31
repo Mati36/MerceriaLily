@@ -121,23 +121,18 @@ public class MysqlProductoDao   {
 		
 	public void mostrarProductoTabla(ObservableList<Producto> table) throws SQLException {
 		table.clear(); // limpia la tabla (la tabla esta en main)
+		System.out.println("Ingreso");
 		PreparedStatement start = conectar(GETALL);
 		ResultSet resultSet = null;
 		if (start != null) {
 			resultSet = start.executeQuery();
 			while (resultSet.next()) 
-				llenarTabla(resultSet,table); 
-				
-			
+				table.add(resultSetToProducto(resultSet)); 
 		}
 			
 		close(start, connection);
 	}
 
-	private void llenarTabla(ResultSet resultSet,ObservableList<Producto> table) throws SQLException {
-		table.add(resultSetToProducto(resultSet)); // agrega los productos a la tabla
-	}
-	
 	public void savedSql(ObservableList<Producto> table) {
 		
 		for (Producto producto : table) {
