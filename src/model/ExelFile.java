@@ -16,7 +16,7 @@ public class ExelFile {
 	// creara, y leera un archivo exel 
 	
 	private XSSFWorkbook book; // crea el libro
-	private FileOutputStream file; // abre el archivo
+	private FileInputStream file; // abre el archivo
 	private Sheet sheet; // crea la hoja
 	private String nameFile;
 	private String path;
@@ -28,7 +28,7 @@ public class ExelFile {
 	}
 	// metodos 
 	public void creteFile() throws FileNotFoundException {
-		file = new FileOutputStream(this.path);
+		file = new FileInputStream(this.path);
 	}
 	
 	public void createSheet(String titelSheet) {
@@ -47,14 +47,12 @@ public class ExelFile {
 	public void openExelFile(String content, String nameFile) {
 		jFileChooser = new JFileChooser(nameFile);
 		jFileChooser.setDialogTitle(content);
-		path = jFileChooser.getSelectedFile().getPath();
-		if (!isExelFile()) 	
-			path+=".xls";
-			
+		
 	}
 	
 	public Row createRow(int index) {
-		return sheet.createRow(index);
+		Row row = getSheet().createRow(index);
+		return row;
 	}
 	
 	public void roxCreateCell(int roxIdex,int cellIndex) {
@@ -102,11 +100,11 @@ public class ExelFile {
 		this.book = book;
 	}
 
-	public FileOutputStream getFile() {
+	public FileInputStream getFile() {
 		return file;
 	}
 
-	public void setFile(FileOutputStream file) {
+	public void setFile(FileInputStream file) {
 		this.file = file;
 	}
 

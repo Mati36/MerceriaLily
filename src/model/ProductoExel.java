@@ -24,6 +24,7 @@ public class ProductoExel extends ExelFile {
 		setNameFile(nameFile);
 		System.out.println("Inicio tabla"+tableList != null);
 		if (isSaveApprove()) {
+			setPath(getjFileChooser().getSelectedFile().getPath());
 			createBook();
 			createSheet("Productos");
 			rowCellTitel();
