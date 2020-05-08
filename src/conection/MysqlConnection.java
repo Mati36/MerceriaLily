@@ -1,40 +1,29 @@
 package conection;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-
+import java.sql.*;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import model.DialogAlert;
 
 public class MysqlConnection  implements IConnection{
 	
-	private Connection connection;
-	private String nameBd = "mercerialili";
-	private String userBd = "root";
-	private String userPasswordBd ="";
-	private String urlBd="jdbc:mysql://localhost:3308/"+nameBd+"?autoReconnect=true&useSSL=false";
+	private  Connection connection;
+	private String dbName = "mercerialili";
+	private String dbUser = "root";
+	private String dbPassword = "";
+	private final String URL_HOSTING = "jdbc:mysql://localhost/"; 
+//	private String dbUrl = URL_HOSTING+dbName+"?autoReconnect=true&useSSL=false";
+	private String dbUrl = URL_HOSTING+dbName;
 	
+	public MysqlConnection() {	}
 	
-	
-	public MysqlConnection(Connection connection, String nameBd, String userBd, String userPasswordBd, String urlBd) {
-		this.connection = connection;
-		this.nameBd = nameBd;
-		this.userBd = userBd;
-		this.userPasswordBd = userPasswordBd;
-		this.urlBd = urlBd;
-	}
-
-	public MysqlConnection() {}
-	
-
-	public void runConnection() {
+	public void runConnection() { // no conecta a la bd 
 		try {
-			connection = DriverManager.getConnection(urlBd,userBd,userPasswordBd);
+			connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 		} catch (SQLException e) {
-			errorDialog("Error al conectar en la base de datos "+nameBd+", mensaje "+e.getMessage());
-			//System.out.println("Error al conectar en la base de datos "+nameBd+", mensaje "+e.getMessage());
+			System.out.println("Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+ "\n Url= "+dbPassword+" \n mensaje "+e.getMessage());
+			errorDialog("Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+"\n mensaje: "+e.getMessage());
+			
 		}
 		
 	}
@@ -44,70 +33,58 @@ public class MysqlConnection  implements IConnection{
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			errorDialog("Error al cerrar la base de datos "+nameBd+", mensaje "+e.getMessage());
-			//System.out.println("Error al cerrar la base de datos"+nameBd);
+			errorDialog("Error al cerrar la base de datos "+dbName+", mensaje "+e.getMessage());
+			//System.out.println("Error al cerrar la base de datos"+dbName);
 		}
 				
 	}
 
 	@Override
-	public Connection getConnection() {
-		
-		return this.connection;
-	}
+	public Connection getConnection() { return this.connection;	}
 
 	@Override
-	public void setNameBd(String nameBd) {
-		this.nameBd = nameBd;
-		
-	}
+	public final void setdbName(String dbName) { this.dbName = dbName; }
+
+	
+	@Override
+	public String getdbName() { return this.dbName; }
 
 	@Override
-	public String getNameBd() {
-		
-		return this.nameBd;
-	}
+	public void setdbUser(String dbUser) {this.dbUser = dbUser;	}
 
 	@Override
-	public void setUserBd(String userBd) {
-		this.userBd = userBd;
-		
-	}
+	public String getdbUser() { return this.dbUser; }
 
 	@Override
-	public String getUserBd() {
-		
-		return this.userBd;
-	}
+	public void setdbPassword(String dbPassword) { this.dbPassword = dbPassword; }
 
 	@Override
-	public void setUserPasswordBd(String userPasswordBd) {
-		this.userPasswordBd = userPasswordBd;
-		
-	}
+	public String getdbPassword() { return this.dbPassword; }
 
 	@Override
-	public String getUserPasswordBd() {
-		
-		return this.userPasswordBd;
-	}
+	public void setdbUrl(String dbUrl) { this.dbUrl = dbUrl; }
 
 	@Override
-	public void seturlBd(String urlBd) {
-		this.urlBd = urlBd;
-		
-	}
+	public String getdbUrl() { return this.dbUrl;	}
 
-	@Override
-	public String geturlBd() {
-
-		return this.urlBd;
-	}
-
+	// por ahora no sirve 
+	@SuppressWarnings("unused")
+//	private void createDataBase() throws SQLException {
+//		System.out.println("en sql");
+//		runConnection();
+//		
+//		String creteTable = "CREATE DATABASE IF NOT EXISTS "+dbName+";";
+//		PreparedStatement preparedStatement = getConnection().prepareStatement(creteTable);
+//		preparedStatement.executeUpdate();
+//		preparedStatement.close();
+//		closeConnection();
+//	}
+	
 	private boolean errorDialog(String content,String titel) {
 		DialogAlert dialogAlert = new DialogAlert(content, titel, new Alert(AlertType.ERROR));
 		return dialogAlert.getResultOption();
 	}
+	
 	private boolean errorDialog(String content) {
 		DialogAlert dialogAlert = new DialogAlert(content, "Error de MySql", new Alert(AlertType.ERROR));
 		return dialogAlert.getResultOption();

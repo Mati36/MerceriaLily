@@ -38,7 +38,7 @@ public class Main extends Application {
 			
 		} catch (Exception e) {
 			startError("Error al iniciar aplicacion "+e.getMessage());
-			System.out.println(e.getMessage());
+			System.out.println(e.getMessage()+"/n"+e.getStackTrace());
 		}
 	}
 

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JFileChooser;
 
+import org.apache.commons.math3.analysis.function.Add;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -26,7 +27,8 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import model.DialogAlert;
 import model.Producto;
-import model.SaveProducto;
+import model.ProductoExel;
+import model.ProductoTableExel;
 
 
 public class ControllerPrincipal {
@@ -46,6 +48,7 @@ public class ControllerPrincipal {
 	private Stage stage;
 	private Stage stageEditProducto; 
 	private FilteredList<Producto> filteredList;
+	private ProductoExel productoExel;
 	
 	public Stage getStage() {
 		return stage;
@@ -59,9 +62,9 @@ public class ControllerPrincipal {
 		splitPane = new SplitPane();
 		txfSearch= new TextField();
 		stageEditProducto = new Stage();
+		productoExel = new ProductoExel();
 		mysqlProductoDao = new MysqlProductoDao(); // para comunicarse con la base de datos
-	
-		
+			
 	}
 
 	@FXML
@@ -88,10 +91,11 @@ public class ControllerPrincipal {
 	public  void addProducto()  { // interactua con editar producto
 		Producto prod = new Producto();
 		try {
-			app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
-						
+			//app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
+			app.mostrarEditProducto(cargarProducto(), stageEditProducto); // muestra la ventana de editar producto
 			if (app.isOnClickConfirmation()) { 
-				getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
+				//getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
+				getMysqlProductoDao().insert(cargarProducto()); // lo ingresa a la base de datos
 				refrshTable();
 				//tableProducto.getItems().add(prod);
 			}
@@ -215,19 +219,30 @@ public class ControllerPrincipal {
 	
 	@FXML // falta optimizar 
 	public void saveExel() {
-		
+	
 		try {
-			SaveProducto.exelSave(tableProducto.getItems());
-		} catch (IOException e) {
+			productoExel.saveExel(tableProducto.getItems());
+		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al guardar archivo exel, "+e.getMessage(), new Alert(AlertType.ERROR));
-			
 		}
+
 	}
 
 	@FXML
 	public void loadExel() {
 		try {
-			SaveProducto.exelLoad(tableProducto.getItems());
+			productoExel.loadExel(tableProducto.getItems());
+			
+		} catch (InvalidFormatException | IOException e) {
+			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
+			
+		}
+	}
+	
+	@FXML
+	public void printExel() {
+		try {
+			productoExel.saveExel(tableProducto.getItems());
 			
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
@@ -240,12 +255,17 @@ public class ControllerPrincipal {
 		return  dialogAlert.getResultOption();
 	}
 	
+	
 	public void startTable() {
 		try {
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
 		} catch (SQLException e) {
 			loadExel();
 			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
+			
+		}
+		finally {
+			//loadExel();
 		}
 	}	
 	
@@ -261,4 +281,7 @@ public class ControllerPrincipal {
 		System.out.println();
 	}
 	
+	private Producto  cargarProducto() {
+		return new Producto("Pueba","A01", "A1", 5.0,0.0, 5.0, 10.0);
+	}
 }

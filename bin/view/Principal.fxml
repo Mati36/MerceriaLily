@@ -7,11 +7,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="background" stylesheets="@PrincipalStyle.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ControllerPrincipal">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ControllerPrincipal">
    <children>
-      <BorderPane prefHeight="606.0" prefWidth="882.0" styleClass="background" stylesheets="@PrincipalStyle.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane prefHeight="606.0" prefWidth="882.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TableView fx:id="tableProducto" onMouseClicked="#searchProducto" prefHeight="569.0" prefWidth="800.0" stylesheets="@PrincipalStyle.css" BorderPane.alignment="CENTER">
+            <TableView fx:id="tableProducto" onMouseClicked="#searchProducto" prefHeight="569.0" prefWidth="800.0" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="codEmpresa" prefWidth="111.0" text="Codigo Empresa" />
                 <TableColumn fx:id="codNegocio" prefWidth="113.0" text="Codigo Negocio" />
@@ -26,9 +26,9 @@
             </TableView>
          </center>
          <top>
-            <SplitPane fx:id="splitPane" dividerPositions="0.6" prefHeight="18.0" prefWidth="800.0" stylesheets="@PrincipalStyle.css" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="splitPane" dividerPositions="0.6" prefHeight="18.0" prefWidth="800.0" BorderPane.alignment="CENTER">
                <items>
-                  <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="494.0" stylesheets="@PrincipalStyle.css">
+                  <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="494.0">
                     <menus>
                       <Menu mnemonicParsing="false" text="Archivo">
                         <items>
@@ -51,7 +51,7 @@
                       </Menu>
                     </menus>
                   </MenuBar>
-                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" stylesheets="@PrincipalStyle.css">
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                      <children>
                         <Label contentDisplay="CENTER" text="Buscar Producto: ">
                            <opaqueInsets>

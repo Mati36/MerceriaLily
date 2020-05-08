@@ -4,16 +4,28 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface IConnection {
+
+	void closeConnection();
+
+	Connection getConnection();
 	
-	public void runConnection();
-	public void closeConnection();
-	public Connection getConnection();
-	public void setNameBd(String nameBd);
-	public String getNameBd();
-	public void setUserBd(String UserBd);
-	public String getUserBd();
-	public void setUserPasswordBd(String userPasswordBd);
-	public String getUserPasswordBd();
-	public void seturlBd(String urlBd);
-	public String geturlBd();
+	void setdbName(String dbName);
+	String getdbName();
+
+	void setdbUser(String dbUser);
+
+	String getdbUser();
+
+	void setdbPassword(String dbPassword);
+
+	String getdbPassword();
+
+	void setdbUrl(String dbUrl);
+
+	String getdbUrl();
+
+
+	
+	
+	
 }
