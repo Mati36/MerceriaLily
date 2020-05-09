@@ -9,51 +9,54 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import impl.org.controlsfx.tools.rectangle.change.NewChangeStrategy;
 import javafx.collections.ObservableList;
 
 
 public class ProductoExel{
 
-	ExelFile exelFile;
+	ExelFile exelFile=null;
 
 	// esta clase crea el archivo exel y lo lee y escribe
 
 	
 	
 	public ProductoExel() {
+		
+	}
+
+	
+	public void saveExel(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
+		
+		FileOutputStream fileOutput = new FileOutputStream(file); // tratar de elegir la ruta
 		exelFile = new ExelFile();
-	}
-
-	
-	public void saveExel(ObservableList<Producto> tableList) throws IOException, InvalidFormatException {
-
-		FileOutputStream fileOutput = new FileOutputStream(ProductoTableExel.getFileName()); // tratar de elegir la ruta
-		
-
 	// solo la primera vez que lo guardo mejorar
-		exelFile.createBook();
-		ProductoTableExel.createTable(exelFile,exelFile.getBook());
-	// Esto es bien 
-		String sheet_name = ProductoTableExel.getSheetName();
-
-		for (Producto producto : tableList) {
-			
-			if ( !seach( producto.getIdNegocio(),exelFile.getSheet(sheet_name) ) ) {
-			
-				exelFile.addRow(sheet_name, exelFile.getLastRowIndex(sheet_name) + 1);
-				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
-					addCellContent(exelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
-			}
-		}
-		
-		exelFile.writeBook(fileOutput);
-		exelFile.closeBook();
-		fileOutput.close();
+		XSSFWorkbook book = new XSSFWorkbook();
+		ProductoTableExel.createTable(exelFile,book);
+//	// Esto es bien 
+//		String sheet_name = ProductoTableExel.getSheetName();
+//
+//		for (Producto producto : tableList) {
+//			
+//			if ( !seach( producto.getIdNegocio(),exelFile.getSheet(sheet_name) ) ) {
+//			
+//				exelFile.addRow(sheet_name, exelFile.getLastRowIndex(sheet_name) + 1);
+//				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
+//					addCellContent(exelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
+//			}
+//		}
+//		
+//		exelFile.writeBook(fileOutput);
+//		exelFile.closeBook();
+//		fileOutput.close();
 	}
 	
-	public void printExelSave(ObservableList<Producto> tableList) throws IOException, InvalidFormatException {
-
-		FileOutputStream fileOutput = new FileOutputStream(ProductoTableExel.getFilePrintName()); // tratar de elegir la ruta
+	public void printExelSave(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
+		
+		FileOutputStream fileOutput = new FileOutputStream(file); // tratar de elegir la ruta
 		
 
 	// solo la primera vez que lo guardo mejorar
@@ -79,9 +82,9 @@ public class ProductoExel{
 	}
 
 
-	public void loadExel(ObservableList<Producto> tableList) throws InvalidFormatException, FileNotFoundException, IOException {
+	public void loadExel(ObservableList<Producto> tableList,File file) throws InvalidFormatException, FileNotFoundException, IOException {
 		// ver como leer un archivo
-		FileInputStream fileInput = new FileInputStream(ProductoTableExel.getFileName());
+		FileInputStream fileInput = new FileInputStream(file);
 		exelFile.loadBook(fileInput);
 
 		for (Row row : exelFile.getSheet(ProductoTableExel.getSheetName()))

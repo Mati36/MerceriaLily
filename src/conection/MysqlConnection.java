@@ -21,7 +21,6 @@ public class MysqlConnection  implements IConnection{
 		try {
 			connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 		} catch (SQLException e) {
-			System.out.println("Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+ "\n Url= "+dbPassword+" \n mensaje "+e.getMessage());
 			errorDialog("Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+"\n mensaje: "+e.getMessage());
 			
 		}

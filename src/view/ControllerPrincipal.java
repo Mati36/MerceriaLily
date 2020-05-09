@@ -1,19 +1,17 @@
 package view;
 
-import java.io.FileInputStream;
+import java.io.File;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
-import org.apache.commons.math3.analysis.function.Add;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import app.Main;
 import conection.MysqlProductoDao;
 import javafx.collections.transformation.FilteredList;
@@ -28,7 +26,7 @@ import javafx.stage.Stage;
 import model.DialogAlert;
 import model.Producto;
 import model.ProductoExel;
-import model.ProductoTableExel;
+
 
 
 public class ControllerPrincipal {
@@ -219,9 +217,9 @@ public class ControllerPrincipal {
 	
 	@FXML // falta optimizar 
 	public void saveExel() {
-	
+		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG);
 		try {
-			productoExel.saveExel(tableProducto.getItems());
+			productoExel.saveExel(tableProducto.getItems(),file);
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al guardar archivo exel, "+e.getMessage(), new Alert(AlertType.ERROR));
 		}
@@ -231,7 +229,7 @@ public class ControllerPrincipal {
 	@FXML
 	public void loadExel() {
 		try {
-			productoExel.loadExel(tableProducto.getItems());
+			productoExel.loadExel(tableProducto.getItems(),fileSelection("Abrir", JFileChooser.OPEN_DIALOG));
 			
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
@@ -242,7 +240,7 @@ public class ControllerPrincipal {
 	@FXML
 	public void printExel() {
 		try {
-			productoExel.saveExel(tableProducto.getItems());
+			productoExel.printExelSave(tableProducto.getItems(),fileSelection("Guardar", JFileChooser.SAVE_DIALOG));
 			
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
@@ -268,6 +266,20 @@ public class ControllerPrincipal {
 			//loadExel();
 		}
 	}	
+	
+	private File fileSelection(String title, int action) {
+		String defaultDyrectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"\\tiendaLili";
+		File file = new File(defaultDyrectory);
+		file.mkdir();
+		JFileChooser jFile = new JFileChooser(file);
+		jFile.setDialogTitle(title);
+		jFile.setDialogType(action);
+		jFile.setSelectedFile(new File("productos.xlsx"));
+		jFile.setFileFilter(new FileNameExtensionFilter("exel file", "xlsx"));
+		if (jFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+				return jFile.getSelectedFile();
+		return null;
+	}
 	
 	// metodos de test
 	private void mostrarProductoConsola(String string, Producto prod) { 

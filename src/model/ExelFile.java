@@ -11,6 +11,7 @@ import java.util.Date;
 
 import javax.imageio.stream.FileImageOutputStream;
 
+import org.apache.commons.collections4.map.StaticBucketMap;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
@@ -20,10 +21,10 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExelFile { // manejo de exel
 
-	XSSFWorkbook book;
-	Sheet sheet;
-	Row row;
-	Cell  cell;
+	private XSSFWorkbook book;
+	private Sheet sheet;
+	private Row row;
+	private Cell  cell;
 	
 	public ExelFile(XSSFWorkbook book, Sheet sheet, Row row,Cell cell) {
 		this.book = book;
@@ -33,18 +34,19 @@ public class ExelFile { // manejo de exel
 	}
 	
 	public ExelFile() {
-		this.book = null;
-		this.sheet = null;
-		this.row = null;
-		this.cell = null;
+		
 	}
 	
 	public void createBook() {
 		this.book = new XSSFWorkbook();
+		
 	}
 	
 	public void createBook(File file) throws InvalidFormatException, IOException {
-		this.book = new XSSFWorkbook(file);
+		
+		this.book = new XSSFWorkbook();
+		System.out.println("paso");
+		
 	} 
 	
 	public void loadBook(FileInputStream fileInput) throws InvalidFormatException, IOException {
