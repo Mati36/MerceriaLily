@@ -1,20 +1,11 @@
 package model;
 
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.util.Date;
 
-import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
+
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 
-import com.mysql.fabric.xmlrpc.base.Value;
-
-import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
 
 
 public class ProductoTableExel {
@@ -23,8 +14,8 @@ public class ProductoTableExel {
 	private final static String FILE_NAME = "MerceriaLili"; 
 	private final static String FILE_PRINT_NAME = "MerceriaLiliPrint";
 	private final static String SHEET_NAME = "Porductos";
-	private final static ProductoExel productoExel = null; 
-	//private static ExelFile exelFile = null;
+
+	//private static ExelFile ExelFile = null;
 	// columnas string
 	private static final String ROW_ID_NEGOCIO = "Codigo Negocio";
 	private static final String ROW_ID_EMPRESA = "Codigo Empresa";
@@ -49,18 +40,17 @@ public class ProductoTableExel {
 	
 	
 //	public ProductoTableExel() {
-//		exelFile = new ExelFile();
+//		ExelFile = new ExelFile();
 //	}
 	
-	public static void createTable(ExelFile exelFile,XSSFWorkbook book) throws IOException {
+	public static void createTable(XSSFWorkbook book) throws IOException {
 		
-		exelFile.createSheet(book,SHEET_NAME);
-		exelFile.addRow(SHEET_NAME, 0);
+		ExelFile.createSheet(book,SHEET_NAME);
+		ExelFile.addRow(SHEET_NAME, 0);
 		
 		for (int i = 0; i < ROW_NAME.length; i++)
-			exelFile.addCellAndValue(exelFile.getRow(SHEET_NAME, 0), i, ROW_NAME[i]);
-				
-		book.close();	// ver si al cerran no escribe 
+			ExelFile.addCellAndValue(ExelFile.getRow(SHEET_NAME, 0), i, ROW_NAME[i]);
+				 
 	}
 	
 	

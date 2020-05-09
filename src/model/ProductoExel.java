@@ -9,16 +9,12 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import impl.org.controlsfx.tools.rectangle.change.NewChangeStrategy;
 import javafx.collections.ObservableList;
 
 
 public class ProductoExel{
 
-	ExelFile exelFile=null;
+	
 
 	// esta clase crea el archivo exel y lo lee y escribe
 
@@ -32,26 +28,27 @@ public class ProductoExel{
 	public void saveExel(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
 		
 		FileOutputStream fileOutput = new FileOutputStream(file); // tratar de elegir la ruta
-		exelFile = new ExelFile();
+		ExelFile.createBook();
+		
 	// solo la primera vez que lo guardo mejorar
-		XSSFWorkbook book = new XSSFWorkbook();
-		ProductoTableExel.createTable(exelFile,book);
-//	// Esto es bien 
-//		String sheet_name = ProductoTableExel.getSheetName();
-//
-//		for (Producto producto : tableList) {
-//			
-//			if ( !seach( producto.getIdNegocio(),exelFile.getSheet(sheet_name) ) ) {
-//			
-//				exelFile.addRow(sheet_name, exelFile.getLastRowIndex(sheet_name) + 1);
-//				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
-//					addCellContent(exelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
-//			}
-//		}
-//		
-//		exelFile.writeBook(fileOutput);
-//		exelFile.closeBook();
-//		fileOutput.close();
+		ProductoTableExel.createTable(ExelFile.getBook());
+		
+	// Esto es bien 
+		String sheet_name = ProductoTableExel.getSheetName();
+		
+		for (Producto producto : tableList) {
+			
+			if ( !seach( producto.getIdNegocio(),ExelFile.getSheet(sheet_name) ) ) {
+			
+				ExelFile.addRow(sheet_name, ExelFile.getLastRowIndex(sheet_name) + 1);
+				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
+					addCellContent(ExelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
+			}
+		}
+		
+		ExelFile.writeBook(fileOutput);
+		ExelFile.closeBook();
+		fileOutput.close();
 	}
 	
 	public void printExelSave(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
@@ -60,24 +57,24 @@ public class ProductoExel{
 		
 
 	// solo la primera vez que lo guardo mejorar
-		exelFile.createBook();
-		ProductoTableExel.createTable(exelFile,exelFile.getBook());
+		ExelFile.createBook();
+		ProductoTableExel.createTable(ExelFile.getBook());
 	// Esto es bien 
 		String sheet_name = ProductoTableExel.getSheetName();
 
 		for (Producto producto : tableList) {
 			
-			if ( !seach( producto.getIdNegocio(),exelFile.getSheet(sheet_name) ) ) {
+			if ( !seach( producto.getIdNegocio(),ExelFile.getSheet(sheet_name) ) ) {
 			
-				exelFile.addRow(sheet_name, exelFile.getLastRowIndex(sheet_name) + 1);
+				ExelFile.addRow(sheet_name, ExelFile.getLastRowIndex(sheet_name) + 1);
 				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
 					if (cell != ProductoTableExel.getIndexRecargo() && cell != ProductoTableExel.getIndexPrecioCosto())
-						addCellContent(exelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
+						addCellContent(ExelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
 			}
 		}
 		
-		exelFile.writeBook(fileOutput);
-		exelFile.closeBook();
+		ExelFile.writeBook(fileOutput);
+		ExelFile.closeBook();
 		fileOutput.close();
 	}
 
@@ -85,9 +82,9 @@ public class ProductoExel{
 	public void loadExel(ObservableList<Producto> tableList,File file) throws InvalidFormatException, FileNotFoundException, IOException {
 		// ver como leer un archivo
 		FileInputStream fileInput = new FileInputStream(file);
-		exelFile.loadBook(fileInput);
+		ExelFile.loadBook(fileInput);
 
-		for (Row row : exelFile.getSheet(ProductoTableExel.getSheetName()))
+		for (Row row : ExelFile.getSheet(ProductoTableExel.getSheetName()))
 			exelToTable(row, tableList);
 
 		fileInput.close();
@@ -128,17 +125,17 @@ public class ProductoExel{
 	
 	private void addCellContent(Row row,Producto producto,int cell) {
 		if (cell == ProductoTableExel.getIndexIdEmpresa())
-			exelFile.addCellAndValue(row, cell,producto.getIdEmpresa());
+			ExelFile.addCellAndValue(row, cell,producto.getIdEmpresa());
 		else if (cell == ProductoTableExel.getIndexIdNegocio())
-			exelFile.addCellAndValue(row, cell,producto.getIdNegocio());
+			ExelFile.addCellAndValue(row, cell,producto.getIdNegocio());
 		else if (cell == ProductoTableExel.getIndexNombreProducto())
-			exelFile.addCellAndValue(row, cell,producto.getNombre());
+			ExelFile.addCellAndValue(row, cell,producto.getNombre());
 		else if (cell == ProductoTableExel.getIndexPrecioCantidad() )
-			exelFile.addCellAndValue(row, cell,producto.getPrecioCantidad());
+			ExelFile.addCellAndValue(row, cell,producto.getPrecioCantidad());
 		else if (cell == ProductoTableExel.getIndexPrecioCosto())
-			exelFile.addCellAndValue(row, cell,producto.getPrecioCosto());
+			ExelFile.addCellAndValue(row, cell,producto.getPrecioCosto());
 		else if (cell == ProductoTableExel.getIndexPrecioVenta() )
-			exelFile.addCellAndValue(row, cell,producto.getPrecioVenta());
+			ExelFile.addCellAndValue(row, cell,producto.getPrecioVenta());
 		else if (cell == ProductoTableExel.getIndexRecargo())
 			row.createCell(cell).setCellValue(producto.getRecargo());
 		else
