@@ -1,22 +1,19 @@
 package view;
 
-import java.io.FileInputStream;
+import java.io.File;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
 import java.io.IOException;
 import java.sql.SQLException;
-
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+
 import app.Main;
-import app.Producto;
 import conection.MysqlProductoDao;
-import controller.DialogAlert;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -26,6 +23,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import model.DialogAlert;
+import model.Producto;
+import model.ProductoExel;
+
 
 
 public class ControllerPrincipal {
@@ -45,6 +46,7 @@ public class ControllerPrincipal {
 	private Stage stage;
 	private Stage stageEditProducto; 
 	private FilteredList<Producto> filteredList;
+	private ProductoExel productoExel;
 	
 	public Stage getStage() {
 		return stage;
@@ -58,9 +60,9 @@ public class ControllerPrincipal {
 		splitPane = new SplitPane();
 		txfSearch= new TextField();
 		stageEditProducto = new Stage();
+		productoExel = new ProductoExel();
 		mysqlProductoDao = new MysqlProductoDao(); // para comunicarse con la base de datos
-	
-		
+			
 	}
 
 	@FXML
@@ -77,7 +79,7 @@ public class ControllerPrincipal {
 	
 	public void setMainApp(Main mainApp) { // se llama de main 
 		this.app = mainApp;
-		mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
+		startTable();
 		tableProducto.setItems(app.getListProducto());
 		filteredList = new FilteredList<Producto>(tableProducto.getItems(), p -> true);
 		
@@ -87,10 +89,11 @@ public class ControllerPrincipal {
 	public  void addProducto()  { // interactua con editar producto
 		Producto prod = new Producto();
 		try {
-			app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
-						
+			//app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
+			app.mostrarEditProducto(cargarProducto(), stageEditProducto); // muestra la ventana de editar producto
 			if (app.isOnClickConfirmation()) { 
-				getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
+				//getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
+				getMysqlProductoDao().insert(cargarProducto()); // lo ingresa a la base de datos
 				refrshTable();
 				//tableProducto.getItems().add(prod);
 			}
@@ -203,115 +206,79 @@ public class ControllerPrincipal {
 	}
 	
 	private void refrshTable() {
-		mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
+		try {
+			mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
+		} catch (SQLException e) {
+			dialogAlert("Error", "Error al refrescar tabla", new Alert(AlertType.ERROR));
+		}
 		//filteredList.addAll(tableProducto.getItems()); // no hace falta la idea era refrescar la tabla
 	}
 	
 	
 	@FXML // falta optimizar 
 	public void saveExel() {
-		JFileChooser jFileChooser = new JFileChooser("Nuevo.xls");
-		jFileChooser.setDialogTitle("Guardar archivo");;
-		int result = jFileChooser.showSaveDialog(null);
-		
-		if (result == jFileChooser.APPROVE_OPTION) {
-			try {
-				String path = jFileChooser.getSelectedFile().getPath();
-				Workbook book = new XSSFWorkbook();
-				Sheet sheet = book.createSheet("Productos");
-				Row row = sheet.createRow(0);
-				rowSheetCreate(row);
-				
-				if(!path.endsWith(".xls")) 	
-					path+=".xls";
-				
-				mysqlProductoDao.mySqlToExelSave(sheet);
-				
-				FileOutputStream newFile = new FileOutputStream(path);
-				book.write(newFile);
-				
-				newFile.close();
-				book.close();
+		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG);
+		try {
+			productoExel.saveExel(tableProducto.getItems(),file);
+		} catch (InvalidFormatException | IOException e) {
+			dialogAlert("Error", "Error al guardar archivo exel, "+e.getMessage(), new Alert(AlertType.ERROR));
+		}
+
+	}
+
+	@FXML
+	public void loadExel() {
+		try {
+			productoExel.loadExel(tableProducto.getItems(),fileSelection("Abrir", JFileChooser.OPEN_DIALOG));
 			
-			} catch (IOException | SQLException e) {
-				dialogAlert("Error", "Error al guardar Archivo, "+e.getMessage(), new Alert(AlertType.ERROR));
-			}
-		}	
+		} catch (InvalidFormatException | IOException e) {
+			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
+			
+		}
 	}
 	
 	@FXML
-	public void loadExel() {
-		
-		JFileChooser jFileChooser = new JFileChooser("Nuevo.xls");
-		jFileChooser.setDialogTitle("Guardar archivo");;
-		int result = jFileChooser.showOpenDialog(null);
-		
-		if (result == jFileChooser.APPROVE_OPTION) {
-			String path = jFileChooser.getSelectedFile().getPath();
-			tableProducto.getItems().clear();
-			if(path.endsWith(".xls")) {
-				try {
-					FileInputStream fileExel = new FileInputStream(path);
-					XSSFWorkbook book = new XSSFWorkbook(fileExel);
-					Sheet sheet = book.getSheetAt(0);
-					exelToTable(sheet);
-					book.close();
-					fileExel.close();
-				} catch (FileNotFoundException e) {
-					dialogAlert("Error", "Error al abrir archivo, Error: (FileInputStream), "+e.getMessage(), new Alert(AlertType.ERROR));
-				} catch (IOException e) {
-					dialogAlert("Error", "Error al abrir archivo, Error: (XSSFWorkbook), "+e.getMessage(), new Alert(AlertType.ERROR));
-				}
-			}
-			else
-				dialogAlert("Error", "Error al abrir archivo, no es un archivo Exel", new Alert(AlertType.ERROR));
-		}
-		
-	}
-	
-	// no guarda exel en bd, solo lo muestra en la tabla
-	private void exelToTable(Sheet sheet) {
-		
-		for (int i = 1; i < sheet.getLastRowNum(); i++) {
-			Row fila = sheet.getRow(i);
-			if (fila != null) {
-				Producto producto = new Producto();
-				for (int j = 0; j < fila.getLastCellNum(); j++) {
-					Cell celda = fila.getCell(j);
-					switch (j) {
-						case 0:  producto.setIdEmpresa(celda.getStringCellValue());
-							break;
-						case 1: producto.setIdNegocio(celda.getStringCellValue());
-							break;
-						case 2: producto.setNombre(celda.getStringCellValue());
-							break;
-						case 3: producto.setPrecioVenta(celda.getNumericCellValue());
-							break;
-						case 4: producto.setPrecioCantidad(celda.getNumericCellValue());
-							break;
-							default: break;
-					}
-				}
-				producto.setPrecioCosto(0.0);
-				tableProducto.getItems().add(producto);
-			}
+	public void printExel() {
+		try {
+			productoExel.printExelSave(tableProducto.getItems(),fileSelection("Guardar", JFileChooser.SAVE_DIALOG));
+			
+		} catch (InvalidFormatException | IOException e) {
+			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
 			
 		}
-		
 	}
-	
+		
 	private boolean dialogAlert(String titel, String content, Alert alertType) {
 		 DialogAlert dialogAlert = new DialogAlert(content, titel, alertType) ;
 		return  dialogAlert.getResultOption();
 	}
 	
 	
-	private void rowSheetCreate(Row row) {
-		row.createCell(0).setCellValue("Codigo Empresa");
-		row.createCell(1).setCellValue("Codigo Negocio");
-		row.createCell(2).setCellValue("Nombre Producto");
-		row.createCell(3).setCellValue("Precio Venta");
-		row.createCell(4).setCellValue("Precio Cantidad");
+	public void startTable() {
+		try {
+			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
+		} catch (SQLException e) {
+			loadExel();
+			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
+			
+		}
+		finally {
+			//loadExel();
+		}
+	}	
+	
+	private File fileSelection(String title, int action) {
+		String defaultDyrectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"\\tiendaLili";
+		File file = new File(defaultDyrectory);
+		file.mkdir();
+		JFileChooser jFile = new JFileChooser(file);
+		jFile.setDialogTitle(title);
+		jFile.setDialogType(action);
+		jFile.setSelectedFile(new File("productos.xlsx"));
+		jFile.setFileFilter(new FileNameExtensionFilter("exel file", "xlsx"));
+		if (jFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+				return jFile.getSelectedFile();
+		return null;
 	}
 	
 	// metodos de test
@@ -326,4 +293,7 @@ public class ControllerPrincipal {
 		System.out.println();
 	}
 	
+	private Producto  cargarProducto() {
+		return new Producto("Pueba","A01", "A1", 5.0,0.0, 5.0, 10.0);
+	}
 }

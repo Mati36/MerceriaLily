@@ -1,4 +1,4 @@
-package app;
+package model;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -81,6 +81,12 @@ public class Producto {
 		Double temp = (precioCosto.get() * recargo.get()) / 100; 
 		
 		return  temp+precioCosto.get(); 
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		Producto producto = (Producto) obj;
+		return producto.getIdNegocio() == this.getIdNegocio();
 	}
 	
 }
