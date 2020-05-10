@@ -43,16 +43,26 @@ public class ProductoTableExel {
 //		ExelFile = new ExelFile();
 //	}
 	
-	public static void createTable(XSSFWorkbook book) throws IOException {
+	public static void createTable(ExelFile exel, XSSFWorkbook book) throws IOException {
 		
-		ExelFile.createSheet(book,SHEET_NAME);
-		ExelFile.addRow(SHEET_NAME, 0);
-		
+		exel.createSheet(book,SHEET_NAME);
+		exel.addRow(SHEET_NAME);
 		for (int i = 0; i < ROW_NAME.length; i++)
-			ExelFile.addCellAndValue(ExelFile.getRow(SHEET_NAME, 0), i, ROW_NAME[i]);
-				 
+			exel.addCellAndValue(exel.getRow(SHEET_NAME, 0), i, ROW_NAME[i]);
+		
 	}
 	
+	public static void createPrintTable(ExelFile exel, XSSFWorkbook book) throws IOException {
+		
+		exel.createSheet(book,SHEET_NAME);
+		exel.addRow(SHEET_NAME);
+		for (int i = 0; i < ROW_NAME.length; i++) {
+			if (i != INDEX_RECARGO && i != INDEX_PRECIO_COSTO) 
+				exel.addCellAndValue(exel.getRow(SHEET_NAME, 0), i, ROW_NAME[i]);
+		}
+			
+		
+	}
 	
 	public static void dropTable() {
 		
