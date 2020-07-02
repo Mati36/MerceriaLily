@@ -26,68 +26,67 @@ public class ProductoExel{
 
 	
 	public void saveExel(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
-		
 		FileOutputStream fileOutput = new FileOutputStream(file); // tratar de elegir la ruta
-		ExelFile.createBook();
+		ExelFile exel = new ExelFile();
+		exel.createBook();
 		
 	// solo la primera vez que lo guardo mejorar
-		ProductoTableExel.createTable(ExelFile.getBook());
+		ProductoTableExel.createTable(exel,exel.getBook());
 		
-	// Esto es bien 
+		
+	//	 Esto es bien 
 		String sheet_name = ProductoTableExel.getSheetName();
-		
+//		
 		for (Producto producto : tableList) {
-			
-			if ( !seach( producto.getIdNegocio(),ExelFile.getSheet(sheet_name) ) ) {
-			
-				ExelFile.addRow(sheet_name, ExelFile.getLastRowIndex(sheet_name) + 1);
+			if ( !seach( producto.getIdNegocio(),exel.getSheet(sheet_name) ) ) {
+				exel.addRow(sheet_name);
 				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
-					addCellContent(ExelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
+					addCellContent(exel,exel.getLatsRow(sheet_name), producto,cell);
 			}
 		}
 		
-		ExelFile.writeBook(fileOutput);
-		ExelFile.closeBook();
+		exel.writeBook(fileOutput);
+		exel.closeBook();
 		fileOutput.close();
 	}
 	
 	public void printExelSave(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
 		
 		FileOutputStream fileOutput = new FileOutputStream(file); // tratar de elegir la ruta
+		ExelFile exel = new ExelFile();
 		
-
 	// solo la primera vez que lo guardo mejorar
-		ExelFile.createBook();
-		ProductoTableExel.createTable(ExelFile.getBook());
+		exel.createBook();
+		ProductoTableExel.createPrintTable(exel,exel.getBook());
 	// Esto es bien 
 		String sheet_name = ProductoTableExel.getSheetName();
-
+		
 		for (Producto producto : tableList) {
-			
-			if ( !seach( producto.getIdNegocio(),ExelFile.getSheet(sheet_name) ) ) {
-			
-				ExelFile.addRow(sheet_name, ExelFile.getLastRowIndex(sheet_name) + 1);
+			if ( !seach( producto.getIdNegocio(),exel.getSheet(sheet_name) ) ) {
+				exel.addRow(sheet_name);
 				for (int cell = 0; cell < ProductoTableExel.getIndexLast(); cell++)
 					if (cell != ProductoTableExel.getIndexRecargo() && cell != ProductoTableExel.getIndexPrecioCosto())
-						addCellContent(ExelFile.getLatsRow(sheet_name), tableList.get(cell),cell);
+						addCellContent(exel,exel.getLatsRow(sheet_name), tableList.get(cell),cell);
 			}
 		}
 		
-		ExelFile.writeBook(fileOutput);
-		ExelFile.closeBook();
+		exel.writeBook(fileOutput);
+		exel.closeBook();
 		fileOutput.close();
 	}
 
 
 	public void loadExel(ObservableList<Producto> tableList,File file) throws InvalidFormatException, FileNotFoundException, IOException {
 		// ver como leer un archivo
+		ExelFile exel = new ExelFile();
 		FileInputStream fileInput = new FileInputStream(file);
-		ExelFile.loadBook(fileInput);
-
-		for (Row row : ExelFile.getSheet(ProductoTableExel.getSheetName()))
-			exelToTable(row, tableList);
-
+		exel.loadBook(fileInput);
+		for (Row row : exel.getSheet(ProductoTableExel.getSheetName())) { 
+			if (row.getRowNum() != 0) 
+				exelToTable(row, tableList);}
+		
 		fileInput.close();
+		exel.closeBook();
 
 	}
 	
@@ -97,10 +96,12 @@ public class ProductoExel{
 	}
 
 	public boolean seach(String idProducto,Sheet sheet) {
-
 		for (Row row : sheet) {
-			if (isProducto(row,0,idProducto));
+			if (isProducto(row,ProductoTableExel.getIndexIdNegocio(),idProducto)) {
+				System.out.println("esta");
 				return true;
+			}
+				
 		}
 		return false;
 	}
@@ -110,55 +111,68 @@ public class ProductoExel{
 		if (row != null) {
 			
 			Producto producto = new Producto();
-			for (int cell = 0; cell < row.getLastCellNum(); cell++) {
+			for (int cell = 0; cell < row.getLastCellNum(); cell++) 
 				getCellContent(cell, row.getCell(cell), producto);
+		
+			if (!isProductoTable(producto,tableList)) 
 				tableList.add(producto);
-			}
 		}
 		else
 			System.out.println("vacio");
 	}
 
-	private boolean isProducto(Row row,int indexRow ,String idProd) {
-		return row.getCell(indexRow).getStringCellValue().equals(idProd);
+	private boolean isProducto(Row row,int indexCell ,String idProd) {
+		return row.getCell(indexCell).getStringCellValue().equals(idProd);
 	}
 	
-	private void addCellContent(Row row,Producto producto,int cell) {
-		if (cell == ProductoTableExel.getIndexIdEmpresa())
-			ExelFile.addCellAndValue(row, cell,producto.getIdEmpresa());
-		else if (cell == ProductoTableExel.getIndexIdNegocio())
-			ExelFile.addCellAndValue(row, cell,producto.getIdNegocio());
-		else if (cell == ProductoTableExel.getIndexNombreProducto())
-			ExelFile.addCellAndValue(row, cell,producto.getNombre());
-		else if (cell == ProductoTableExel.getIndexPrecioCantidad() )
-			ExelFile.addCellAndValue(row, cell,producto.getPrecioCantidad());
-		else if (cell == ProductoTableExel.getIndexPrecioCosto())
-			ExelFile.addCellAndValue(row, cell,producto.getPrecioCosto());
-		else if (cell == ProductoTableExel.getIndexPrecioVenta() )
-			ExelFile.addCellAndValue(row, cell,producto.getPrecioVenta());
-		else if (cell == ProductoTableExel.getIndexRecargo())
-			row.createCell(cell).setCellValue(producto.getRecargo());
-		else
-			System.out.println("Error al ingresar datos en exel");
+	public boolean isProductoTable(Producto producto, ObservableList<Producto>table) {
+		for (Producto prod : table) {
+			if (prod.getIdNegocio().equals(producto.getIdNegocio())) 
+				return true;
+		}
+		return false;
+	}
+	
+	private void addCellContent(ExelFile exel,Row row,Producto producto,int cell) {
+		if (row != null && exel != null && producto != null) {
+			if (cell == ProductoTableExel.getIndexIdEmpresa())
+				exel.addCellAndValue(row, cell,producto.getIdEmpresa());
+			else if (cell == ProductoTableExel.getIndexIdNegocio())
+				exel.addCellAndValue(row, cell,producto.getIdNegocio());
+			else if (cell == ProductoTableExel.getIndexNombreProducto())
+				exel.addCellAndValue(row, cell,producto.getNombre());
+			else if (cell == ProductoTableExel.getIndexPrecioCantidad() )
+				exel.addCellAndValue(row, cell,producto.getPrecioCantidad());
+			else if (cell == ProductoTableExel.getIndexPrecioCosto())
+				exel.addCellAndValue(row, cell,producto.getPrecioCosto());
+			else if (cell == ProductoTableExel.getIndexPrecioVenta() )
+				exel.addCellAndValue(row, cell,producto.getPrecioVenta());
+			else if (cell == ProductoTableExel.getIndexRecargo())
+				row.createCell(cell).setCellValue(producto.getRecargo());
+			else
+				System.out.println("Error al ingresar datos en exel");
+		}
 	}
 
 	private void getCellContent(int index,Cell cell, Producto producto) {
-		if (index == ProductoTableExel.getIndexIdEmpresa())
-			producto.setIdEmpresa(cell.getStringCellValue());
-		else if ( index == ProductoTableExel.getIndexIdNegocio())
-			producto.setIdNegocio(cell.getStringCellValue());
-		else if (index == ProductoTableExel.getIndexNombreProducto())
-			producto.setNombre(cell.getStringCellValue());
-		else if (index == ProductoTableExel.getIndexPrecioCantidad())
-			producto.setPrecioCantidad(cell.getNumericCellValue());
-		else if (index == ProductoTableExel.getIndexPrecioCosto())
-			producto.setPrecioCosto((cell.getNumericCellValue()));
-		else if (index == ProductoTableExel.getIndexPrecioVenta())
-			producto.setPrecioCosto((cell.getNumericCellValue()));
-		else if (index == ProductoTableExel.getIndexRecargo())
-				producto.setRecargo((cell.getNumericCellValue()));
-		else
-			System.out.println("Error al ingresar datos en exel");
+		if (cell != null && producto != null) {
+			if (index == ProductoTableExel.getIndexIdEmpresa())
+				producto.setIdEmpresa(cell.getStringCellValue());
+			else if ( index == ProductoTableExel.getIndexIdNegocio())
+				producto.setIdNegocio(cell.getStringCellValue());
+			else if (index == ProductoTableExel.getIndexNombreProducto())
+				producto.setNombre(cell.getStringCellValue());
+			else if (index == ProductoTableExel.getIndexPrecioCantidad())
+				producto.setPrecioCantidad(cell.getNumericCellValue());
+			else if (index == ProductoTableExel.getIndexPrecioCosto())
+				producto.setPrecioCosto((cell.getNumericCellValue()));
+			else if (index == ProductoTableExel.getIndexPrecioVenta())
+				producto.setPrecioCosto((cell.getNumericCellValue()));
+			else if (index == ProductoTableExel.getIndexRecargo())
+					producto.setRecargo((cell.getNumericCellValue()));
+			else
+				System.out.println("Error al ingresar datos en exel");
+		}
 	}
 
 }

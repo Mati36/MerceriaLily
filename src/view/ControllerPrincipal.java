@@ -10,6 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 
+import org.apache.commons.math3.random.ISAACRandom;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
 import app.Main;
@@ -176,7 +177,10 @@ public class ControllerPrincipal {
 			        tableProducto.setItems(sortedList);
 			        tableProducto.getSelectionModel().select(0);
 				});
+		
 	} 
+	
+	
 	
 	@FXML
 	public void serchOnMouseclicked() {
@@ -219,7 +223,8 @@ public class ControllerPrincipal {
 	public void saveExel() {
 		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG);
 		try {
-			productoExel.saveExel(tableProducto.getItems(),file);
+			if (file != null)
+				productoExel.saveExel(tableProducto.getItems(),file);
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al guardar archivo exel, "+e.getMessage(), new Alert(AlertType.ERROR));
 		}
@@ -228,8 +233,10 @@ public class ControllerPrincipal {
 
 	@FXML
 	public void loadExel() {
+		File file = fileSelection("Abrir", JFileChooser.OPEN_DIALOG);
 		try {
-			productoExel.loadExel(tableProducto.getItems(),fileSelection("Abrir", JFileChooser.OPEN_DIALOG));
+			if (file != null)
+				productoExel.loadExel(tableProducto.getItems(),file);
 			
 		} catch (InvalidFormatException | IOException e) {
 			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
@@ -258,9 +265,8 @@ public class ControllerPrincipal {
 		try {
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
 		} catch (SQLException e) {
-			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
 			loadExel();
-			
+			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
 			
 		}
 		finally {
@@ -269,7 +275,7 @@ public class ControllerPrincipal {
 	}	
 	
 	private File fileSelection(String title, int action) {
-		String defaultDyrectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"\\tiendaLili";
+		String defaultDyrectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"\\MerceriaLili";
 		File file = new File(defaultDyrectory);
 		file.mkdir();
 		JFileChooser jFile = new JFileChooser(file);
