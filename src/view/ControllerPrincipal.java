@@ -258,8 +258,9 @@ public class ControllerPrincipal {
 		try {
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
 		} catch (SQLException e) {
-			loadExel();
 			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
+			loadExel();
+			
 			
 		}
 		finally {
