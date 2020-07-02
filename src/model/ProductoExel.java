@@ -9,20 +9,14 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+
+import Exeptions.ExelExeption;
 import javafx.collections.ObservableList;
 
 
 public class ProductoExel{
-
 	
-
-	// esta clase crea el archivo exel y lo lee y escribe
-
-	
-	
-	public ProductoExel() {
-		
-	}
+	public ProductoExel() {	}
 
 	
 	public void saveExel(ObservableList<Producto> tableList,File file) throws IOException, InvalidFormatException {
@@ -36,7 +30,7 @@ public class ProductoExel{
 		
 	//	 Esto es bien 
 		String sheet_name = ProductoTableExel.getSheetName();
-//		
+	
 		for (Producto producto : tableList) {
 			if ( !seach( producto.getIdNegocio(),exel.getSheet(sheet_name) ) ) {
 				exel.addRow(sheet_name);
@@ -118,7 +112,7 @@ public class ProductoExel{
 				tableList.add(producto);
 		}
 		else
-			System.out.println("vacio");
+			new ExelExeption("Fila vacia");
 	}
 
 	private boolean isProducto(Row row,int indexCell ,String idProd) {
@@ -150,7 +144,8 @@ public class ProductoExel{
 			else if (cell == ProductoTableExel.getIndexRecargo())
 				row.createCell(cell).setCellValue(producto.getRecargo());
 			else
-				System.out.println("Error al ingresar datos en exel");
+				new ExelExeption("No se pudo ingresar ingresar datos en la celda "+cell
+							+" puede que se paso de rango o el numero de celda no coincide con la base de datos");
 		}
 	}
 
@@ -171,7 +166,8 @@ public class ProductoExel{
 			else if (index == ProductoTableExel.getIndexRecargo())
 					producto.setRecargo((cell.getNumericCellValue()));
 			else
-				System.out.println("Error al ingresar datos en exel");
+				new ExelExeption("No se pudo extraer datos en la celda "+cell+" inidice"+ index 
+						+" puede que se paso de rango o el numero de celda no coincide con la base de datos");
 		}
 	}
 

@@ -1,12 +1,12 @@
 package conection;
 
+
 import java.sql.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import Exeptions.ExelExeption;
+import Exeptions.SqlExeptionAlert;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import model.DialogAlert;
 import model.Producto;
 import model.ProductoTableSql;
 
@@ -28,7 +28,8 @@ public class MysqlProductoDao   {
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			errorDialog("Error al crear tabla "+e.getMessage());
+			new SqlExeptionAlert("Error al crear tabla "+ProductoTableSql.getNameTable()+" \n" + e.getMessage());
+			
 		}		
 		
 		close(preparedStatement, connection);
@@ -40,7 +41,8 @@ public class MysqlProductoDao   {
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			errorDialog("Error al crear tabla "+e.getMessage());
+			new SqlExeptionAlert("Error al borra la tabla "+ProductoTableSql.getNameTable()+" \n" + e.getMessage());
+			
 		}		
 		
 		close(preparedStatement, connection);
@@ -53,10 +55,13 @@ public class MysqlProductoDao   {
 			try {
 				setProductoSql(start, producto);
 				if (start.executeUpdate() == 0)
-					errorDialog("Error puede que no se actualizo ");
+					new SqlExeptionAlert("No se pudo ingresar el producto "+producto.getNombre()+
+							" codigo de negocio "+producto.getIdNegocio()+" en la base de datos "+ ProductoTableSql.getNameTable()+"\n");
+					
 			}catch (SQLException e) { 
-				errorDialog("Error al ingresar los datos a la base de datos, "+e.getMessage());
-				//System.out.println("Error al ingresar los datos a la base de datos, "+e.getMessage());
+				new SqlExeptionAlert("Fatal: No se pudo ingresar el producto "+producto.getNombre()+
+					" codigo de negocio "+producto.getIdNegocio()+" en la base de datos "+ ProductoTableSql.getNameTable()+"\n"+
+						e.getMessage()+"\n Consulta:"+ ProductoTableSql.insert());
 			}
 			
 		} 
@@ -71,12 +76,13 @@ public class MysqlProductoDao   {
 			start.setString(ProductoTableSql.getIndexLast(),idNegocio); // busca en la Bd, para que funcione, el ultimo dato es el que usamos para seleccionar el elemento en la base de datos
 			
 			if (start.executeUpdate() == 0) 
-				errorDialog("Error puede que no se actualizo");
-				//System.out.println("Error puede que no se actualizo");
-			
+				new SqlExeptionAlert("No se puede actualizar el producto "+producto.getNombre()+
+						" codigo de negocio "+producto.getIdNegocio()+" en la base de datos "+ ProductoTableSql.getNameTable());
+										
 		} catch (SQLException e) {
-			errorDialog("Error al ingresar los datos a la base de datos, "+e.getMessage());
-			System.out.println("Error al ingresar los datos a la base de datos, "+e.getMessage());
+			new SqlExeptionAlert("Fatal: Imposible no se pudo actualizar el producto "+producto.getNombre()+
+				" codigo de negocio "+producto.getIdNegocio()+" de la base de datos "+ ProductoTableSql.getNameTable()+"\n"+e.getMessage() 
+				+"\n Consulta:"+ ProductoTableSql.update());
 		}
 		
 		close(start, connection);
@@ -87,10 +93,13 @@ public class MysqlProductoDao   {
 		try {
 			start.setString(1, producto.getIdNegocio());
 			if (start.executeUpdate() == 0) 
-				errorDialog("Error al ejecutar delete sql, no se puedo eliminar, "+producto.getNombre());
-			
+				new SqlExeptionAlert("No se encuentra el producto "+producto.getNombre()+
+						" codigo de negocio "+producto.getIdNegocio()+" en la base de datos "+ProductoTableSql.getNameTable());
+					
 		} catch (SQLException e) {
-			errorDialog("Error al eliminar en base de datos,"+e.getMessage());
+			new SqlExeptionAlert("Fatal: Imposible obtener el producto "+producto.getNombre()+
+				" codigo de negocio "+producto.getIdNegocio()+" de la base de datos "+ 
+					ProductoTableSql.getNameTable()+"\n"+e.getMessage()+"\n Consulta:"+ ProductoTableSql.delete());
 		}
 		
 		close(start, connection);
@@ -107,12 +116,12 @@ public class MysqlProductoDao   {
 				if (result.next())
 					producto = getProductoSql(result);
 				else 
-					errorDialog("Error codigo incorrecto, vuelva a intentarlo");
-					//System.out.println("Error codigo incorrecto");
-			
+					new SqlExeptionAlert("El producto con el codigo de negocio "+idNegocio+" no fue encontrado");
+					
 			} catch (SQLException e) {
-				errorDialog("Error al obtener datos");
-				System.out.println("Error al obtener datos");
+				String productName = producto != null ? producto.getNombre() :"-";
+				new SqlExeptionAlert("No se pudo obtener el producto "+ productName+
+										" codigo de negocio "+idNegocio+"\n "+e.getMessage());
 			}
 			
 		}
@@ -137,10 +146,9 @@ public class MysqlProductoDao   {
 	public void savedSql(ObservableList<Producto> table) {
 		
 		for (Producto producto : table) {
-			if (getProductoSql(producto.getIdNegocio()) == null) {
+			if (getProductoSql(producto.getIdNegocio()) == null) 
 				insert(producto);
-			}
-			
+		
 		}
 	}
 	
@@ -173,8 +181,7 @@ public class MysqlProductoDao   {
 		try {
 			preparedStatement = connection.prepareStatement(action);
 		} catch (SQLException e) {
-			errorDialog("Error al ingresar a la base de dato, "+e.getMessage());
-//			System.out.println("Error a conectar a la base de tatos "+e.getMessage());
+			new SqlExeptionAlert("Error al ingresar en la base de datos" + ProductoTableSql.getNameTable() + "\n" + e.getMessage());
 		}
 		return  preparedStatement;
 	}
@@ -184,8 +191,7 @@ public class MysqlProductoDao   {
 			preparedStatement.close();
 			connection.close();
 		} catch (SQLException e) {
-			errorDialog("Error al cerrar base de dato "+e.getMessage());
-			//System.out.println("Error al cerrar base de datos "+e.getMessage());			
+			new SqlExeptionAlert("Error al cerrar la base de datos" + ProductoTableSql.getNameTable() +"\n" + e.getMessage());
 		}
 		
 	}
@@ -201,12 +207,11 @@ public class MysqlProductoDao   {
 				try {
 					cargarExelHoja(sheet,i,getProductoSql(resultSet));
 				} catch (SQLException e) {
-					errorDialog("Error al guardar Archivo, "+e.getMessage());
-					
+					new ExelExeption("Error al guardar la base de datos en archivo exel");
 				}
 		}
 		else
-			throw new SQLException("Error resultSet ");
+			throw new SQLException("Error obtener todos los productos");
 		
 	}
 	
@@ -232,16 +237,6 @@ public class MysqlProductoDao   {
 		System.out.println("precio cantidad "+prod.getPrecioCantidad());
 		System.out.println();
 	}
-	
-	private boolean errorDialog(String content) {
-		DialogAlert dialogAlert = new DialogAlert(content, "Error MySql", new Alert(AlertType.ERROR));
-		return dialogAlert.getResultOption();
-	}
-	
-	private void errorConectar() {
-		errorDialog("Error al Conectar en la base de datos, "+mysqlConnection.getdbName());
-	}
 
-	
 	
 }

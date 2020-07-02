@@ -37,12 +37,7 @@ public class ProductoTableExel {
 	
 	private final static String[] ROW_NAME = {ROW_ID_EMPRESA,ROW_ID_NEGOCIO,ROW_PRODUCTO,ROW_PRECIO_VENTA,
 												ROW_PRECIO_CANTIDAD,ROW_PRECIO_COSTO,ROW_RECARGO};
-	
-	
-//	public ProductoTableExel() {
-//		ExelFile = new ExelFile();
-//	}
-	
+
 	public static void createTable(ExelFile exel, XSSFWorkbook book) throws IOException {
 		
 		exel.createSheet(book,SHEET_NAME);

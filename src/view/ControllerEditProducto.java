@@ -3,6 +3,7 @@ package view;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import Exeptions.ProductoExeption;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -174,18 +175,13 @@ public class ControllerEditProducto implements Initializable {
 			 num = Double.parseDouble(number.trim());
 			
 		} catch (Exception e) {
-			errorDialog("Error el dato "+dato+" no es un numero ");
-			System.out.println("Error el dato no es un numero "+e.getMessage());
+			new ProductoExeption("El dato "+dato+" no es de tipo numerico");
+			
 			this.isOnClickAceptar = false;
 		}
 		return num;
 	}
-	
-	private boolean errorDialog(String content) {
-		DialogAlert dialogAlert = new DialogAlert(content, "Error",new Alert(AlertType.ERROR));
-		return dialogAlert.getResultOption();
-	}
-	
+		
 	// metodos de test
 	private void mostrarProductoConsola(String string, Producto prod) { 
 		System.out.println(string);

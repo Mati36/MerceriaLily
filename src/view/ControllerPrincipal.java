@@ -13,6 +13,9 @@ import javax.swing.filechooser.FileSystemView;
 import org.apache.commons.math3.random.ISAACRandom;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import Exeptions.AppExeption;
+import Exeptions.ExelExeption;
+import Exeptions.TableViewExeption;
 import app.Main;
 import conection.MysqlProductoDao;
 import javafx.collections.transformation.FilteredList;
@@ -25,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import model.DialogAlert;
+import model.DialogShow;
 import model.Producto;
 import model.ProductoExel;
 
@@ -100,7 +104,7 @@ public class ControllerPrincipal {
 			}
 			
 		} catch (IOException e) {
-			dialogAlert("Error","Error al Mostrar ventana de editar producto"+e.getMessage(), new Alert(AlertType.ERROR));
+			new AppExeption("No es posible mostrar la ventada editar producto "+e.getMessage());
 		}
 	}
 	
@@ -120,11 +124,12 @@ public class ControllerPrincipal {
 					refrshTable();
 				}
 			} catch (IOException e) {
-				System.out.println("Error al Mostrar ventana de editar producto"+e.getMessage());
+				new AppExeption("No es posible mostrar la ventada editar producto "+e.getMessage());
 			}
 		}
 		else {
-			dialogAlert("Error","Error al eliminar no selecciono niungun producto", new Alert(AlertType.ERROR));
+			new AppExeption("No selecciono ningun producto");
+			
 		}
 	}
 	
@@ -135,22 +140,19 @@ public class ControllerPrincipal {
 		
 		if (selectIndex >= 0 && productoSelect !=null) {
 			
-			boolean confirmation= dialogAlert("Confirmation", "¿ Quieres eliminar el producto de Nombre: "+productoSelect.getNombre()
-											+" y Codigo: "+productoSelect.getIdNegocio()+" ?", new Alert(AlertType.CONFIRMATION));
-			if (confirmation) {
-				try {
-					mysqlProductoDao.delete(productoSelect);
-					refrshTable();
-					//tableProducto.getItems().remove(selectIndex);
-				} catch (Exception e) {
-					dialogAlert("Error","Error al eliminar en base de datos,"+e.getMessage()+" "+e.getStackTrace(), new Alert(AlertType.ERROR));
+			DialogShow.Confirmarion("" , "¿ Quieres eliminar el producto "
+					+productoSelect.getNombre()+" con el codigo de negocio "+productoSelect.getIdNegocio()+" ?");
 					
-				}
+			if (DialogShow.isResultOption()) {
+			
+				mysqlProductoDao.delete(productoSelect);
+				refrshTable();
+				//tableProducto.getItems().remove(selectIndex);
 			}
 				
 		}
 		else 
-			dialogAlert("Error","Error al eliminar no selecciono niungun producto", new Alert(AlertType.ERROR));
+			new AppExeption("No selecciono ningun producto");
 	}
 	
 	@FXML
@@ -213,7 +215,7 @@ public class ControllerPrincipal {
 		try {
 			mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
 		} catch (SQLException e) {
-			dialogAlert("Error", "Error al refrescar tabla", new Alert(AlertType.ERROR));
+			new TableViewExeption("No es posible mostar o actualizar la tabla "+e.getMessage());
 		}
 		//filteredList.addAll(tableProducto.getItems()); // no hace falta la idea era refrescar la tabla
 	}
@@ -226,7 +228,8 @@ public class ControllerPrincipal {
 			if (file != null)
 				productoExel.saveExel(tableProducto.getItems(),file);
 		} catch (InvalidFormatException | IOException e) {
-			dialogAlert("Error", "Error al guardar archivo exel, "+e.getMessage(), new Alert(AlertType.ERROR));
+			new ExelExeption("No es podible guardar el archivo exel \n"+e.getMessage());
+			
 		}
 
 	}
@@ -239,7 +242,7 @@ public class ControllerPrincipal {
 				productoExel.loadExel(tableProducto.getItems(),file);
 			
 		} catch (InvalidFormatException | IOException e) {
-			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
+			new ExelExeption("No es podible cargar el archivo exel \n"+e.getMessage());
 			
 		}
 	}
@@ -250,23 +253,17 @@ public class ControllerPrincipal {
 			productoExel.printExelSave(tableProducto.getItems(),fileSelection("Guardar", JFileChooser.SAVE_DIALOG));
 			
 		} catch (InvalidFormatException | IOException e) {
-			dialogAlert("Error", "Error al cargar archivo exel, "+e.getMessage() , new Alert(AlertType.ERROR));
+			new ExelExeption("No es podible cargar el archivo exel \n"+e.getMessage());
 			
 		}
 	}
-		
-	private boolean dialogAlert(String titel, String content, Alert alertType) {
-		 DialogAlert dialogAlert = new DialogAlert(content, titel, alertType) ;
-		return  dialogAlert.getResultOption();
-	}
-	
-	
+
 	public void startTable() {
 		try {
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
 		} catch (SQLException e) {
 			loadExel();
-			dialogAlert("Error", "Error al cargar base de datos, "+ e.getMessage(), new Alert(AlertType.ERROR));
+			new TableViewExeption("No es posible mostar o actualizar la tabla "+e.getMessage());
 			
 		}
 		finally {

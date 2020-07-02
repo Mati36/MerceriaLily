@@ -1,9 +1,7 @@
 package conection;
 
 import java.sql.*;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import model.DialogAlert;
+import Exeptions.SqlExeptionAlert;
 
 public class MysqlConnection  implements IConnection{
 	
@@ -17,12 +15,12 @@ public class MysqlConnection  implements IConnection{
 	
 	public MysqlConnection() {	}
 	
-	public void runConnection() { // no conecta a la bd 
+	public void runConnection(){ // no conecta a la bd 
 		try {
 			connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
 		} catch (SQLException e) {
-			errorDialog("Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+"\n mensaje: "+e.getMessage());
-			
+			String msg = "Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+"\n mensaje: \n";
+			new SqlExeptionAlert(msg+e.getMessage());
 		}
 		
 	}
@@ -32,8 +30,8 @@ public class MysqlConnection  implements IConnection{
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			errorDialog("Error al cerrar la base de datos "+dbName+", mensaje "+e.getMessage());
-			//System.out.println("Error al cerrar la base de datos"+dbName);
+			String msg = "Error al cerrar la base de datos "+dbName+", mensaje \n";
+			new SqlExeptionAlert(msg+e.getMessage());
 		}
 				
 	}
@@ -65,28 +63,6 @@ public class MysqlConnection  implements IConnection{
 
 	@Override
 	public String getdbUrl() { return this.dbUrl;	}
-
-	// por ahora no sirve 
-	@SuppressWarnings("unused")
-//	private void createDataBase() throws SQLException {
-//		System.out.println("en sql");
-//		runConnection();
-//		
-//		String creteTable = "CREATE DATABASE IF NOT EXISTS "+dbName+";";
-//		PreparedStatement preparedStatement = getConnection().prepareStatement(creteTable);
-//		preparedStatement.executeUpdate();
-//		preparedStatement.close();
-//		closeConnection();
-//	}
 	
-	private boolean errorDialog(String content,String titel) {
-		DialogAlert dialogAlert = new DialogAlert(content, titel, new Alert(AlertType.ERROR));
-		return dialogAlert.getResultOption();
-	}
-	
-	private boolean errorDialog(String content) {
-		DialogAlert dialogAlert = new DialogAlert(content, "Error de MySql", new Alert(AlertType.ERROR));
-		return dialogAlert.getResultOption();
-	}
 	
 }
