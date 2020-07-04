@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Date;
+
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -9,6 +11,7 @@ public class Producto {
 	// 2 tengo que hacer una funcion que cuando ingrese el precio de costo, automaticamente se actualize el precio de venta 
 	// 2 nesecito un recargo y mostrarlo  para el paso anterior
 	// 3 hacer un metodo para comprobar que el producto es correcto en todos sus campos 
+	private int IVA = 21;
 	private final SimpleStringProperty nombre;
 	private final SimpleStringProperty idEmpresa;
 	private final SimpleStringProperty idNegocio;
@@ -16,8 +19,14 @@ public class Producto {
 	private final SimpleDoubleProperty precioCantidad;
 	private final SimpleDoubleProperty precioVenta;
 	private final SimpleDoubleProperty recargo;
+	private final SimpleStringProperty detalle;
+	private Date createdAt;
+	private Date updateAt;
+	
+	
 	
 	public Producto() {
+		this.createdAt = new Date();
 		this.nombre = new SimpleStringProperty();
 		this.idEmpresa = new SimpleStringProperty();
 		this.idNegocio = new SimpleStringProperty();
@@ -25,17 +34,25 @@ public class Producto {
 		this.precioCantidad = new SimpleDoubleProperty();
 		this.precioVenta = new SimpleDoubleProperty();
 		this.recargo = new SimpleDoubleProperty();
+		this.detalle = new SimpleStringProperty();
+		this.updateAt = new Date();
+		this.createdAt = new Date();
+		
 	}
 	
-	public Producto( String nombre, String idEmpresa, String idNegocio, Double precioCosto, Double precioVenta, Double precioCantidad, Double recargo) {
-		
+	public Producto( String nombre, String idEmpresa, String idNegocio, String detalle, Double precioCosto, Double precioVenta, Double precioCantidad, Double recargo, Date createdAt) {
+				
 		this.nombre = new SimpleStringProperty(nombre);
 		this.idEmpresa = new SimpleStringProperty(idEmpresa);
 		this.idNegocio = new SimpleStringProperty(idNegocio);
 		this.precioCosto = new SimpleDoubleProperty(precioCosto);
 		this.precioCantidad = new SimpleDoubleProperty(precioCantidad);
 		this.precioVenta = new SimpleDoubleProperty(precioVenta);
-		this.recargo = new SimpleDoubleProperty(recargo);	
+		this.recargo = new SimpleDoubleProperty(recargo);
+		this.createdAt = createdAt;
+		this.updateAt = createdAt;
+		this.detalle = new SimpleStringProperty(detalle);
+		
 	}	
 	
 	
@@ -53,7 +70,13 @@ public class Producto {
 	public final Double getPrecioVenta() {return precioVenta.get();}
 	public final void setRecargo(Double value) { recargo.set(value);}
 	public final Double getRecargo() {return recargo.get();}
-	
+	public final void setDetalle(String value) { detalle.set(value);}
+	public final String getDetalle() { return detalle.get();}
+	public Date getCreatedAt() { return createdAt;	}
+	public void setCreatedAt(Date value) { this.createdAt = value;	}
+	public Date getUpdateAt() { return updateAt; }
+	public void getCreatedAt(Date value) { this.updateAt = value;	}
+
 	// propiedad
 	public SimpleStringProperty getNombreProperty() { return nombre;}
 	public SimpleStringProperty getIdEmpresaProperty() {return idEmpresa;}
@@ -62,25 +85,31 @@ public class Producto {
 	public SimpleDoubleProperty getPrecioCantidadProperty() {return precioCantidad;}
 	public SimpleDoubleProperty getPrecioVentaProperty() {return precioVenta;} 
 	public SimpleDoubleProperty getRecargoProperty() {return recargo;}
+	public SimpleStringProperty getDetalleProperty() { return detalle;	}
 
 	public boolean isEmpty() {
-		return  emptyStringProperty(this.getIdEmpresaProperty().get()) || emptyStringProperty(this.getIdNegocioProperty().get()) 
-				|| emptyStringProperty(this.getNombreProperty().get()) || emptyDoubleProperty(this.getPrecioCostoProperty())
-				|| emptyDoubleProperty(this.getPrecioCantidadProperty()) || emptyDoubleProperty(this.getPrecioVentaProperty());
+		return  emptyString(this.getIdEmpresaProperty().get()) || emptyString(this.getIdNegocioProperty().get())
+				|| emptyString(this.getNombreProperty().get());
+		//		|| emptyDouble(this.getPrecioCostoProperty())
+		//		|| emptyDouble(this.getPrecioCantidadProperty()) || emptyDouble(this.getPrecioVentaProperty())
 	}
 	
-	private boolean emptyStringProperty(String string) {
+	private boolean emptyString(String string) {
 		return string == null || string.length() <= 0;
 	}
 	
-	private boolean emptyDoubleProperty(SimpleDoubleProperty number) {
+	private boolean emptyDouble(SimpleDoubleProperty number) {
 		return number == null || number.get() < 0;
 	}
 	
 	public Double calularPrecioVenta() {
-		Double temp = (precioCosto.get() * recargo.get()) / 100; 
-		
-		return  temp+precioCosto.get(); 
+		Double temp = calcularIva(getPrecioCosto());
+		temp += (temp * recargo.get()) /100;
+		return  temp; 
+	}
+	
+	private Double calcularIva (Double precio) {
+		return precio + (precio * IVA) / 100;
 	}
 
 	@Override
