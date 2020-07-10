@@ -1,7 +1,6 @@
 package view;
 
 import java.net.URL;
-import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import Exeptions.ProductoExeption;

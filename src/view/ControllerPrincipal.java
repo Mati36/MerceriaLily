@@ -7,16 +7,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
-
-import org.apache.commons.math3.random.ISAACRandom;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-
 import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import Exeptions.TableViewExeption;
@@ -25,13 +19,10 @@ import conection.MysqlProductoDao;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import model.DialogAlert;
 import model.DialogShow;
 import model.Producto;
 import model.ProductoExel;

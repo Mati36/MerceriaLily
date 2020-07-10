@@ -1,7 +1,6 @@
 package Exeptions;
 
 import javax.annotation.processing.FilerException;
-
 import model.DialogShow;
 
 public class ExelExeption extends FilerException{
