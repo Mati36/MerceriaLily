@@ -8,10 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-
-import javax.imageio.stream.FileImageOutputStream;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -65,9 +65,11 @@ public class ExelFile { // manejo de exel
 	public  void addCellAndValue(Row row, int index, Object value) {
 		Cell cell = row.createCell(index);
 		addCellValue(value, cell);
+		if (row.getRowNum() != 0)
+			addFormula(cell, index);
 	}
 		
-	public  void addCellValue(Object value,Cell cell) {
+	public void addCellValue(Object value,Cell cell) {
 		
 		 if (value instanceof Integer)
 			cell.setCellValue((Integer) value);
@@ -114,6 +116,22 @@ public class ExelFile { // manejo de exel
 	public  int getLastCellIndex() {return row.getLastCellNum();	}
 
 	public  void setBook(XSSFWorkbook newBook) {book = newBook; }
-		
+	
+	public void addFormula(Cell cell,int index) {
+		CellStyle style = book.createCellStyle();
+		CreationHelper createHelper = book.getCreationHelper();
+		String formula = "General";
+		if (index == ProductoTableExel.getIndexPrecioCantidad() || index == ProductoTableExel.getIndexPrecioCosto() 
+				|| index == ProductoTableExel.getIndexPrecioVenta())
+			formula = "[$$-2C0A] #,##0.00;-[$$-2C0A] #,##0.00";
+		else if (index == ProductoTableExel.getIndexCreatedAt() || index == ProductoTableExel.getIndexUpdatedAt())
+			formula = "d/mm/yy";
+		if (index == ProductoTableExel.getIndexRecargo()) 
+			formula = "0%";
+				
+		style.setDataFormat(createHelper.createDataFormat().getFormat(formula));
+		cell.setCellStyle(style);
+	
+	}
 		
 }

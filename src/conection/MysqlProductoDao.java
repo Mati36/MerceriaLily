@@ -216,11 +216,11 @@ public class MysqlProductoDao   {
 				try {
 					cargarExelHoja(sheet,i,getProductoSql(resultSet));
 				} catch (SQLException e) {
-					new ExelExeption("Error al guardar la base de datos en archivo exel");
+					new ExelExeption("NO se pudo guardar la base de datos en archivo exel");
 				}
 		}
 		else
-			throw new SQLException("Error obtener todos los productos");
+			throw new SQLException("No se puede obtener todos los productos");
 		
 	}
 	
@@ -232,7 +232,9 @@ public class MysqlProductoDao   {
 		row.createCell(2).setCellValue(producto.getNombre());
 		row.createCell(3).setCellValue(producto.getPrecioVenta());
 		row.createCell(4).setCellValue(producto.getPrecioCantidad());
-		
+		row.createCell(5).setCellValue(producto.getDetalle());
+		row.createCell(6).setCellValue(producto.getCreatedAt());
+		row.createCell(7).setCellValue(producto.getUpdateAt());
 	}
 
 	// metodo de test 

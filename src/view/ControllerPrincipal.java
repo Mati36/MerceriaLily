@@ -87,24 +87,7 @@ public class ControllerPrincipal {
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
 		create.setCellValueFactory(value -> value.getValue().getCreatedAtProperty());
 		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
-		
-		 
-//         create.setCellFactory(column -> {
-//             return new TableCell<Persona, LocalDate>() {
-//                 @Override
-//                 protected void updateItem(LocalDate item, boolean empty) {
-//                     super.updateItem(item, empty);
-//
-//                     if (item == null || empty) {
-//                         setText(null);
-//                     } else {
-//                         setText(formatter.format(item));
-//
-//                     }
-//                 }
-//             };
-//         });
-		
+
 	}
 	
 	public void setMainApp(Main mainApp) { // se llama de main 

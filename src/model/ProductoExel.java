@@ -77,13 +77,12 @@ public class ProductoExel{
 		exel.loadBook(fileInput);
 		for (Row row : exel.getSheet(ProductoTableExel.getSheetName())) { 
 			if (row.getRowNum() != 0) 
-				exelToTable(row, tableList);}
+				exelToTable(row, tableList);
+		}
 		
 		fileInput.close();
 		exel.closeBook();
-
 	}
-	
 		
 	public void readExel() {
 
@@ -95,7 +94,6 @@ public class ProductoExel{
 				System.out.println("esta");
 				return true;
 			}
-				
 		}
 		return false;
 	}
@@ -143,6 +141,12 @@ public class ProductoExel{
 				exel.addCellAndValue(row, cell,producto.getPrecioVenta());
 			else if (cell == ProductoTableExel.getIndexRecargo())
 				row.createCell(cell).setCellValue(producto.getRecargo());
+			else if (cell == ProductoTableExel.getIndexDetalle() )
+				exel.addCellAndValue(row, cell, producto.getDetalle());
+			else if (cell == ProductoTableExel.getIndexCreatedAt())
+				exel.addCellAndValue(row, cell, producto.getCreatedAt());
+			else if (cell == ProductoTableExel.getIndexUpdatedAt())
+				exel.addCellAndValue(row, cell, producto.getUpdateAt());
 			else
 				new ExelExeption("No se pudo ingresar ingresar datos en la celda "+cell
 							+" puede que se paso de rango o el numero de celda no coincide con la base de datos");
@@ -165,6 +169,12 @@ public class ProductoExel{
 				producto.setPrecioCosto((cell.getNumericCellValue()));
 			else if (index == ProductoTableExel.getIndexRecargo())
 					producto.setRecargo((cell.getNumericCellValue()));
+			else if (index == ProductoTableExel.getIndexDetalle())
+				producto.setDetalle(cell.getStringCellValue());
+			else if (index == ProductoTableExel.getIndexCreatedAt())
+				producto.setCreatedAt(cell.getLocalDateTimeCellValue().toLocalDate());
+			else if (index == ProductoTableExel.getIndexUpdatedAt())
+				producto.setUpdatedAt(cell.getLocalDateTimeCellValue().toLocalDate());
 			else
 				new ExelExeption("No se pudo extraer datos en la celda "+cell+" inidice"+ index 
 						+" puede que se paso de rango o el numero de celda no coincide con la base de datos");

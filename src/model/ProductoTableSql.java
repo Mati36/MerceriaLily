@@ -130,8 +130,6 @@ public class ProductoTableSql {
 	public static int getIndexRecargo() {return INDEX_RECARGO;}
 
 	public static int getIndexLast() {return INDEX_LAST;}
-
-	
 	
 	public static String getRowNombre() {
 		return ROW_NOMBRE;

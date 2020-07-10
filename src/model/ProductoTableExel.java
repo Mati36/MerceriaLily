@@ -2,11 +2,7 @@ package model;
 
 
 import java.io.IOException;
-
-
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-
 
 public class ProductoTableExel {
 	
@@ -15,7 +11,6 @@ public class ProductoTableExel {
 	private final static String FILE_PRINT_NAME = "MerceriaLiliPrint";
 	private final static String SHEET_NAME = "Porductos";
 
-	//private static ExelFile ExelFile = null;
 	// columnas string
 	private static final String ROW_ID_NEGOCIO = "Codigo Negocio";
 	private static final String ROW_ID_EMPRESA = "Codigo Empresa";
@@ -24,6 +19,10 @@ public class ProductoTableExel {
 	private static final String ROW_PRECIO_VENTA = "Precio de Venta";
 	private static final String ROW_PRECIO_CANTIDAD = "Precio x Cantidad";
 	private static final String ROW_RECARGO= "Recargo";
+	static private final String ROW_DETALLE= "Detalle";
+	static private final String ROW_CREATED_AT= "CreatedAt";
+	static private final String ROW_UPDATE_AT= "UpdatedAt";
+	static private final String ROW_LAST = ROW_UPDATE_AT; 
 				
 	// index columnas
 	private static final int INDEX_ID_EMPRESA = 0;
@@ -33,10 +32,23 @@ public class ProductoTableExel {
 	private static final int INDEX_PRECIO_VENTA = 4;
 	private static final int INDEX_PRECIO_CANTIDAD = 5;
 	private static final int INDEX_RECARGO = 6;
-	private static final int INDEX_LAST = 7;
+	private static final int INDEX_DETALLE = 7;
+	private static final int INDEX_CREATED_AT = 8;
+	private static final int INDEX_UPDATED_AT = 9;
+	private static final int INDEX_LAST = 10;
+
 	
-	private final static String[] ROW_NAME = {ROW_ID_EMPRESA,ROW_ID_NEGOCIO,ROW_PRODUCTO,ROW_PRECIO_VENTA,
-												ROW_PRECIO_CANTIDAD,ROW_PRECIO_COSTO,ROW_RECARGO};
+	private final static String[] ROW_NAME = {	ROW_ID_EMPRESA,
+												ROW_ID_NEGOCIO,
+												ROW_PRODUCTO,
+												ROW_PRECIO_VENTA,
+												ROW_PRECIO_CANTIDAD,
+												ROW_PRECIO_COSTO,
+												ROW_RECARGO,
+												ROW_DETALLE,
+												ROW_CREATED_AT,
+												ROW_UPDATE_AT
+											};
 
 	public static void createTable(ExelFile exel, XSSFWorkbook book) throws IOException {
 		
@@ -52,7 +64,7 @@ public class ProductoTableExel {
 		exel.createSheet(book,SHEET_NAME);
 		exel.addRow(SHEET_NAME);
 		for (int i = 0; i < ROW_NAME.length; i++) {
-			if (i != INDEX_RECARGO && i != INDEX_PRECIO_COSTO) 
+			if ( !ignoreCell(i) ) 
 				exel.addCellAndValue(exel.getRow(SHEET_NAME, 0), i, ROW_NAME[i]);
 		}
 			
@@ -61,6 +73,10 @@ public class ProductoTableExel {
 	
 	public static void dropTable() {
 		
+	}
+	
+	private static boolean ignoreCell(int indexCell) {
+		return indexCell == INDEX_RECARGO && indexCell == INDEX_PRECIO_COSTO;
 	}
 	
 	/// estos metodos tendria que pasarlos a Producto exel 
@@ -103,6 +119,34 @@ public class ProductoTableExel {
 	public static int getIndexLast() {return INDEX_LAST;}
 
 	public static String[] getRowName() {return ROW_NAME;	}
+
+	public static String getRowDetalle() {
+		return ROW_DETALLE;
+	}
+
+	public static String getRowCreatedAt() {
+		return ROW_CREATED_AT;
+	}
+
+	public static String getRowUpdateAt() {
+		return ROW_UPDATE_AT;
+	}
+
+	public static String getRowLast() {
+		return ROW_LAST;
+	}
+
+	public static int getIndexDetalle() {
+		return INDEX_DETALLE;
+	}
+
+	public static int getIndexCreatedAt() {
+		return INDEX_CREATED_AT;
+	}
+
+	public static int getIndexUpdatedAt() {
+		return INDEX_UPDATED_AT;
+	}
 		
 		
 	
