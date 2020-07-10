@@ -1,17 +1,15 @@
 package view;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import Exeptions.ProductoExeption;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.DialogAlert;
 import model.Producto;
 
 public class ControllerEditProducto implements Initializable {
@@ -147,7 +145,7 @@ public class ControllerEditProducto implements Initializable {
 		producto.setPrecioVenta(stringToDouble(txtPrecioVenta.getText(), "Precio venta"));
 		producto.setPrecioCantidad(stringToDouble(precioCantidad,"Precio de costo"));
 		producto.setDetalle(txtDetalle.getText().trim());
-		
+			
 	}	
 	
 	public void inicio() {

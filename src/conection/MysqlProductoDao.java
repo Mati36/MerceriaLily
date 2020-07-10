@@ -165,7 +165,7 @@ public class MysqlProductoDao   {
 		start.setDouble(ProductoTableSql.getIndexPrecioCantidad(), producto.getPrecioCantidad());
 		start.setString(ProductoTableSql.getIndexDetalle(), producto.getDetalle());
 		start.setDate(ProductoTableSql.getIndexCreatedAt(), Date.valueOf(producto.getCreatedAt()));
-		start.setDate(ProductoTableSql.getIndexUpdatedAt(), Date.valueOf(producto.getCreatedAt()));
+		start.setDate(ProductoTableSql.getIndexUpdatedAt(), Date.valueOf(producto.getUpdateAt()));
 	}
 	
 	private Producto getProductoSql(ResultSet rs) throws SQLException {

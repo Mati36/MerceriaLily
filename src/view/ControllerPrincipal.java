@@ -85,7 +85,7 @@ public class ControllerPrincipal {
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
-		create.setCellValueFactory(value -> value.getValue().getCreatedAtProperty());
+		create.setCellValueFactory(value -> value.getValue().getUpdatedAtProperty());
 		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
 
 	}
@@ -102,11 +102,13 @@ public class ControllerPrincipal {
 	public  void addProducto()  { // interactua con editar producto
 		Producto prod = new Producto();
 		try {
-			//app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
-			app.mostrarEditProducto(cargarProducto(), stageEditProducto); // muestra la ventana de editar producto
+			app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
+//			app.mostrarEditProducto(cargarProducto(), stageEditProducto); // muestra la ventana de editar producto
 			if (app.isOnClickConfirmation()) { 
-				//getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
-				getMysqlProductoDao().insert(cargarProducto()); // lo ingresa a la base de datos
+				prod.setCreatedAt(LocalDate.now());
+				prod.setUpdatedAt(LocalDate.now());
+				getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
+//				getMysqlProductoDao().insert(cargarProducto()); // lo ingresa a la base de datos
 				refrshTable();
 				//tableProducto.getItems().add(prod);
 			}
@@ -128,6 +130,7 @@ public class ControllerPrincipal {
 				app.mostrarEditProducto(productoSelect,stageEditProducto);
 				
 				if (app.isOnClickConfirmation()) {
+					productoSelect.setUpdatedAt(LocalDate.now());
 					mysqlProductoDao.update(productoSelect,idNegocio);
 					refrshTable();
 				}
@@ -135,10 +138,10 @@ public class ControllerPrincipal {
 				new AppExeption("No es posible mostrar la ventada editar producto "+e.getMessage());
 			}
 		}
-		else {
+		else 
 			new AppExeption("No selecciono ningun producto");
 			
-		}
+		
 	}
 	
 	@FXML
