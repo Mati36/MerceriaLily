@@ -1,8 +1,11 @@
 package model;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Producto {
@@ -20,13 +23,13 @@ public class Producto {
 	private final SimpleDoubleProperty precioVenta;
 	private final SimpleDoubleProperty recargo;
 	private final SimpleStringProperty detalle;
-	private Date createdAt;
-	private Date updateAt;
-	
+	private final ObjectProperty<LocalDate> createdAt;
+	private final ObjectProperty<LocalDate> updatedAt;
+
 	
 	
 	public Producto() {
-		this.createdAt = new Date();
+		
 		this.nombre = new SimpleStringProperty();
 		this.idEmpresa = new SimpleStringProperty();
 		this.idNegocio = new SimpleStringProperty();
@@ -35,12 +38,13 @@ public class Producto {
 		this.precioVenta = new SimpleDoubleProperty();
 		this.recargo = new SimpleDoubleProperty();
 		this.detalle = new SimpleStringProperty();
-		this.updateAt = new Date();
-		this.createdAt = new Date();
+		this.createdAt =  new SimpleObjectProperty<>(null);
+		this.updatedAt = new SimpleObjectProperty<>(null);
+		
 		
 	}
 	
-	public Producto( String nombre, String idEmpresa, String idNegocio, String detalle, Double precioCosto, Double precioVenta, Double precioCantidad, Double recargo, Date createdAt) {
+	public Producto( String nombre, String idEmpresa, String idNegocio, String detalle, Double precioCosto, Double precioVenta, Double precioCantidad, Double recargo, LocalDate createdAt) {
 				
 		this.nombre = new SimpleStringProperty(nombre);
 		this.idEmpresa = new SimpleStringProperty(idEmpresa);
@@ -49,8 +53,8 @@ public class Producto {
 		this.precioCantidad = new SimpleDoubleProperty(precioCantidad);
 		this.precioVenta = new SimpleDoubleProperty(precioVenta);
 		this.recargo = new SimpleDoubleProperty(recargo);
-		this.createdAt = createdAt;
-		this.updateAt = createdAt;
+		this.createdAt =  new SimpleObjectProperty<>(createdAt);
+		this.updatedAt = new SimpleObjectProperty<>(createdAt);
 		this.detalle = new SimpleStringProperty(detalle);
 		
 	}	
@@ -72,10 +76,11 @@ public class Producto {
 	public final Double getRecargo() {return recargo.get();}
 	public final void setDetalle(String value) { detalle.set(value);}
 	public final String getDetalle() { return detalle.get();}
-	public Date getCreatedAt() { return createdAt;	}
-	public void setCreatedAt(Date value) { this.createdAt = value;	}
-	public Date getUpdateAt() { return updateAt; }
-	public void getCreatedAt(Date value) { this.updateAt = value;	}
+	
+	public LocalDate getCreatedAt() { return createdAt.get();	}
+	public void setCreatedAt(LocalDate value) { this.createdAt.set(value);}
+	public LocalDate getUpdateAt() { return updatedAt.get(); }
+	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(value); }
 
 	// propiedad
 	public SimpleStringProperty getNombreProperty() { return nombre;}
@@ -86,6 +91,8 @@ public class Producto {
 	public SimpleDoubleProperty getPrecioVentaProperty() {return precioVenta;} 
 	public SimpleDoubleProperty getRecargoProperty() {return recargo;}
 	public SimpleStringProperty getDetalleProperty() { return detalle;	}
+	public ObjectProperty<LocalDate> getCreatedAtProperty(){ return createdAt; }
+	public ObjectProperty<LocalDate> getUpdatedAtProperty(){ return updatedAt; }
 
 	public boolean isEmpty() {
 		return  emptyString(this.getIdEmpresaProperty().get()) || emptyString(this.getIdNegocioProperty().get())

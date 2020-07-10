@@ -2,6 +2,8 @@ package conection;
 
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import Exeptions.ExelExeption;
@@ -28,7 +30,8 @@ public class MysqlProductoDao   {
 			preparedStatement.executeUpdate();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			new SqlExeptionAlert("Error al crear tabla "+ProductoTableSql.getNameTable()+" \n" + e.getMessage());
+			new SqlExeptionAlert("Error al crear tabla "+ProductoTableSql.getNameTable()+" \n msg: " + 
+									e.getMessage()+"\n sql: "+ProductoTableSql.create());
 			
 		}		
 		
@@ -153,13 +156,16 @@ public class MysqlProductoDao   {
 	}
 	
 	private void setProductoSql(PreparedStatement start,Producto producto) throws SQLException {
-		start.setString(ProductoTableSql.getIndexIdEmpresa(),producto.getIdEmpresa());
-		start.setString(ProductoTableSql.getIndexIdNegocio(),producto.getIdNegocio());
-		start.setString(ProductoTableSql.getIndexNombreProducto(),producto.getNombre());
-		start.setDouble(ProductoTableSql.getIndexPrecioCosto(),producto.getPrecioCosto());
-		start.setDouble(ProductoTableSql.getIndexPrecioVenta(),producto.getPrecioVenta());
-		start.setDouble(ProductoTableSql.getIndexRecargo(),producto.getRecargo()); 
-		start.setDouble(ProductoTableSql.getIndexPrecioCantidad(),producto.getPrecioCantidad()); 
+		start.setString(ProductoTableSql.getIndexIdEmpresa(), producto.getIdEmpresa());
+		start.setString(ProductoTableSql.getIndexIdNegocio(), producto.getIdNegocio());
+		start.setString(ProductoTableSql.getIndexNombreProducto(), producto.getNombre());
+		start.setDouble(ProductoTableSql.getIndexPrecioCosto(), producto.getPrecioCosto());
+		start.setDouble(ProductoTableSql.getIndexPrecioVenta(), producto.getPrecioVenta());
+		start.setDouble(ProductoTableSql.getIndexRecargo(), producto.getRecargo()); 
+		start.setDouble(ProductoTableSql.getIndexPrecioCantidad(), producto.getPrecioCantidad());
+		start.setString(ProductoTableSql.getIndexDetalle(), producto.getDetalle());
+		start.setDate(ProductoTableSql.getIndexCreatedAt(), Date.valueOf(producto.getCreatedAt()));
+		start.setDate(ProductoTableSql.getIndexUpdatedAt(), Date.valueOf(producto.getCreatedAt()));
 	}
 	
 	private Producto getProductoSql(ResultSet rs) throws SQLException {
@@ -171,6 +177,9 @@ public class MysqlProductoDao   {
 		prod.setPrecioVenta(rs.getDouble(ProductoTableSql.getIndexPrecioVenta()));
 		prod.setPrecioCantidad(rs.getDouble(ProductoTableSql.getIndexPrecioCantidad()));
 		prod.setRecargo(rs.getDouble(ProductoTableSql.getIndexRecargo()));
+		prod.setDetalle(rs.getString(ProductoTableSql.getIndexDetalle()));
+		prod.setCreatedAt(rs.getDate(ProductoTableSql.getIndexCreatedAt()).toLocalDate());
+		prod.setUpdatedAt(rs.getDate(ProductoTableSql.getIndexUpdatedAt()).toLocalDate());
 		return prod;
 	}
 	

@@ -16,9 +16,11 @@
                 <TableColumn fx:id="codEmpresa" prefWidth="111.0" text="Codigo Empresa" />
                 <TableColumn fx:id="codNegocio" prefWidth="113.0" text="Codigo Negocio" />
                   <TableColumn fx:id="nombre" prefWidth="75.0" text="Producto" />
+                  <TableColumn fx:id="detalle" prefWidth="75.0" text="Detalle" />
                   <TableColumn fx:id="precioCosto" prefWidth="75.0" text="Precio de costo" />
                   <TableColumn fx:id="precioVenta" prefWidth="75.0" text="Precio de venta" />
                   <TableColumn fx:id="precioCantidad" prefWidth="75.0" text="Precio por cantidad" />
+                  <TableColumn fx:id="create" prefWidth="75.0" text="Ultima Modificacion" />
               </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

@@ -6,6 +6,10 @@ import java.io.FileNotFoundException;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -43,6 +47,8 @@ public class ControllerPrincipal {
 	@FXML private TableColumn<Producto, Number> precioCosto;
 	@FXML private TableColumn<Producto, Number> precioCantidad;
 	@FXML private TableColumn<Producto, Number> precioVenta;
+	@FXML private TableColumn<Producto, LocalDate> create;
+	@FXML private TableColumn<Producto, String> detalle;
 	@FXML private SplitPane splitPane; 
 	@FXML private TextField txfSearch;
 	
@@ -79,7 +85,26 @@ public class ControllerPrincipal {
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
-		//txfSearch.setText("Ingrese el codigo del producto");
+		create.setCellValueFactory(value -> value.getValue().getCreatedAtProperty());
+		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
+		
+		 
+//         create.setCellFactory(column -> {
+//             return new TableCell<Persona, LocalDate>() {
+//                 @Override
+//                 protected void updateItem(LocalDate item, boolean empty) {
+//                     super.updateItem(item, empty);
+//
+//                     if (item == null || empty) {
+//                         setText(null);
+//                     } else {
+//                         setText(formatter.format(item));
+//
+//                     }
+//                 }
+//             };
+//         });
+		
 	}
 	
 	public void setMainApp(Main mainApp) { // se llama de main 
@@ -298,6 +323,6 @@ public class ControllerPrincipal {
 	}
 	
 	private Producto  cargarProducto() {
-		return new Producto("Pueba","A01", "A1", 5.0,0.0, 5.0, 10.0);
+		return new Producto("PuebaFecha","B02", "B2","Boton", 5.0,0.0, 5.0, 10.0,LocalDate.now());
 	}
 }

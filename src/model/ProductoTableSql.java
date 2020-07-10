@@ -12,6 +12,10 @@ public class ProductoTableSql {
 	static private final String ROW_PRECIO_VENTA = "Precio_Venta";
 	static private final String ROW_PRECIO_CANTIDAD = "Precio_Cantidad";
 	static private final String ROW_RECARGO= "Recargo";
+	static private final String ROW_DETALLE= "Detalle";
+	static private final String ROW_CREATED_AT= "CreatedAt";
+	static private final String ROW_UPDATE_AT= "UpdatedAt";
+	static private final String ROW_LAST = ROW_UPDATE_AT; 
 				
 	// index columnas
 	static private final int INDEX_ID_EMPRESA = 1;
@@ -21,10 +25,22 @@ public class ProductoTableSql {
 	static private final int INDEX_PRECIO_VENTA = 5;
 	static private final int INDEX_PRECIO_CANTIDAD = 6;
 	static private final int INDEX_RECARGO = 7;
-	static private final int INDEX_LAST = 8;
+	static private final int INDEX_DETALLE = 8;
+	static private final int INDEX_CREATED_AT = 9;
+	static private final int INDEX_UPDATED_AT = 10;
+	static private final int INDEX_LAST = 11;
 	
-	private final static  String[] ROW_NAME = {ROW_ID_EMPRESA,ROW_ID_NEGOCIO,ROW_NOMBRE,ROW_PRECIO_VENTA,
-										ROW_PRECIO_CANTIDAD,ROW_PRECIO_COSTO,ROW_RECARGO};
+	private final static  String[] ROW_NAME = {	ROW_ID_EMPRESA,
+												ROW_ID_NEGOCIO,
+												ROW_NOMBRE,
+												ROW_PRECIO_VENTA,
+												ROW_PRECIO_CANTIDAD,
+												ROW_PRECIO_COSTO,
+												ROW_RECARGO,
+												ROW_DETALLE,
+												ROW_CREATED_AT,
+												ROW_UPDATE_AT
+											  };
 	
 	
 	public static String create() {
@@ -37,9 +53,11 @@ public class ProductoTableSql {
 							+ROW_PRECIO_CANTIDAD+" DOUBLE, " 
 							+ROW_PRECIO_COSTO+" DOUBLE, "
 							+ROW_RECARGO+" DOUBLE, "
+							+ROW_DETALLE+" VARCHAR(255), "
+							+ROW_CREATED_AT+" DATE NOT NULL,"
+							+ROW_UPDATE_AT+" DATE NOT NULL,"
 							+"PRIMARY KEY ("+ROW_ID_NEGOCIO+") "
-						+ ");";	
-//		System.out.println(table);				
+						+ " );";	
 		return table;
 	}
 	
@@ -55,18 +73,22 @@ public class ProductoTableSql {
 		String insert = "INSERT INTO "+ NAME_TABLE +"( ";
 		
 		for (String row : ROW_NAME) 
-			insert+= row.equals(ROW_RECARGO) ? row : row+", "; 
+			insert+= row.equals(ROW_LAST) ? row : row+", "; 
 				
-		insert+= " )VALUES (?,?,?,?,?,?,?);";
+		insert+= " ) VALUES ( ";
 		
-		return insert;
+		for (String row : ROW_NAME) 
+			insert+= row.equals(ROW_LAST) ? " ? " : " ?, ";
+		
+		
+		return insert + " );";
 	}
 	
 	public static String update() {
 		String update = "UPDATE "+NAME_TABLE+" SET ";
 		
 		for (String row : ROW_NAME)  
-			update += row += row.equals(ROW_RECARGO) ? " = ? ": " = ?, " ;
+			update += row += row.equals(ROW_LAST) ? " = ? ": " = ?, " ;
 				
 		update +=" WHERE "+ROW_ID_NEGOCIO+" = ?;";
 			
@@ -108,6 +130,40 @@ public class ProductoTableSql {
 	public static int getIndexRecargo() {return INDEX_RECARGO;}
 
 	public static int getIndexLast() {return INDEX_LAST;}
+
+	
+	
+	public static String getRowNombre() {
+		return ROW_NOMBRE;
+	}
+
+	public static String getRowDetalle() {
+		return ROW_DETALLE;
+	}
+
+	public static String getRowCreatedAt() {
+		return ROW_CREATED_AT;
+	}
+
+	public static String getRowUpdateAt() {
+		return ROW_UPDATE_AT;
+	}
+
+	public static String getRowLast() {
+		return ROW_LAST;
+	}
+
+	public static int getIndexDetalle() {
+		return INDEX_DETALLE;
+	}
+
+	public static int getIndexCreatedAt() {
+		return INDEX_CREATED_AT;
+	}
+
+	public static int getIndexUpdatedAt() {
+		return INDEX_UPDATED_AT;
+	}
 
 	public static String[] getRowName() {return ROW_NAME;}
 

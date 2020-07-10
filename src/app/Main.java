@@ -3,6 +3,7 @@ package app;
 
 import java.io.IOException;
 
+import Exeptions.AppExeption;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,8 +38,8 @@ public class Main extends Application {
 			mostrarProducto();
 			
 		} catch (Exception e) {
-			startError("Error al iniciar aplicacion "+e.getMessage());
-			System.out.println(e.getMessage()+"/n"+e.getStackTrace());
+			new AppExeption("Error al inicar la app, \n"+e.getMessage()+"\n"+e.getCause());
+			
 		}
 	}
 
