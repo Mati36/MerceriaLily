@@ -37,6 +37,9 @@ public class ControllerEditProducto implements Initializable {
 	private TextField txtRecargo;
 	
 	@FXML
+	private TextField txtDetalle;
+	
+	@FXML
 	private Button btnAceptar;
 
 	@FXML
@@ -59,6 +62,7 @@ public class ControllerEditProducto implements Initializable {
 		this.txtPrecioCantidad = new TextField();
 		this.txtPrecioVenta = new TextField();
 		this.txtRecargo = new TextField();
+		this.txtDetalle = new TextField();
 		this.btnAceptar = new Button();
 		this.btnCancelar = new Button();
 		this.controllerPrincipal = null;
@@ -142,6 +146,7 @@ public class ControllerEditProducto implements Initializable {
 		producto.setRecargo(stringToDouble(txtRecargo.getText(),"Recargo"));
 		producto.setPrecioVenta(stringToDouble(txtPrecioVenta.getText(), "Precio venta"));
 		producto.setPrecioCantidad(stringToDouble(precioCantidad,"Precio de costo"));
+		producto.setDetalle(txtDetalle.getText().trim());
 		
 	}	
 	
@@ -155,6 +160,7 @@ public class ControllerEditProducto implements Initializable {
 			txtRecargo.setText(Double.toString(producto.getRecargo()));
 			txtPrecioCantidad.setText(Double.toString(producto.getPrecioCantidad()));
 			txtPrecioVenta.setText(Double.toString(producto.getPrecioVenta()));
+			txtDetalle.setText(producto.getDetalle());
 		} 
 		else {
 			txtIdEmpresa.setText("");
@@ -164,6 +170,7 @@ public class ControllerEditProducto implements Initializable {
 			txtRecargo.setText("");
 			txtPrecioCantidad.setText("");
 			txtPrecioVenta.setText("0.0");
+			txtDetalle.setText("");
 		}
 	}
 	
