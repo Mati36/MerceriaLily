@@ -1,5 +1,7 @@
 package model;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -7,11 +9,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class Producto {
-	
-	// 1 modelo del producto preguntar a mi viejo como representa el producto 
-	// 2 tengo que hacer una funcion que cuando ingrese el precio de costo, automaticamente se actualize el precio de venta 
-	// 2 nesecito un recargo y mostrarlo  para el paso anterior
-	// 3 hacer un metodo para comprobar que el producto es correcto en todos sus campos 
+
 	private int IVA = 21;
 	private final SimpleStringProperty nombre;
 	private final SimpleStringProperty idEmpresa;
@@ -110,7 +108,10 @@ public class Producto {
 	public Double calularPrecioVenta() {
 		Double temp = calcularIva(getPrecioCosto());
 		temp += (temp * recargo.get()) /100;
-		return  temp; 
+		// limita a 2 decimales y redondea para arriba
+		BigDecimal bigDecimal = new BigDecimal(temp).setScale(2, RoundingMode.UP);
+
+		return bigDecimal.doubleValue(); 
 	}
 	
 	private Double calcularIva (Double precio) {

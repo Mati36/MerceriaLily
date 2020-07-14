@@ -1,6 +1,5 @@
 package conection;
 
-
 import java.sql.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -9,7 +8,6 @@ import Exeptions.SqlExeptionAlert;
 import javafx.collections.ObservableList;
 import model.Producto;
 import model.ProductoTableSql;
-
 
 public class MysqlProductoDao   {
 
