@@ -4,22 +4,27 @@ import java.sql.*;
 import Exeptions.SqlExeptionAlert;
 
 public class MysqlConnection  implements IConnection{
-	
+
 	private  Connection connection;
-	private String dbName = "mercerialili";
-	private String dbUser = "root";
-	private String dbPassword = "";
-	private final String URL_HOSTING = "jdbc:mysql://localhost/"; 
-//	private String dbUrl = URL_HOSTING+dbName+"?autoReconnect=true&useSSL=false";
-	private String dbUrl = URL_HOSTING+dbName;
+	private final String instance = "mercerialili"; 
+	private final String driverUrl = "jdbc:mysql://";
+	private final String host = "35.223.91.98/";
+	private final String database = "productos";
+	private final String user = "lopezmatias36";
+	private final String password = "RiverGallardo10";
+		
+	private final String urlConnection = driverUrl+host+database+"?user="+user+"&password="+password;
 	
 	public MysqlConnection() {	}
 	
+	
 	public void runConnection(){ // no conecta a la bd 
 		try {
-			connection = DriverManager.getConnection(dbUrl, dbUser, dbPassword);
+			
+			connection = DriverManager.getConnection(urlConnection);
+
 		} catch (SQLException e) {
-			String msg = "Error al conectar en la base de datos = "+dbName+"\n User= "+dbUser+"\n Url= "+dbUrl+"\n mensaje: \n";
+			String msg = "Error al conectar en la base de datos = "+database+" \n\n mensaje: ";
 			new SqlExeptionAlert(msg+e.getMessage());
 		}
 		
@@ -30,7 +35,7 @@ public class MysqlConnection  implements IConnection{
 		try {
 			connection.close();
 		} catch (SQLException e) {
-			String msg = "Error al cerrar la base de datos "+dbName+", mensaje \n";
+			String msg = "Error al cerrar la base de datos "+database+", mensaje \n";
 			new SqlExeptionAlert(msg+e.getMessage());
 		}
 				
@@ -39,30 +44,29 @@ public class MysqlConnection  implements IConnection{
 	@Override
 	public Connection getConnection() { return this.connection;	}
 
-	@Override
-	public final void setdbName(String dbName) { this.dbName = dbName; }
-
-	
-	@Override
-	public String getdbName() { return this.dbName; }
 
 	@Override
-	public void setdbUser(String dbUser) {this.dbUser = dbUser;	}
+	public String getInstance() {return instance;	}
 
 	@Override
-	public String getdbUser() { return this.dbUser; }
+	public String getDriverUrl() {return driverUrl;	}
 
 	@Override
-	public void setdbPassword(String dbPassword) { this.dbPassword = dbPassword; }
+	public String getHost() {return host;	}
 
 	@Override
-	public String getdbPassword() { return this.dbPassword; }
+	public String getDatabase() {return database;	}
 
 	@Override
-	public void setdbUrl(String dbUrl) { this.dbUrl = dbUrl; }
+	public String getUser() {return user;	}
 
 	@Override
-	public String getdbUrl() { return this.dbUrl;	}
-	
+	public String getPassword() {return password;	}
+
+	@Override
+	public String getUrlConnection() {return urlConnection;	}
+
+	@Override
+	public void setConnection(Connection connection) {this.connection = connection;	}
 	
 }

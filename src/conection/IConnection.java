@@ -8,23 +8,20 @@ public interface IConnection {
 
 	Connection getConnection();
 	
-	void setdbName(String dbName);
-	String getdbName();
+	public String getInstance(); 
 
-	void setdbUser(String dbUser);
+	public String getDriverUrl(); 
 
-	String getdbUser();
+	public String getHost();
 
-	void setdbPassword(String dbPassword);
+	public String getDatabase();
 
-	String getdbPassword();
+	public String getUser();
 
-	void setdbUrl(String dbUrl);
+	public String getPassword();
 
-	String getdbUrl();
+	public String getUrlConnection();
 
-
-	
-	
+	public void setConnection(Connection connection);
 	
 }
