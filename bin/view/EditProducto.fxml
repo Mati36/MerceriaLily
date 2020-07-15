@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -41,8 +43,9 @@
             <TextField fx:id="txtDetalle" onKeyReleased="#keyReleased" prefHeight="25.0" prefWidth="141.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
          </children>
       </GridPane>
-      <Button fx:id="btnAceptar" layoutX="160.0" layoutY="334.0" mnemonicParsing="false" onAction="#clickAceptar" prefHeight="33.0" prefWidth="112.0" styleClass="buttonStyle" text="Aceptar" AnchorPane.bottomAnchor="33.0" />
-      <Button fx:id="btnCancelar" layoutX="342.0" layoutY="334.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="33.0" prefWidth="126.0" styleClass="buttonStyle" text="Cancelar" AnchorPane.bottomAnchor="33.0" AnchorPane.rightAnchor="132.0" />
+      <Button fx:id="btnAceptar" layoutX="160.0" layoutY="347.0" mnemonicParsing="false" onAction="#clickAceptar" prefHeight="33.0" prefWidth="112.0" styleClass="buttonStyle" text="Aceptar" AnchorPane.bottomAnchor="20.0" />
+      <Button fx:id="btnCancelar" layoutX="342.0" layoutY="347.0" mnemonicParsing="false" onAction="#clickCancelar" prefHeight="33.0" prefWidth="126.0" styleClass="buttonStyle" text="Cancelar" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="132.0" />
       <Label contentDisplay="CENTER" layoutX="83.0" layoutY="23.0" prefHeight="30.0" prefWidth="412.0" styleClass="titelLabel" text="Ingrese los datos del producto" AnchorPane.topAnchor="23.0" />
+      <CheckBox fx:id="checkIva" layoutX="300.0" layoutY="312.0" mnemonicParsing="false" onAction="#onCheckIva" text="Con Iva" />
    </children>
 </AnchorPane>

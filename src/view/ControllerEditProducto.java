@@ -7,6 +7,7 @@ import Exeptions.ProductoExeption;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Producto;
@@ -42,6 +43,9 @@ public class ControllerEditProducto implements Initializable {
 	@FXML
 	private Button btnCancelar;
 
+	@FXML 
+	private CheckBox checkIva;
+	
 	private Producto producto;
 	
 	private boolean isOnClickAceptar  = false; // no tiene nungun uso por ahora
@@ -60,6 +64,7 @@ public class ControllerEditProducto implements Initializable {
 		this.txtPrecioVenta = new TextField();
 		this.txtRecargo = new TextField();
 		this.txtDetalle = new TextField();
+		this.checkIva = new CheckBox();
 		this.btnAceptar = new Button();
 		this.btnCancelar = new Button();
 		this.controllerPrincipal = null;
@@ -115,7 +120,6 @@ public class ControllerEditProducto implements Initializable {
 	@FXML
 	public void clickCancelar() {
 		controllerPrincipal.getMainApp().closeEditProducto();
-		
 	}
 
 	
@@ -127,7 +131,7 @@ public class ControllerEditProducto implements Initializable {
 		if (!precioCosto.isEmpty() && !recargo.isEmpty()) {
 			producto.setPrecioCosto(stringToDouble(precioCosto,"PrecioCosto"));
 			producto.setRecargo(stringToDouble(recargo,"Recargo"));
-			txtPrecioVenta.setText(Double.toString(producto.calularPrecioVenta()));
+			calculaPrecioVenta();
 		}
 		else 
 			txtPrecioVenta.setText(Double.toString(0.0));
@@ -185,26 +189,15 @@ public class ControllerEditProducto implements Initializable {
 		}
 		return num;
 	}
-		
-	// metodos de test
-	private void mostrarProductoConsola(String string, Producto prod) { 
-		System.out.println(string);
-		System.out.println("Nombre: "+prod.getNombre());
-		System.out.println("Id empresa "+prod.getIdEmpresa());
-		System.out.println("Id negocio "+prod.getIdNegocio());
-		System.out.println("precio costo "+prod.getPrecioCosto());
-		System.out.println("precio venta "+prod.getPrecioVenta());
-		System.out.println("precio cantidad "+prod.getPrecioCantidad());
-		System.out.println();
-	}
 	
-	private void cargarProducto() {
-		txtIdEmpresa.setText("ms 39/0");
-		txtIdNegocio.setText("A-01");
-		txtNombre.setText("Ahujas");
-		txtPrecioCosto.setText("5");
-		txtPrecioCantidad.setText("20");
+	@FXML
+	public void onCheckIva() {
+		producto.setIva(this.checkIva.isSelected());  
+		calculaPrecioVenta();
 	}
-		
+
+	private void calculaPrecioVenta() {
+		txtPrecioVenta.setText(Double.toString(producto.calularPrecioVenta()));
+	}	
 	
 }

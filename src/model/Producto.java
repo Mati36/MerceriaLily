@@ -21,7 +21,7 @@ public class Producto {
 	private final SimpleStringProperty detalle;
 	private final ObjectProperty<LocalDate> createdAt;
 	private final ObjectProperty<LocalDate> updatedAt;
-
+	private boolean isIva;
 	
 	
 	public Producto() {
@@ -72,12 +72,13 @@ public class Producto {
 	public final Double getRecargo() {return recargo.get();}
 	public final void setDetalle(String value) { detalle.set(value);}
 	public final String getDetalle() { return detalle.get();}
-	
 	public LocalDate getCreatedAt() { return createdAt.get();	}
 	public void setCreatedAt(LocalDate value) { this.createdAt.set(value);}
 	public LocalDate getUpdateAt() { return updatedAt.get(); }
 	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(value); }
-
+	public void setIva(boolean isIva) { this.isIva = isIva;	}
+	public boolean getIsIva() {return isIva;	}
+	
 	// propiedad
 	public SimpleStringProperty getNombreProperty() { return nombre;}
 	public SimpleStringProperty getIdEmpresaProperty() {return idEmpresa;}
@@ -89,7 +90,7 @@ public class Producto {
 	public SimpleStringProperty getDetalleProperty() { return detalle;	}
 	public ObjectProperty<LocalDate> getCreatedAtProperty(){ return createdAt; }
 	public ObjectProperty<LocalDate> getUpdatedAtProperty(){ return updatedAt; }
-
+	
 	public boolean isEmpty() {
 		return  emptyString(this.getIdEmpresaProperty().get()) || emptyString(this.getIdNegocioProperty().get())
 				|| emptyString(this.getNombreProperty().get());
@@ -106,12 +107,12 @@ public class Producto {
 	}
 	
 	public Double calularPrecioVenta() {
-		Double temp = calcularIva(getPrecioCosto());
+		int decimalLimit = 2;
+		
+		Double temp = getIsIva() ? calcularIva(getPrecioCosto()) : getPrecioCosto();
 		temp += (temp * recargo.get()) /100;
-		// limita a 2 decimales y redondea para arriba
-		BigDecimal bigDecimal = new BigDecimal(temp).setScale(2, RoundingMode.UP);
-
-		return bigDecimal.doubleValue(); 
+		System.out.println(temp);				
+		return roundedNum(rondedDecimal(temp, decimalLimit)); 
 	}
 	
 	private Double calcularIva (Double precio) {
@@ -124,4 +125,11 @@ public class Producto {
 		return producto.getIdNegocio() == this.getIdNegocio();
 	}
 	
+	private double rondedDecimal(Double num,int decimalLimit) {
+		return new BigDecimal(num).setScale(decimalLimit, RoundingMode.UP).doubleValue();
+	}
+	
+	private double roundedNum(Double num) {
+		return (double) Math.round(num);
+	}
 }
