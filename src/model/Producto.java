@@ -22,7 +22,7 @@ public class Producto {
 	private final ObjectProperty<LocalDate> createdAt;
 	private final ObjectProperty<LocalDate> updatedAt;
 	private boolean isIva;
-	
+	private final int DECIMAL_LIMIT = 2;
 	
 	public Producto() {
 		
@@ -107,18 +107,26 @@ public class Producto {
 	}
 	
 	public Double calularPrecioVenta() {
-		int decimalLimit = 2;
-		
 		Double temp = getIsIva() ? calcularIva(getPrecioCosto()) : getPrecioCosto();
-		temp += (temp * recargo.get()) /100;
-		System.out.println(temp);				
-		return roundedNum(rondedDecimal(temp, decimalLimit)); 
+		temp = calcularRecargo(temp);
+		return roundedNum(rondedDecimal(temp, DECIMAL_LIMIT)); 
 	}
 	
 	private Double calcularIva (Double precio) {
 		return precio + (precio * IVA) / 100;
 	}
-
+	
+	private Double calcularRecargo(Double precio) {
+		return precio += ( precio * recargo.get()) /100;
+	}
+	
+	public boolean isIva(Double num) {
+		Double precio = calcularRecargo(calcularIva(getPrecioCosto()));
+		return num == roundedNum(rondedDecimal(precio,DECIMAL_LIMIT)) 
+				|| num == rondedDecimal(precio, DECIMAL_LIMIT) 
+				|| num == precio;
+		
+	}
 	@Override
 	public boolean equals(Object obj) {
 		Producto producto = (Producto) obj;

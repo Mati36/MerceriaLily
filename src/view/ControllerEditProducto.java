@@ -162,6 +162,8 @@ public class ControllerEditProducto implements Initializable {
 			txtPrecioCantidad.setText(Double.toString(producto.getPrecioCantidad()));
 			txtPrecioVenta.setText(Double.toString(producto.getPrecioVenta()));
 			txtDetalle.setText(producto.getDetalle());
+			checkIva.setSelected(producto.isIva(producto.getPrecioVenta()));
+			
 		} 
 		else {
 			txtIdEmpresa.setText("");
