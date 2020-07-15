@@ -23,8 +23,6 @@ import model.DialogShow;
 import model.Producto;
 import model.ProductoExel;
 
-
-
 public class ControllerPrincipal {
 
 	@FXML private TableView<Producto> tableProducto;

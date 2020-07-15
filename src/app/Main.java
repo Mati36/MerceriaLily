@@ -15,6 +15,7 @@ import view.ControllerPrincipal;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 
 
@@ -29,9 +30,12 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) {
+	
 		try {
 			this.primaryStage = primaryStage; 
 			this.primaryStage.setTitle("Merceria Lili");
+			
+			this.primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/icon/icon.png")));
 			mostrarProducto();
 			
 		} catch (Exception e) {
