@@ -2,15 +2,12 @@ package view;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
-import Exeptions.TableViewExeption;
 import app.Main;
 import conection.MysqlProductoDao;
 import javafx.collections.transformation.FilteredList;
@@ -19,6 +16,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import model.DialogShow;
 import model.Producto;
@@ -46,6 +45,8 @@ public class ControllerPrincipal {
 	private Stage stageEditProducto; 
 	private FilteredList<Producto> filteredList;
 	private ProductoExel productoExel;
+	private final String documentDirectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"/MerceriaLili";
+	private final String defaultFileDirectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"/MerceriaLili/default/productos.xlsx";
 	
 	public Stage getStage() {
 		return stage;
@@ -61,7 +62,7 @@ public class ControllerPrincipal {
 		stageEditProducto = new Stage();
 		productoExel = new ProductoExel();
 		mysqlProductoDao = new MysqlProductoDao(); // para comunicarse con la base de datos
-			
+		
 	}
 
 	@FXML
@@ -80,25 +81,28 @@ public class ControllerPrincipal {
 	
 	public void setMainApp(Main mainApp) { // se llama de main 
 		this.app = mainApp;
-		startTable();
 		tableProducto.setItems(app.getListProducto());
 		filteredList = new FilteredList<Producto>(tableProducto.getItems(), p -> true);
-		
+		startTable();
 	}
 	 
 	@FXML
-	public  void addProducto()  { // interactua con editar producto
+	public  void addProducto()  { 
 		Producto prod = new Producto();
 		try {
 			app.mostrarEditProducto(prod, stageEditProducto); // muestra la ventana de editar producto
-//			app.mostrarEditProducto(cargarProducto(), stageEditProducto); // muestra la ventana de editar producto
+			
 			if (app.isOnClickConfirmation()) { 
 				prod.setCreatedAt(LocalDate.now());
 				prod.setUpdatedAt(LocalDate.now());
-				getMysqlProductoDao().insert(prod); // lo ingresa a la base de datos
-//				getMysqlProductoDao().insert(cargarProducto()); // lo ingresa a la base de datos
-				refrshTable();
-				//tableProducto.getItems().add(prod);
+				
+				if (mysqlProductoDao.isConnectionSql()) { // lo ingresa a la base de datos
+					getMysqlProductoDao().createTable();
+					getMysqlProductoDao().insert(prod); 
+					refrshTable();
+				}
+				else 
+					tableProducto.getItems().add(prod);
 			}
 			
 		} catch (IOException e) {
@@ -119,8 +123,10 @@ public class ControllerPrincipal {
 				
 				if (app.isOnClickConfirmation()) {
 					productoSelect.setUpdatedAt(LocalDate.now());
-					mysqlProductoDao.update(productoSelect,idNegocio);
-					refrshTable();
+					if (mysqlProductoDao.isConnectionSql()) {
+						mysqlProductoDao.update(productoSelect,idNegocio);
+						refrshTable();
+					}
 				}
 			} catch (IOException e) {
 				new AppExeption("No es posible mostrar la ventada editar producto "+e.getMessage());
@@ -128,8 +134,7 @@ public class ControllerPrincipal {
 		}
 		else 
 			new AppExeption("No selecciono ningun producto");
-			
-		
+	
 	}
 	
 	@FXML
@@ -143,10 +148,12 @@ public class ControllerPrincipal {
 					+productoSelect.getNombre()+" con el codigo de negocio "+productoSelect.getIdNegocio()+" ?");
 					
 			if (DialogShow.isResultOption()) {
-			
-				mysqlProductoDao.delete(productoSelect);
-				refrshTable();
-				//tableProducto.getItems().remove(selectIndex);
+				if (mysqlProductoDao.isConnectionSql()) {
+					mysqlProductoDao.delete(productoSelect);
+					refrshTable();
+				}
+				else
+					tableProducto.getItems().remove(selectIndex);
 			}
 				
 		}
@@ -169,7 +176,9 @@ public class ControllerPrincipal {
 			            	return true;
 			            if (pers.getNombre().toLowerCase().indexOf(typedText) !=-1 ) 
 			            	return true;
-			           
+			            if (pers.getIdEmpresa().toLowerCase().indexOf(typedText) != -1) 
+			            	return true;
+			            
 			            return false;
 			        });
 		   
@@ -180,9 +189,7 @@ public class ControllerPrincipal {
 				});
 		
 	} 
-	
-	
-	
+		
 	@FXML
 	public void serchOnMouseclicked() {
 		txfSearch.setText(null);
@@ -211,18 +218,31 @@ public class ControllerPrincipal {
 	}
 	
 	private void refrshTable() {
-		try {
+		if(mysqlProductoDao.isConnectionSql())
 			mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
-		} catch (SQLException e) {
-			new TableViewExeption("No es posible mostar o actualizar la tabla "+e.getMessage());
-		}
-		//filteredList.addAll(tableProducto.getItems()); // no hace falta la idea era refrescar la tabla
+	
 	}
 	
 	
-	@FXML // falta optimizar 
+	@FXML
 	public void saveExel() {
-		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG);
+		File file = new File(defaultFileDirectory);
+		file.getParentFile().mkdir();
+		
+		try {
+			
+			if (file != null)
+				productoExel.saveExel(tableProducto.getItems(),file);
+		} catch (InvalidFormatException | IOException e) {
+			new ExelExeption("No es podible guardar el archivo exel \n"+e.getMessage());
+			
+		}
+
+	}
+	
+	@FXML
+	public void saveAs() {
+		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG,true);
 		try {
 			if (file != null)
 				productoExel.saveExel(tableProducto.getItems(),file);
@@ -232,10 +252,27 @@ public class ControllerPrincipal {
 		}
 
 	}
-
+	
+	@FXML
+	public void load() {
+		
+		File file = new File(defaultFileDirectory);
+		
+		if (file.exists()) {
+			try {
+				if (file != null)
+					productoExel.loadExel(tableProducto.getItems(),file);
+				
+			} catch (InvalidFormatException | IOException e) {
+				new ExelExeption("No es podible cargar el archivo exel \n"+e.getMessage());
+				
+			}
+		}
+	}
+	
 	@FXML
 	public void loadExel() {
-		File file = fileSelection("Abrir", JFileChooser.OPEN_DIALOG);
+		File file = fileSelection("Abrir", JFileChooser.OPEN_DIALOG,false);
 		try {
 			if (file != null)
 				productoExel.loadExel(tableProducto.getItems(),file);
@@ -249,7 +286,7 @@ public class ControllerPrincipal {
 	@FXML
 	public void printExel() {
 		try {
-			productoExel.printExelSave(tableProducto.getItems(),fileSelection("Guardar", JFileChooser.SAVE_DIALOG));
+			productoExel.printExelSave(tableProducto.getItems(),fileSelection("Guardar", JFileChooser.SAVE_DIALOG,true));
 			
 		} catch (InvalidFormatException | IOException e) {
 			new ExelExeption("No es podible cargar el archivo exel \n"+e.getMessage());
@@ -258,30 +295,25 @@ public class ControllerPrincipal {
 	}
 
 	public void startTable() {
-		try {
+		if (mysqlProductoDao.isConnectionSql())
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
-		} catch (SQLException e) {
-			loadExel();
-			new TableViewExeption("No es posible mostar o actualizar la tabla "+e.getMessage());
-			
-		}
-		finally {
-			//loadExel();
-		}
-	}	
-	
-	private File fileSelection(String title, int action) {
-		String defaultDyrectory = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"\\MerceriaLili";
-		File file = new File(defaultDyrectory);
+		else
+			load();
+	}
+		
+	private File fileSelection(String title, int action,boolean save) {
+		
+		File file = new File(documentDirectory);
 		file.mkdir();
-		JFileChooser jFile = new JFileChooser(file);
-		jFile.setDialogTitle(title);
-		jFile.setDialogType(action);
-		jFile.setSelectedFile(new File("productos.xlsx"));
-		jFile.setFileFilter(new FileNameExtensionFilter("exel file", "xlsx"));
-		if (jFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
-				return jFile.getSelectedFile();
-		return null;
+		FileChooser jFile = new FileChooser();
+		jFile.setTitle(title);
+		jFile.setInitialDirectory(file);
+		jFile.getExtensionFilters().addAll(
+		         new ExtensionFilter("Exel Files", "*.xlsx"));
+		javafx.stage.Window wd = this.stage.getOwner();
+		
+		return  save ? jFile.showSaveDialog(wd) : jFile.showOpenDialog(wd);
+			
 	}
 	
 	// metodos de test

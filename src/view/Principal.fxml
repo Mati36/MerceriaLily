@@ -35,6 +35,7 @@
                       <Menu mnemonicParsing="false" text="Archivo">
                         <items>
                           <MenuItem mnemonicParsing="false" onAction="#saveExel" text="Guardar" />
+                              <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Guardar como" />
                               <MenuItem mnemonicParsing="false" onAction="#loadExel" text="Cargar " />
                               <MenuItem mnemonicParsing="false" onAction="#closeClcik" text="Close" />
                         </items>

@@ -165,7 +165,7 @@ public class ProductoExel{
 			else if (index == ProductoTableExel.getIndexPrecioCosto())
 				producto.setPrecioCosto((cell.getNumericCellValue()));
 			else if (index == ProductoTableExel.getIndexPrecioVenta())
-				producto.setPrecioCosto((cell.getNumericCellValue()));
+				producto.setPrecioVenta((cell.getNumericCellValue()));
 			else if (index == ProductoTableExel.getIndexRecargo())
 					producto.setRecargo((cell.getNumericCellValue()));
 			else if (index == ProductoTableExel.getIndexDetalle())

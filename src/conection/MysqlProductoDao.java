@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import Exeptions.ExelExeption;
 import Exeptions.SqlExeptionAlert;
+import Exeptions.TableViewExeption;
 import javafx.collections.ObservableList;
 import model.Producto;
 import model.ProductoTableSql;
@@ -16,11 +17,11 @@ public class MysqlProductoDao   {
 	private Connection connection;	
 	
 	public MysqlProductoDao() {		
-		createTable();
+		
 	}
 	
 	// solucionar
-	private void createTable() {
+	public void createTable() {
 		PreparedStatement preparedStatement = conectar(ProductoTableSql.create());
 		try {
 			preparedStatement.executeUpdate();
@@ -34,7 +35,7 @@ public class MysqlProductoDao   {
 		close(preparedStatement, connection);
 	}
 	
-	private void dropTable() {
+	public void dropTable() {
 		PreparedStatement preparedStatement = conectar(ProductoTableSql.drop());
 		try {
 			preparedStatement.executeUpdate();
@@ -128,17 +129,22 @@ public class MysqlProductoDao   {
 		return producto;
 	}
 		
-	public void mostrarProductoTabla(ObservableList<Producto> table) throws SQLException {
+	public void mostrarProductoTabla(ObservableList<Producto> table) {
 		
 		table.clear(); // limpia la tabla (la tabla esta en main)
 		PreparedStatement start = conectar(ProductoTableSql.get_all());
 		ResultSet resultSet = null;
-		if (start != null) {
-			resultSet = start.executeQuery();
-			while (resultSet.next()) 
-				table.add(getProductoSql(resultSet)); 
-		}
+		try {
+			if (start != null) {
 			
+				resultSet = start.executeQuery();
+			
+				while (resultSet.next()) 
+					table.add(getProductoSql(resultSet)); 
+			}
+		} catch (SQLException e) {
+			new TableViewExeption("No es posible mostar o actualizar la tabla "+e.getMessage());
+		}	
 		close(start, connection);
 	}
 
@@ -220,6 +226,9 @@ public class MysqlProductoDao   {
 		
 	}
 	
+	public boolean isConnectionSql() {
+		return mysqlConnection.getConnection() != null;
+	}
 	private void cargarExelHoja(Sheet sheet, int i, Producto producto) {
 		Row row = sheet.createRow(i);
 		// el codigo de negocio seria el codigo empresa 
@@ -233,17 +242,5 @@ public class MysqlProductoDao   {
 		row.createCell(7).setCellValue(producto.getUpdateAt());
 	}
 
-	// metodo de test 
-	private void mostrarProductoConsola(String string, Producto prod) { 
-		System.out.println(string);
-		System.out.println("Nombre: "+prod.getNombre());
-		System.out.println("Id empresa "+prod.getIdEmpresa());
-		System.out.println("Id negocio "+prod.getIdNegocio());
-		System.out.println("precio costo "+prod.getPrecioCosto());
-		System.out.println("precio venta "+prod.getPrecioVenta());
-		System.out.println("precio cantidad "+prod.getPrecioCantidad());
-		System.out.println();
-	}
 
-	
 }

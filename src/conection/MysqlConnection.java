@@ -8,10 +8,10 @@ public class MysqlConnection  implements IConnection{
 	private  Connection connection;
 	private final String instance = "mercerialili"; 
 	private final String driverUrl = "jdbc:mysql://";
-	private final String host = "35.223.91.98/";
-	private final String database = "productos";
-	private final String user = "lopezmatias36";
-	private final String password = "RiverGallardo10";
+	private final String host = "localhost/";
+	private final String database = "mercerialili";
+	private final String user = "root";
+	private final String password = "paraQueNoFuncione";
 		
 	private final String urlConnection = driverUrl+host+database+"?user="+user+"&password="+password;
 	
