@@ -9,12 +9,14 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExelFile { // manejo de exel
@@ -33,9 +35,10 @@ public class ExelFile { // manejo de exel
 	} 
 	
 	public  void loadBook(FileInputStream fileInput) throws InvalidFormatException, IOException {
+		ZipSecureFile.setMinInflateRatio(0);
 		book = new XSSFWorkbook(fileInput);
 	} 
-	
+
 	public  void closeBook() throws IOException {
 		book.close();
 	}
