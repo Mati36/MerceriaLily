@@ -92,7 +92,7 @@ public class Producto {
 	public ObjectProperty<LocalDate> getUpdatedAtProperty(){ return updatedAt; }
 	
 	public boolean isEmpty() {
-		return  emptyString(this.getIdEmpresaProperty().get()) || emptyString(this.getIdNegocioProperty().get())
+		return   emptyString(this.getIdNegocioProperty().get())
 				|| emptyString(this.getNombreProperty().get());
 		//		|| emptyDouble(this.getPrecioCostoProperty())
 		//		|| emptyDouble(this.getPrecioCantidadProperty()) || emptyDouble(this.getPrecioVentaProperty())
