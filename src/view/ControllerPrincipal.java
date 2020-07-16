@@ -169,10 +169,10 @@ public class ControllerPrincipal {
 		txfSearch.textProperty()
 				 .addListener(p -> {
 					String searchText = txfSearch.getText();
-					filterIdNegocio(searchText);
+					filterId(searchText);
 					
 					if (filteredList.isEmpty())
-						filterNoIdNegocio(searchText);
+						filterNoId(searchText);
 										
 					SortedList<Producto> sortedList = new SortedList<>(filteredList);
 			        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
@@ -191,7 +191,7 @@ public class ControllerPrincipal {
 		return valueProduc.startsWith(valueSearch);
 	}
 	
-	private void filterIdNegocio(String searchText) {
+	private void filterId(String searchText) {
 		filteredList.setPredicate(prod -> {
 			
 			if (isProducto(prod.getIdNegocio(), searchText)) 
@@ -199,9 +199,22 @@ public class ControllerPrincipal {
 			
 			return false;
 		});
+		
+		if (filteredList.isEmpty())
+			filterIdEmpresa(searchText);
+	}
+	
+	private void filterIdEmpresa(String searchText) {
+			filteredList.setPredicate(prod -> {
+					
+				if (isProducto(prod.getIdEmpresa(), searchText)) 
+					return true;
+				
+				return false;
+			});
 	}
 
-	private void filterNoIdNegocio(String searchText) {
+	private void filterNoId(String searchText) {
 		filteredList.setPredicate(prod -> {
 			String  nameAndDetalle = prod.getNombre().concat(prod.getDetalle());
 			
