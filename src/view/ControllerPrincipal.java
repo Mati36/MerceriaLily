@@ -3,9 +3,13 @@ package view;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.function.Predicate;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.PaperSize;
+
 import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
@@ -161,33 +165,56 @@ public class ControllerPrincipal {
 	
 	@FXML
 	public void searchProducto() {
-	
-		txfSearch.setText(null);
+
 		txfSearch.textProperty()
-				.addListener((obsevable, oldvalue, newvalue) -> {
-			        filteredList.setPredicate(pers -> {
-			        	
-			            if (newvalue == null || newvalue.isEmpty()) 
-			                return true;
-			            String typedText = newvalue.toLowerCase();
-			            if (pers.getIdNegocio().toLowerCase().indexOf(typedText) != -1) 
-			            	return true;
-			            if (pers.getNombre().toLowerCase().indexOf(typedText) !=-1 ) 
-			            	return true;
-			            if (pers.getIdEmpresa().toLowerCase().indexOf(typedText) != -1) 
-			            	return true;
-			            
-			            return false;
-			        });
-		   
-			        SortedList<Producto> sortedList = new SortedList<>(filteredList);
+				 .addListener(p -> {
+					String searchText = txfSearch.getText();
+					filterIdNegocio(searchText);
+					
+					if (filteredList.isEmpty())
+						filterNoIdNegocio(searchText);
+										
+					SortedList<Producto> sortedList = new SortedList<>(filteredList);
 			        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
 			        tableProducto.setItems(sortedList);
 			        tableProducto.getSelectionModel().select(0);
-				});
+				 });
+			
+		} 
+
+	
+	private boolean isProducto(String valueProduc, String valueSearch) {
 		
-	} 
+		valueProduc = valueProduc.toLowerCase().replaceAll("\\s+", "").trim();
+		valueSearch = valueSearch.toLowerCase().replaceAll("\\s+", "").trim();
 		
+		return valueProduc.startsWith(valueSearch);
+	}
+	
+	private void filterIdNegocio(String searchText) {
+		filteredList.setPredicate(prod -> {
+			
+			if (isProducto(prod.getIdNegocio(), searchText)) 
+				return true;
+			
+			return false;
+		});
+	}
+
+	private void filterNoIdNegocio(String searchText) {
+		filteredList.setPredicate(prod -> {
+			String  nameAndDetalle = prod.getNombre().concat(prod.getDetalle());
+			
+			if (isProducto(nameAndDetalle, searchText))
+	        		return true;
+			else if (isProducto(prod.getNombre(), searchText)) 
+	        		return true;
+			else if (isProducto(prod.getDetalle(), searchText))		
+	        		return true;
+			
+			return false;
+		});
+	}
 	@FXML
 	public void serchOnMouseclicked() {
 		txfSearch.setText(null);
@@ -329,4 +356,25 @@ public class ControllerPrincipal {
 	private Producto  cargarProducto() {
 		return new Producto("PuebaFecha","B02", "B2","Boton", 5.0,0.0, 5.0, 10.0,LocalDate.now());
 	}
+	
+//	 {
+//			filteredList.setPredicate(prod -> {
+//				
+//				String searchText = txfSearch.getText();
+//				String  nameAndDetalle = prod.getNombre().concat(prod.getDetalle());
+//				
+//				if (isProducto(prod.getIdNegocio(), searchText)) {
+//					return true;
+//				} 
+//					
+//				else if (isProducto(nameAndDetalle, searchText))
+//		        		return true;
+//				else if (isProducto(prod.getNombre(), searchText)) 
+//		        		return true;
+//				else if (isProducto(prod.getDetalle(), searchText))		
+//		        		return true;
+//				
+//				
+//				return false;
+//			}
 }

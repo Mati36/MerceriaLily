@@ -67,7 +67,7 @@
                               <Insets bottom="1.0" left="5.0" right="1.0" top="1.0" />
                            </HBox.margin>
                         </Label>
-                        <TextField fx:id="txfSearch" alignment="CENTER" onMouseClicked="#searchProducto" prefHeight="25.0" prefWidth="187.0">
+                        <TextField fx:id="txfSearch" alignment="CENTER" onKeyTyped="#searchProducto" prefHeight="25.0" prefWidth="187.0">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
