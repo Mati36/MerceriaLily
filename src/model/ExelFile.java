@@ -8,16 +8,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDataFormat;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import javafx.util.converter.LocalDateStringConverter;
 
 public class ExelFile { // manejo de exel
 
@@ -90,10 +97,41 @@ public class ExelFile { // manejo de exel
 			cell.setCellValue((LocalDate) value);
 		else if (value instanceof LocalDateTime)
 			cell.setCellValue((LocalDateTime) value);
-		else if (value instanceof RichTextString)
-			cell.setCellValue((RichTextString) value);
 		else 
 			cell.setCellValue((String) value);
+	}
+
+	private Object getCellValue(Cell cell) {
+
+		CellType type = cell.getCellType();
+		
+		if (type == CellType.NUMERIC) {
+			return HSSFDateUtil.isCellDateFormatted(cell) ? cell.getDateCellValue() : cell.getNumericCellValue();	
+		}
+		else if (type == CellType.BOOLEAN)
+			return cell.getBooleanCellValue();
+		
+		return cell.getStringCellValue();
+	}
+	
+	public String getCellValueToString(Cell cell) {
+		return  getCellValue(cell).toString();
+	}
+	
+	public Double getCellValueToDouble(Cell cell) {
+		return Double.valueOf(getCellValueToString(cell));
+	}
+	
+	public Integer getCellValueToInteger(Cell cell) {
+		return Integer.valueOf(getCellValueToString(cell));
+	}
+	
+	public Float getCellValueToFloat(Cell cell) {
+		return Float.valueOf(getCellValueToString(cell));
+	}
+	
+	public Date getCellValueToDate(Cell cell) {
+		return new Date(getCellValueToString(cell));
 	}
 		
 	public  XSSFWorkbook getBook() {return this.book;	}

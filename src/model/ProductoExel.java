@@ -100,10 +100,10 @@ public class ProductoExel{
 	private void exelToTable(Row row, ObservableList<Producto> tableList) throws IOException {
 		
 		if (row != null) {
-			
+			ExelFile exelFile = new ExelFile();	
 			Producto producto = new Producto();
 			for (int cell = 0; cell < row.getLastCellNum(); cell++) 
-				getCellContent(cell, row.getCell(cell), producto);
+				getCellContent(cell, row.getCell(cell), producto,exelFile);
 		
 			if (!isProductoTable(producto,tableList)) 
 				tableList.add(producto);
@@ -152,24 +152,24 @@ public class ProductoExel{
 		}
 	}
 
-	private void getCellContent(int index,Cell cell, Producto producto) {
+	private void getCellContent(int index,Cell cell, Producto producto,ExelFile exelFile) {
 		if (cell != null && producto != null) {
 			if (index == ProductoTableExel.getIndexIdEmpresa())
-				producto.setIdEmpresa(cell.getStringCellValue());
+				producto.setIdEmpresa(exelFile.getCellValueToString(cell) );
 			else if ( index == ProductoTableExel.getIndexIdNegocio())
-				producto.setIdNegocio(cell.getStringCellValue());
+				producto.setIdNegocio(exelFile.getCellValueToString(cell));
 			else if (index == ProductoTableExel.getIndexNombreProducto())
-				producto.setNombre(cell.getStringCellValue());
+				producto.setNombre(exelFile.getCellValueToString(cell));
 			else if (index == ProductoTableExel.getIndexPrecioCantidad())
-				producto.setPrecioCantidad(cell.getNumericCellValue());
+				producto.setPrecioCantidad(exelFile.getCellValueToDouble(cell));
 			else if (index == ProductoTableExel.getIndexPrecioCosto())
-				producto.setPrecioCosto((cell.getNumericCellValue()));
+				producto.setPrecioCosto(exelFile.getCellValueToDouble(cell));
 			else if (index == ProductoTableExel.getIndexPrecioVenta())
-				producto.setPrecioVenta((cell.getNumericCellValue()));
+				producto.setPrecioVenta(exelFile.getCellValueToDouble(cell));
 			else if (index == ProductoTableExel.getIndexRecargo())
-					producto.setRecargo((cell.getNumericCellValue()));
+					producto.setRecargo(exelFile.getCellValueToDouble(cell));
 			else if (index == ProductoTableExel.getIndexDetalle())
-				producto.setDetalle(cell.getStringCellValue());
+				producto.setDetalle(exelFile.getCellValueToString(cell));
 			else if (index == ProductoTableExel.getIndexCreatedAt())
 				producto.setCreatedAt(cell.getLocalDateTimeCellValue().toLocalDate());
 			else if (index == ProductoTableExel.getIndexUpdatedAt())
@@ -179,5 +179,7 @@ public class ProductoExel{
 						+" puede que se paso de rango o el numero de celda no coincide con la base de datos");
 		}
 	}
+	
+	
 
 }
