@@ -38,6 +38,9 @@ public class ControllerEditProducto implements Initializable {
 	private TextField txtDetalle;
 	
 	@FXML
+	private TextField txtcantidad;
+	
+	@FXML
 	private Button btnAceptar;
 
 	@FXML
@@ -64,6 +67,7 @@ public class ControllerEditProducto implements Initializable {
 		this.txtPrecioVenta = new TextField();
 		this.txtRecargo = new TextField();
 		this.txtDetalle = new TextField();
+		this.txtcantidad = new TextField();
 		this.checkIva = new CheckBox();
 		this.btnAceptar = new Button();
 		this.btnCancelar = new Button();
@@ -139,15 +143,17 @@ public class ControllerEditProducto implements Initializable {
 	
 	// se llama cuado hago click en aceptar
 	private void cargarDatosProductos() { 
-		producto.setIdEmpresa(txtIdEmpresa.getText().trim());
-		producto.setIdNegocio(txtIdNegocio.getText().trim());
-		producto.setNombre(txtNombre.getText().trim());
+		producto.setIdEmpresa(txtIdEmpresa.getText().toUpperCase().trim());
+		producto.setIdNegocio(txtIdNegocio.getText().toUpperCase().trim());
+		producto.setNombre(txtNombre.getText().toUpperCase().trim());
+		
 		String precioCantidad = txtPrecioCantidad.getText().trim();
+		
 		producto.setPrecioCosto(stringToDouble(txtPrecioCosto.getText(),"PrecioCosto"));
 		producto.setRecargo(stringToDouble(txtRecargo.getText(),"Recargo"));
 		producto.setPrecioVenta(stringToDouble(txtPrecioVenta.getText(), "Precio venta"));
 		producto.setPrecioCantidad(stringToDouble(precioCantidad,"Precio de costo"));
-		producto.setDetalle(txtDetalle.getText().trim());
+		producto.setDetalle(txtDetalle.getText().toUpperCase().trim());
 			
 	}	
 	
@@ -163,7 +169,7 @@ public class ControllerEditProducto implements Initializable {
 			txtPrecioVenta.setText(Double.toString(producto.getPrecioVenta()));
 			txtDetalle.setText(producto.getDetalle());
 			checkIva.setSelected(producto.isIva(producto.getPrecioVenta()));
-			
+			txtcantidad.setText("1");
 		} 
 		else {
 			txtIdEmpresa.setText("");
@@ -174,6 +180,7 @@ public class ControllerEditProducto implements Initializable {
 			txtPrecioCantidad.setText("0.0");
 			txtPrecioVenta.setText("0.0");
 			txtDetalle.setText("");
+			txtcantidad.setText("1");
 		}
 	}
 	
@@ -199,7 +206,15 @@ public class ControllerEditProducto implements Initializable {
 	}
 
 	private void calculaPrecioVenta() {
-		txtPrecioVenta.setText(Double.toString(producto.calularPrecioVenta()));
-	}	
-	
+		int cantidad = 1;
+		if (!txtcantidad.getText().isEmpty()) {
+			cantidad = Integer.valueOf(txtcantidad.getText());
+			if (cantidad > 1) {
+				txtPrecioCantidad.setText(Double.toString(producto.precioVentaCantidad()));
+				txtPrecioVenta.setText(Double.toString(producto.precioVentaPorUnidad(cantidad)));
+			}
+			else 
+				txtPrecioVenta.setText(Double.toString(producto.precioVentaPorUnidad(cantidad)));
+		}	
+	}
 }

@@ -106,10 +106,21 @@ public class Producto {
 		return number == null || number.get() < 0;
 	}
 	
-	public Double calularPrecioVenta() {
+	public Double precioVentaCantidad() {
 		Double temp = getIsIva() ? calcularIva(getPrecioCosto()) : getPrecioCosto();
 		temp = calcularRecargo(temp);
+		
 		return roundedNum(rondedDecimal(temp, DECIMAL_LIMIT)); 
+	}
+	
+	public Double precioVentaPorUnidad(int cantidad) {
+		
+		if (cantidad > 1 ) {
+			double precio = precioVentaCantidad() / cantidad;
+			return roundedNum(rondedDecimal(precio, DECIMAL_LIMIT)); 
+		
+		}
+		return precioVentaCantidad();
 	}
 	
 	private Double calcularIva (Double precio) {
@@ -122,9 +133,10 @@ public class Producto {
 	
 	public boolean isIva(Double num) {
 		Double precio = calcularRecargo(calcularIva(getPrecioCosto()));
-		return num == roundedNum(rondedDecimal(precio,DECIMAL_LIMIT)) 
-				|| num == rondedDecimal(precio, DECIMAL_LIMIT) 
-				|| num == precio;
+		return num != 0 && precio !=0
+				&& ( num == roundedNum(rondedDecimal(precio,DECIMAL_LIMIT)) 
+					|| num == rondedDecimal(precio, DECIMAL_LIMIT) 
+					|| num == precio );
 		
 	}
 	@Override

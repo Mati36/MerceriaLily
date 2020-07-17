@@ -23,6 +23,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label alignment="CENTER_RIGHT" contentDisplay="CENTER" styleClass="lbl" text="Nombre del producto" />
@@ -41,6 +42,8 @@
             <Label contentDisplay="CENTER" styleClass="lbl" text="Recargo" GridPane.rowIndex="7" />
             <Label contentDisplay="CENTER" styleClass="lbl" text="Detalle" GridPane.rowIndex="6" />
             <TextField fx:id="txtDetalle" onKeyReleased="#keyReleased" prefHeight="25.0" prefWidth="141.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label contentDisplay="CENTER" styleClass="lbl" text="Cantidad o Metros" GridPane.rowIndex="8" />
+            <TextField fx:id="txtcantidad" onKeyReleased="#keyReleased" prefHeight="25.0" prefWidth="195.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
          </children>
       </GridPane>
       <Button fx:id="btnAceptar" layoutX="160.0" layoutY="347.0" mnemonicParsing="false" onAction="#clickAceptar" prefHeight="33.0" prefWidth="112.0" styleClass="buttonStyle" text="Aceptar" AnchorPane.bottomAnchor="20.0" />
