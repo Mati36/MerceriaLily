@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
@@ -18,13 +17,11 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import javafx.util.converter.LocalDateStringConverter;
+
 
 public class ExelFile { // manejo de exel
 
@@ -80,27 +77,38 @@ public class ExelFile { // manejo de exel
 	}
 		
 	public void addCellValue(Object value,Cell cell) {
-		
-		 if (value instanceof Integer)
-			cell.setCellValue((Integer) value);
-		else if (value instanceof Float)
-			cell.setCellValue((Float) value);
-		else if (value instanceof Double)
-			cell.setCellValue((Double) value);
-		else if (value instanceof Calendar)
-			cell.setCellValue((Calendar) value);
-		else if (value instanceof Boolean)
-			cell.setCellValue((boolean) value);
-		else if (value instanceof Date)
-			cell.setCellValue((Date) value);
-		else if (value instanceof LocalDate)
-			cell.setCellValue((LocalDate) value);
-		else if (value instanceof LocalDateTime)
-			cell.setCellValue((LocalDateTime) value);
-		else 
-			cell.setCellValue((String) value.toString().trim());
+		if (value == null || value.toString().isEmpty()) 
+			addCellEmptyValue(value, cell);
+		else {
+			 if (value instanceof Integer)
+				cell.setCellValue((Integer) value);
+			else if (value instanceof Float)
+				cell.setCellValue((Float) value);
+			else if (value instanceof Double)
+				cell.setCellValue((Double) value);
+			else if (value instanceof Calendar)
+				cell.setCellValue((Calendar) value);
+			else if (value instanceof Boolean)
+				cell.setCellValue((boolean) value);
+			else if (value instanceof Date)
+				cell.setCellValue((Date) value);
+			else if (value instanceof LocalDate)
+				cell.setCellValue((LocalDate) value);
+			else if (value instanceof LocalDateTime)
+				cell.setCellValue((LocalDateTime) value);
+			else 
+				cell.setCellValue((String) value.toString().trim());
+		}
 	}
 
+	private void addCellEmptyValue(Object value,Cell cell) {
+		CellType type = cell.getCellType();
+		if (type ==  CellType.NUMERIC)
+			cell.setCellValue(0);
+		else 
+			cell.setCellValue("");
+	}
+	
 	private Object getCellValue(Cell cell) {
 
 		CellType type = cell.getCellType();

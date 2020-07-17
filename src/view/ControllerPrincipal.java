@@ -3,19 +3,13 @@ package view;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.function.Predicate;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.ss.usermodel.PaperSize;
-
 import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
 import conection.MysqlProductoDao;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -106,7 +100,7 @@ public class ControllerPrincipal {
 					refrshTable();
 				}
 				else 
-					tableProducto.getItems().add(prod);
+					app.getListProducto().add(prod);
 			}
 			
 		} catch (IOException e) {
@@ -274,7 +268,7 @@ public class ControllerPrincipal {
 		try {
 			
 			if (file != null)
-				productoExel.saveExel(tableProducto.getItems(),file);
+				productoExel.saveExel(app.getListProducto(),file);
 		} catch (InvalidFormatException | IOException e) {
 			new ExelExeption("No es podible guardar el archivo exel \n"+e.getMessage());
 			
@@ -287,7 +281,7 @@ public class ControllerPrincipal {
 		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG,true);
 		try {
 			if (file != null)
-				productoExel.saveExel(tableProducto.getItems(),file);
+				productoExel.saveExel(app.getListProducto(),file);
 		} catch (InvalidFormatException | IOException e) {
 			new ExelExeption("No es podible guardar el archivo exel \n"+e.getMessage());
 			
@@ -303,7 +297,7 @@ public class ControllerPrincipal {
 		if (file.exists()) {
 			try {
 				if (file != null)
-					productoExel.loadExel(tableProducto.getItems(),file);
+					productoExel.loadExel(app.getListProducto(),file);
 				
 			} catch (InvalidFormatException | IOException e) {
 				new ExelExeption("No es podible cargar el archivo exel \n"+e.getMessage());

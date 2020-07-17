@@ -21,7 +21,7 @@ import javafx.scene.layout.AnchorPane;
 
 public class Main extends Application {
 	
-	private  ObservableList<Producto> listProducto = FXCollections.observableArrayList();
+	private ObservableList<Producto> listProducto = FXCollections.observableArrayList();
 	private AnchorPane layout = new AnchorPane();
 	private Stage primaryStage;
 	private Stage stageEditProducto;
@@ -129,9 +129,4 @@ public class Main extends Application {
 		this.stageEditProducto = stageEditProducto;
 	}
 
-	private boolean startError(String content) {
-		DialogAlert dialogAlert = new DialogAlert(content, "Error al iniciar", new Alert(AlertType.ERROR));
-		return dialogAlert.getResultOption();
-	}
-	
 }
