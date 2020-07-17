@@ -11,7 +11,7 @@
    <children>
       <BorderPane prefHeight="606.0" prefWidth="882.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TableView fx:id="tableProducto" onMouseClicked="#searchProducto" prefHeight="569.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="tableProducto" onKeyReleased="#searchProducto" prefHeight="569.0" prefWidth="800.0" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="codEmpresa" prefWidth="111.0" text="Codigo Empresa" />
                 <TableColumn fx:id="codNegocio" prefWidth="113.0" text="Codigo Negocio" />
@@ -67,7 +67,7 @@
                               <Insets bottom="1.0" left="5.0" right="1.0" top="1.0" />
                            </HBox.margin>
                         </Label>
-                        <TextField fx:id="txfSearch" alignment="CENTER" onKeyTyped="#searchProducto" prefHeight="25.0" prefWidth="187.0">
+                        <TextField fx:id="txfSearch" alignment="CENTER" onKeyPressed="#searchProducto" prefHeight="25.0" prefWidth="187.0">
                            <opaqueInsets>
                               <Insets />
                            </opaqueInsets>
