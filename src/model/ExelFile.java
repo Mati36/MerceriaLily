@@ -98,7 +98,7 @@ public class ExelFile { // manejo de exel
 		else if (value instanceof LocalDateTime)
 			cell.setCellValue((LocalDateTime) value);
 		else 
-			cell.setCellValue((String) value);
+			cell.setCellValue((String) value.toString().trim());
 	}
 
 	private Object getCellValue(Cell cell) {
@@ -115,7 +115,7 @@ public class ExelFile { // manejo de exel
 	}
 	
 	public String getCellValueToString(Cell cell) {
-		return  getCellValue(cell).toString();
+		return  getCellValue(cell).toString().trim();
 	}
 	
 	public Double getCellValueToDouble(Cell cell) {

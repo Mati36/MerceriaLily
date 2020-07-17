@@ -169,9 +169,9 @@ public class ControllerEditProducto implements Initializable {
 			txtIdEmpresa.setText("");
 			txtIdNegocio.setText("");
 			txtNombre.setText("");
-			txtPrecioCosto.setText("");
-			txtRecargo.setText("");
-			txtPrecioCantidad.setText("");
+			txtPrecioCosto.setText("0.0");
+			txtRecargo.setText("0.0");
+			txtPrecioCantidad.setText("0.0");
 			txtPrecioVenta.setText("0.0");
 			txtDetalle.setText("");
 		}

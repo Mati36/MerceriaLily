@@ -14,6 +14,8 @@ import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
 import conection.MysqlProductoDao;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -154,8 +156,9 @@ public class ControllerPrincipal {
 					mysqlProductoDao.delete(productoSelect);
 					refrshTable();
 				}
-				else
-					tableProducto.getItems().remove(selectIndex);
+				else 
+					getMainApp().getListProducto().remove(productoSelect);
+				
 			}
 				
 		}
@@ -176,6 +179,7 @@ public class ControllerPrincipal {
 										
 					SortedList<Producto> sortedList = new SortedList<>(filteredList);
 			        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
+			        
 			        tableProducto.setItems(sortedList);
 			        tableProducto.getSelectionModel().select(0);
 				 });
@@ -370,24 +374,5 @@ public class ControllerPrincipal {
 		return new Producto("PuebaFecha","B02", "B2","Boton", 5.0,0.0, 5.0, 10.0,LocalDate.now());
 	}
 	
-//	 {
-//			filteredList.setPredicate(prod -> {
-//				
-//				String searchText = txfSearch.getText();
-//				String  nameAndDetalle = prod.getNombre().concat(prod.getDetalle());
-//				
-//				if (isProducto(prod.getIdNegocio(), searchText)) {
-//					return true;
-//				} 
-//					
-//				else if (isProducto(nameAndDetalle, searchText))
-//		        		return true;
-//				else if (isProducto(prod.getNombre(), searchText)) 
-//		        		return true;
-//				else if (isProducto(prod.getDetalle(), searchText))		
-//		        		return true;
-//				
-//				
-//				return false;
-//			}
+	
 }
