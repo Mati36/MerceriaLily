@@ -10,6 +10,7 @@ import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
 import conection.MysqlProductoDao;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -162,21 +163,19 @@ public class ControllerPrincipal {
 	
 	@FXML
 	public void searchProducto() {
-
-		txfSearch.textProperty()
-				 .addListener(p -> {
-					String searchText = txfSearch.getText();
-					filterId(searchText);
-					
-					if (filteredList.isEmpty())
-						filterNoId(searchText);
-										
-					SortedList<Producto> sortedList = new SortedList<>(filteredList);
-			        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
-			        
-			        tableProducto.setItems(sortedList);
-			        tableProducto.getSelectionModel().select(0);
-				 });
+	
+			String searchText = txfSearch.getText().trim();
+			filterId(searchText);
+			
+			if (filteredList.isEmpty())
+				filterNoId(searchText);
+								
+			SortedList<Producto> sortedList = new SortedList<>(filteredList);
+	        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
+	        
+	        tableProducto.setItems(sortedList);
+	        tableProducto.getSelectionModel().select(0);
+				
 			
 		} 
 
@@ -190,40 +189,25 @@ public class ControllerPrincipal {
 	}
 	
 	private void filterId(String searchText) {
-		filteredList.setPredicate(prod -> {
-			
-			if (isProducto(prod.getIdNegocio(), searchText)) 
-				return true;
-			
-			return false;
-		});
+		
+		filteredList.setPredicate(prod -> isProducto(prod.getIdNegocio(), searchText));
 		
 		if (filteredList.isEmpty())
 			filterIdEmpresa(searchText);
 	}
 	
 	private void filterIdEmpresa(String searchText) {
-			filteredList.setPredicate(prod -> {
-					
-				if (isProducto(prod.getIdEmpresa(), searchText)) 
-					return true;
-				
-				return false;
-			});
+		filteredList.setPredicate(prod -> isProducto(prod.getIdEmpresa(), searchText)); 
+		
 	}
 
 	private void filterNoId(String searchText) {
 		filteredList.setPredicate(prod -> {
 			String  nameAndDetalle = prod.getNombre().concat(prod.getDetalle());
-			
-			if (isProducto(nameAndDetalle, searchText))
-	        		return true;
-			else if (isProducto(prod.getNombre(), searchText)) 
-	        		return true;
-			else if (isProducto(prod.getDetalle(), searchText))		
-	        		return true;
-			
-			return false;
+			return ( isProducto(nameAndDetalle, searchText) 
+					|| isProducto(prod.getNombre(), searchText) 
+					|| isProducto(prod.getDetalle(), searchText) );
+	      
 		});
 	}
 	@FXML
