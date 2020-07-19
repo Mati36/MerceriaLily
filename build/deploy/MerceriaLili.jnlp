@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="MerceriaLili.jnlp">
+  <information>
+    <title>MerceriaLili</title>
+    <vendor>Mati36</vendor>
+    <description>MerceriaLili</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="MerceriaLili.jar" size="74126" download="eager" />
+    <jar href="libs\activation-1.1.1.jar" size="69409" download="eager" />
+    <jar href="libs\asm-8.0.1.jar" size="121772" download="eager" />
+    <jar href="libs\asm-analysis-8.0.1.jar" size="33438" download="eager" />
+    <jar href="libs\asm-commons-7.1.jar" size="70394" download="eager" />
+    <jar href="libs\asm-tree-8.0.1.jar" size="52628" download="eager" />
+    <jar href="libs\asm-util-8.0.1.jar" size="84795" download="eager" />
+    <jar href="libs\auto-value-annotations-1.7.jar" size="5915" download="eager" />
+    <jar href="libs\checker-compat-qual-2.5.5.jar" size="5852" download="eager" />
+    <jar href="libs\commons-codec-1.11.jar" size="335042" download="eager" />
+    <jar href="libs\commons-codec-1.13.jar" size="344339" download="eager" />
+    <jar href="libs\commons-collections4-4.4.jar" size="751914" download="eager" />
+    <jar href="libs\commons-compress-1.19.jar" size="615064" download="eager" />
+    <jar href="libs\commons-logging-1.2.jar" size="61829" download="eager" />
+    <jar href="libs\commons-math3-3.6.1.jar" size="2213560" download="eager" />
+    <jar href="libs\controlsfx-8.0.6_20.jar" size="856539" download="eager" />
+    <jar href="libs\controlsfx-8.40.11.jar" size="985420" download="eager" />
+    <jar href="libs\curvesapi-1.06.jar" size="111875" download="eager" />
+    <jar href="libs\error_prone_annotations-2.3.4.jar" size="13879" download="eager" />
+    <jar href="libs\failureaccess-1.0.1.jar" size="4617" download="eager" />
+    <jar href="libs\google-api-client-1.30.1.jar" size="205219" download="eager" />
+    <jar href="libs\google-api-services-sqladmin-v1beta4-rev20190827-1.30.1.jar" size="176219" download="eager" />
+    <jar href="libs\google-auth-library-credentials-0.20.0.jar" size="5666" download="eager" />
+    <jar href="libs\google-auth-library-oauth2-http-0.20.0.jar" size="105290" download="eager" />
+    <jar href="libs\google-http-client-1.34.0.jar" size="284752" download="eager" />
+    <jar href="libs\google-http-client-jackson2-1.34.0.jar" size="8493" download="eager" />
+    <jar href="libs\google-oauth-client-1.30.1.jar" size="66723" download="eager" />
+    <jar href="libs\grpc-context-1.22.1.jar" size="29411" download="eager" />
+    <jar href="libs\guava-28.2-android.jar" size="2626710" download="eager" />
+    <jar href="libs\httpclient-4.5.10.jar" size="774640" download="eager" />
+    <jar href="libs\httpcore-4.4.12.jar" size="328347" download="eager" />
+    <jar href="libs\j2objc-annotations-1.3.jar" size="8781" download="eager" />
+    <jar href="libs\jackson-core-2.10.1.jar" size="348625" download="eager" />
+    <jar href="libs\jaxb-api-2.3.1.jar" size="128076" download="eager" />
+    <jar href="libs\jaxb-core-2.3.0.1.jar" size="254858" download="eager" />
+    <jar href="libs\jaxb-impl-2.3.2.jar" size="1017695" download="eager" />
+    <jar href="libs\jdbc-socket-factory-core-1.0.16.jar" size="22083" download="eager" />
+    <jar href="libs\jffi-1.2.23-native.jar" size="795222" download="eager" />
+    <jar href="libs\jffi-1.2.23.jar" size="152016" download="eager" />
+    <jar href="libs\jnr-a64asm-1.0.0.jar" size="86270" download="eager" />
+    <jar href="libs\jnr-constants-0.9.15.jar" size="657207" download="eager" />
+    <jar href="libs\jnr-enxio-0.26.jar" size="32159" download="eager" />
+    <jar href="libs\jnr-ffi-2.1.13.jar" size="697137" download="eager" />
+    <jar href="libs\jnr-posix-3.0.55.jar" size="259635" download="eager" />
+    <jar href="libs\jnr-unixsocket-0.30.jar" size="48046" download="eager" />
+    <jar href="libs\jnr-x86asm-1.0.2.jar" size="219943" download="eager" />
+    <jar href="libs\jsr305-3.0.2.jar" size="19936" download="eager" />
+    <jar href="libs\junit-4.12.jar" size="314932" download="eager" />
+    <jar href="libs\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar" size="2199" download="eager" />
+    <jar href="libs\log4j-1.2.17.jar" size="489884" download="eager" />
+    <jar href="libs\mysql-connector-java-5.1.40-bin.jar" size="990927" download="eager" />
+    <jar href="libs\mysql-socket-factory-1.0.16.jar" size="3126" download="eager" />
+    <jar href="libs\mysql-socket-factory-connector-j-8-1.0.16.jar" size="3551" download="eager" />
+    <jar href="libs\opencensus-api-0.24.0.jar" size="351668" download="eager" />
+    <jar href="libs\opencensus-contrib-http-util-0.24.0.jar" size="23420" download="eager" />
+    <jar href="libs\poi-4.1.1.jar" size="2827712" download="eager" />
+    <jar href="libs\poi-examples-4.1.1.jar" size="435267" download="eager" />
+    <jar href="libs\poi-excelant-4.1.1.jar" size="31354" download="eager" />
+    <jar href="libs\poi-ooxml-4.1.1.jar" size="1859884" download="eager" />
+    <jar href="libs\poi-ooxml-schemas-4.1.1.jar" size="7884238" download="eager" />
+    <jar href="libs\poi-scratchpad-4.1.1.jar" size="1800622" download="eager" />
+    <jar href="libs\xmlbeans-3.1.0.jar" size="2579738" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="0" height="0" main-class="app.Main"  name="MerceriaLili" />
+  <update check="background"/>
+</jnlp>
