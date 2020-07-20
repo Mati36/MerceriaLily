@@ -10,10 +10,10 @@ import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
 import conection.MysqlProductoDao;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.print.PrinterJob;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -312,6 +312,18 @@ public class ControllerPrincipal {
 			new ExelExeption("No es podible cargar el archivo exel \n"+e.getMessage());
 			
 		}
+	}
+	
+	@FXML
+	public void printTable() {
+		PrinterJob printer = PrinterJob.createPrinterJob();
+		boolean toPrint = printer.showPrintDialog(this.stage.getOwner());
+		
+		if (toPrint) {
+			printer.printPage(tableProducto.getClip());
+		} 
+		
+		
 	}
 
 	public void startTable() {

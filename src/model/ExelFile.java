@@ -21,6 +21,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.google.api.client.util.DateTime;
+
+import javafx.util.converter.LocalDateStringConverter;
+
 
 
 public class ExelFile { // manejo de exel
@@ -114,7 +118,7 @@ public class ExelFile { // manejo de exel
 		CellType type = cell.getCellType();
 		
 		if (type == CellType.NUMERIC) {
-			return HSSFDateUtil.isCellDateFormatted(cell) ? cell.getDateCellValue() : cell.getNumericCellValue();	
+			return HSSFDateUtil.isCellDateFormatted(cell) ? cell.getLocalDateTimeCellValue() : cell.getNumericCellValue();	
 		}
 		else if (type == CellType.BOOLEAN)
 			return cell.getBooleanCellValue();
@@ -127,21 +131,35 @@ public class ExelFile { // manejo de exel
 	}
 	
 	public Double getCellValueToDouble(Cell cell) {
-		return Double.valueOf(getCellValueToString(cell));
+		return Double.valueOf(stringConvertNumber(cell));
 	}
 	
 	public Integer getCellValueToInteger(Cell cell) {
-		return Integer.valueOf(getCellValueToString(cell));
+		return Integer.valueOf(stringConvertNumber(cell));
 	}
 	
 	public Float getCellValueToFloat(Cell cell) {
-		return Float.valueOf(getCellValueToString(cell));
+		return Float.valueOf(stringConvertNumber(cell));
 	}
 	
-	public Date getCellValueToDate(Cell cell) {
-		return new Date(getCellValueToString(cell));
+	private String stringConvertNumber(Cell cell) {
+		String res = getCellValueToString(cell);
+		if (res.isEmpty())
+			return "0";
+		return  res;
 	}
+	public LocalDateTime getCellValueToDateTime(Cell cell) {
+		String format = getCellValueToString(cell);
 		
+		if (format.isEmpty() || format == null )
+			format = ("2001-01-12T00:00"); // ver como devolver algo que no sea una fecha
+		return LocalDateTime.parse(format);
+	
+	}
+	
+	public boolean isValue(Cell cell) {
+		return getCellValue(cell) != null;
+	}
 	public  XSSFWorkbook getBook() {return this.book;	}
 
 	public  Sheet getLastSheet() {return book.getSheetAt(getLastSheetIndex());}
