@@ -108,7 +108,7 @@ import javafx.scene.control.TableView;
 			itemList.add(0, item);
 			copyView.layout();
 		}
-//		job.printPage(pageLayout,copyView);
+		job.printPage(pageLayout,copyView);
 	
 	}
 	
