@@ -1,8 +1,11 @@
 package view;
 
+import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+
+import javax.print.attribute.standard.PageRanges;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -13,7 +16,12 @@ import conection.MysqlProductoDao;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
+import javafx.print.PageLayout;
+import javafx.print.PageRange;
+import javafx.print.Printer;
 import javafx.print.PrinterJob;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -21,8 +29,11 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import model.DialogShow;
+import model.PrintPaper;
+import model.PrinterTable;
 import model.Producto;
 import model.ProductoExel;
+import model.ProductoTableExel;
 
 public class ControllerPrincipal {
 
@@ -66,16 +77,24 @@ public class ControllerPrincipal {
 
 	@FXML
     private void initialize() { // inicia la tabla
+		codEmpresa.setText(ProductoTableExel.getRowIdEmpresa());
+		codNegocio.setText(ProductoTableExel.getRowIdNegocio());
+		nombre.setText(ProductoTableExel.getRowProducto());
+		precioCosto.setText(ProductoTableExel.getRowPrecioCosto());
+		precioCantidad.setText(ProductoTableExel.getRowPrecioCantidad());
+		precioVenta.setText(ProductoTableExel.getRowPrecioVenta());
+		detalle.setText(ProductoTableExel.getRowDetalle());
+		create.setText(ProductoTableExel.getRowUpdateAt());
+		
 		codEmpresa.setCellValueFactory(value -> value.getValue().getIdEmpresaProperty());
 		codNegocio.setCellValueFactory(value -> value.getValue().getIdNegocioProperty());
 		nombre.setCellValueFactory(value -> value.getValue().getNombreProperty());
 		precioCosto.setCellValueFactory(intValue -> intValue.getValue().getPrecioCostoProperty());
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
-		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
 		create.setCellValueFactory(value -> value.getValue().getUpdatedAtProperty());
 		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
-
+		
 	}
 	
 	public void setMainApp(Main mainApp) { // se llama de main 
@@ -317,13 +336,10 @@ public class ControllerPrincipal {
 	@FXML
 	public void printTable() {
 		PrinterJob printer = PrinterJob.createPrinterJob();
-		boolean toPrint = printer.showPrintDialog(this.stage.getOwner());
 		
-		if (toPrint) {
-			printer.printPage(tableProducto.getClip());
-		} 
-		
-		
+		if (printer.showPrintDialog(stage))
+			PrinterTable.printTable(tableProducto, printer);
+		printer.endJob();
 	}
 
 	public void startTable() {
@@ -342,9 +358,8 @@ public class ControllerPrincipal {
 		jFile.setInitialDirectory(file);
 		jFile.getExtensionFilters().addAll(
 		         new ExtensionFilter("Exel Files", "*.xlsx"));
-		javafx.stage.Window wd = this.stage.getOwner();
-		
-		return  save ? jFile.showSaveDialog(wd) : jFile.showOpenDialog(wd);
+				
+		return  save ? jFile.showSaveDialog(stage) : jFile.showOpenDialog(stage);
 			
 	}
 	

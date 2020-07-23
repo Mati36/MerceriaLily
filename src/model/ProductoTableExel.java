@@ -14,16 +14,26 @@ public class ProductoTableExel {
 	// columnas string
 	private static final String ROW_ID_NEGOCIO = "Codigo Negocio";
 	private static final String ROW_ID_EMPRESA = "Codigo Empresa";
-	private static final String ROW_PRODUCTO = "Nombre Producto";
+	private static final String ROW_PRODUCTO = "Producto";
 	private static final String ROW_PRECIO_COSTO = "Precio de Costo";
 	private static final String ROW_PRECIO_VENTA = "Precio de Venta";
 	private static final String ROW_PRECIO_CANTIDAD = "Precio x Cantidad";
 	private static final String ROW_RECARGO= "Recargo";
 	static private final String ROW_DETALLE= "Detalle";
-	static private final String ROW_CREATED_AT= "CreatedAt";
-	static private final String ROW_UPDATE_AT= "UpdatedAt";
+	static private final String ROW_CREATED_AT= "Creado";
+	static private final String ROW_UPDATE_AT= "Ultima Modificacion";
 	static private final String ROW_LAST = ROW_UPDATE_AT; 
-				
+	
+	static final String ROW_ID_NEGOCIO_ABBREVIATED = "Cod. Neg";
+	static final String ROW_ID_EMPRESA_ABBREVIATED = "Cod. Emp";
+	static final String ROW_PRODUCTO_ABBREVIATED = "Producto";
+	static final String ROW_PRECIO_COSTO_ABBREVIATED = "P. Costo";
+	static final String ROW_PRECIO_VENTA_ABBREVIATED = "P. Venta";
+	static final String ROW_PRECIO_CANTIDAD_ABBREVIATED = "P x Cant";
+	static final String ROW_RECARGO_ABBREVIATED = "Recargo";
+	static final String ROW_DETALLE_ABBREVIATED = "Detalle";
+	static final String ROW_UPDATE_AT_ABBREVIATED= "Ult. Mod.";
+	
 	// index columnas
 	private static final int INDEX_ID_EMPRESA = 0;
 	private static final int INDEX_ID_NEGOCIO = 1;
