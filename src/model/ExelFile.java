@@ -127,7 +127,8 @@ public class ExelFile { // manejo de exel
 	}
 	
 	public String getCellValueToString(Cell cell) {
-		return  getCellValue(cell).toString().trim();
+		String value = getCellValue(cell).toString();
+		return  removeManyBlanks(value);  
 	}
 	
 	public Double getCellValueToDouble(Cell cell) {
@@ -200,5 +201,9 @@ public class ExelFile { // manejo de exel
 		cell.setCellStyle(style);
 	
 	}
-		
+	
+	private String removeManyBlanks(String text) {
+		return text.replaceAll("( )+", " ").trim();
+	}
+	
 }
