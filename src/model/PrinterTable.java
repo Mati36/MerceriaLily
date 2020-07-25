@@ -1,7 +1,11 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import org.apache.log4j.helpers.DateTimeDateFormat;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.print.PageLayout;
@@ -107,8 +111,11 @@ public class PrinterTable extends PrintPaper {
 
 		}
 		
-	
+		
 		numPagePrint(pane, letter);
+		
+		if (pane.getChildren().indexOf(copyView) < 0)
+			pane.getChildren().add(copyView);
 		
 		job.printPage(pageLayout,pane);
 	
@@ -148,8 +155,8 @@ public class PrinterTable extends PrintPaper {
 			}
 		}
 		new Scene(copyView);
-//		pane.getChildren().add(copyView);
-	//			copyView.getScene().getStylesheets().add(PrintPaper.class.getResource("TablePrint.css").toString());
+		copyView.getStylesheets().add(PrintPaper.class.getResource("PrinterTableStyle.css").toString());
+		copyView.getStyleClass().add("tablePrinter");
 		return copyView;
 	}
 	
@@ -159,7 +166,7 @@ public class PrinterTable extends PrintPaper {
 	}
 	
 	private static <S> TableColumn<S, Producto> columnText(TableColumn cloneColumn) {
-		String text = cloneColumn.getText();
+		String text = cloneColumn.getText().trim();
 		if (text.equals(ProductoTableExel.getRowIdEmpresa()))
 			text = ProductoTableExel.ROW_ID_EMPRESA_ABBREVIATED;
 		else if (text.equals(ProductoTableExel.getRowIdNegocio()))
@@ -194,24 +201,26 @@ public class PrinterTable extends PrintPaper {
 		maxWidth((TableView<Producto>) tableView);
 		String title = colum.getText();
 		double maxWhidth = colum.getMaxWidth();
-				
-		if (title.equals(ProductoTableExel.getRowProducto())) 
-			cloneColumn.setMaxWidth(maxWhidth + getProductoWidth());
 		
-		else if (title.equals(ProductoTableExel.getRowDetalle())) 
-			cloneColumn.setMaxWidth(maxWhidth + getDetalleWidth());
-		
-		else 
+		if (title.equals(ProductoTableExel.getRowIdEmpresa()))
+			cloneColumn.setMaxWidth(maxWhidth + 50);
+		else if (title.equals(ProductoTableExel.getRowProducto())) 
 			cloneColumn.setMaxWidth(maxWhidth);
 		
+		else if (title.equals(ProductoTableExel.getRowDetalle())) 
+			cloneColumn.setMaxWidth(maxWhidth + getDetalleWidth()+100);
 		
+		else { 
+			cloneColumn.setMaxWidth(maxWhidth/3);
+			cloneColumn.setStyle("-fx-alignment: CENTER;");
+		}
 	}
 	
 	private static void sizePaper(PageLayout pageLayout) {
 		paperHeight = pageLayout.getPaper().getHeight();
 		paperWidth = pageLayout.getPaper().getWidth();
 		paperHeightPrint = pageLayout.getPrintableHeight() - bottomMargin - topMargin; 
-		paperWidthPrint = pageLayout.getPrintableWidth() - rightMargin ;
+		paperWidthPrint = pageLayout.getPrintableWidth();
 	}
 	
 	private static void margin(PageLayout pageLayout) {
@@ -223,7 +232,10 @@ public class PrinterTable extends PrintPaper {
 	
 	
 	private static void datePrint(Pane pane) {
-		String date = "Fecha de impresion: "+LocalDate.now().toString().trim();
+		
+		LocalDate lDate = LocalDate.now();
+		String date = lDate.format(DateTimeFormatter.ofPattern("dd/MM/yy")).trim();
+				
 		double coordX =  paperWidthPrint - (paperWidthPrint / 4);
 		if (pane.getChildren().indexOf(dateLb) < 0) {
 			dateLb = new Label();

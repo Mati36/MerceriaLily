@@ -11,7 +11,7 @@
    <children>
       <BorderPane prefHeight="606.0" prefWidth="882.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TableView fx:id="tableProducto" prefHeight="569.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="tableProducto" prefHeight="569.0" prefWidth="800.0" styleClass="tablePrinter" stylesheets="@PrinterTableStyle.css" BorderPane.alignment="CENTER">
               <columns>
                 <TableColumn fx:id="codEmpresa" maxWidth="4000.0" prefWidth="111.0" text="Codigo Empresa" />
                 <TableColumn fx:id="codNegocio" maxWidth="4000.0" prefWidth="113.0" text="Codigo Negocio" />
@@ -28,9 +28,9 @@
             </TableView>
          </center>
          <top>
-            <SplitPane fx:id="splitPane" dividerPositions="0.6" prefHeight="18.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="splitPane" dividerPositions="0.6090225563909775" prefHeight="18.0" prefWidth="800.0" BorderPane.alignment="CENTER">
                <items>
-                  <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="494.0">
+                  <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="458.0">
                     <menus>
                       <Menu mnemonicParsing="false" text="Archivo">
                         <items>

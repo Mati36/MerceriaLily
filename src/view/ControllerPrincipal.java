@@ -4,6 +4,7 @@ import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Date;
 
 import javax.print.attribute.standard.PageRanges;
 import javax.swing.JFileChooser;
@@ -72,6 +73,7 @@ public class ControllerPrincipal {
 		stageEditProducto = new Stage();
 		productoExel = new ProductoExel();
 		mysqlProductoDao = new MysqlProductoDao(); // para comunicarse con la base de datos
+
 		
 	}
 
@@ -92,6 +94,7 @@ public class ControllerPrincipal {
 		precioCosto.setCellValueFactory(intValue -> intValue.getValue().getPrecioCostoProperty());
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
+		
 		create.setCellValueFactory(value -> value.getValue().getUpdatedAtProperty());
 		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
 		
@@ -161,7 +164,7 @@ public class ControllerPrincipal {
 		Producto productoSelect = tableProducto.getSelectionModel().getSelectedItem();
 		
 		if (selectIndex >= 0 && productoSelect !=null) {
-			
+			 
 			DialogShow.Confirmarion("" , "¿ Quieres eliminar el producto "
 					+productoSelect.getNombre()+" con el codigo de negocio "+productoSelect.getIdNegocio()+" ?");
 					

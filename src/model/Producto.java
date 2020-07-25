@@ -3,6 +3,11 @@ package model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -72,10 +77,10 @@ public class Producto {
 	public final Double getRecargo() {return recargo.get();}
 	public final void setDetalle(String value) { detalle.set(value);}
 	public final String getDetalle() { return detalle.get();}
-	public LocalDate getCreatedAt() { return createdAt.get();	}
-	public void setCreatedAt(LocalDate value) { this.createdAt.set(value);}
-	public LocalDate getUpdateAt() { return updatedAt.get(); }
-	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(value); }
+	public LocalDate getCreatedAt() { return  dateFormat(createdAt.get());	}
+	public void setCreatedAt(LocalDate value) { this.createdAt.set(dateFormat(value));	}
+	public LocalDate getUpdateAt() { return dateFormat(updatedAt.get()); }
+	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(dateFormat(value)); }
 	public void setIva(boolean isIva) { this.isIva = isIva;	}
 	public boolean getIsIva() {return isIva;	}
 	
@@ -151,5 +156,32 @@ public class Producto {
 	
 	private double roundedNum(Double num) {
 		return (double) Math.round(num);
+	}
+	
+	public static LocalDate dateFormat(LocalDate date) {
+		String format = "dd/MM/yy";
+		
+		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                .withLocale(Locale.FRENCH);
+		
+		LocalDate dates = LocalDate.parse("29/05/2019", formatters);
+		System.out.println(dates);
+
+		try {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+			return LocalDate.parse(date.format(formatter));
+			
+		} catch (Exception e) {
+			System.out.println("Error al cnbertir la fecha de "+date+" a "+format);
+			return date;
+		}
+		
+			
+	}
+	
+	public static String dateFormated(ObjectProperty<LocalDate> date,String format) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+		
+		return date.get().format(formatter);
 	}
 }

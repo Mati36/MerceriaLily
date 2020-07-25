@@ -107,6 +107,7 @@ public class ProductoExel{
 		
 			if (!isProductoTable(producto,tableList)) 
 				tableList.add(producto);
+			
 		}
 		else
 			new ExelExeption("Fila vacia");

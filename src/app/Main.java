@@ -58,6 +58,7 @@ public class Main extends Application {
 			layout = (AnchorPane) viewLoader.load();
 			
 			Scene scene = new Scene(layout);
+//			scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			controllerPrincipal = viewLoader.getController();
