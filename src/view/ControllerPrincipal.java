@@ -96,6 +96,18 @@ public class ControllerPrincipal {
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
 		
 		create.setCellValueFactory(value -> value.getValue().getUpdatedAtProperty());
+		create.setCellFactory(column -> {
+	        return new TableCell<Producto, LocalDate>() {
+	            @Override
+	            protected void updateItem(LocalDate item, boolean empty) {
+	                super.updateItem(item, empty);
+	                String value = item == null || empty ? null : Producto.dateFormated(item);
+	                setText(value);
+	          	                
+	            }
+	        };
+	    });
+		
 		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
 		
 	}
@@ -339,7 +351,7 @@ public class ControllerPrincipal {
 	@FXML
 	public void printTable() {
 		PrinterJob printer = PrinterJob.createPrinterJob();
-		
+		System.out.println(tableProducto.getColumns().get(0).getWidth());
 		if (printer.showPrintDialog(stage))
 			PrinterTable.printTable(tableProducto, printer);
 		printer.endJob();

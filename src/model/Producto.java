@@ -5,9 +5,6 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
-
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -28,7 +25,7 @@ public class Producto {
 	private final ObjectProperty<LocalDate> updatedAt;
 	private boolean isIva;
 	private final int DECIMAL_LIMIT = 2;
-	
+	private static final String DATE_FORMAT = "dd/MM/yy";
 	public Producto() {
 		
 		this.nombre = new SimpleStringProperty();
@@ -78,9 +75,9 @@ public class Producto {
 	public final void setDetalle(String value) { detalle.set(value);}
 	public final String getDetalle() { return detalle.get();}
 	public LocalDate getCreatedAt() { return  dateFormat(createdAt.get());	}
-	public void setCreatedAt(LocalDate value) { this.createdAt.set(dateFormat(value));	}
+	public void setCreatedAt(LocalDate value) { this.createdAt.set(value);	}
 	public LocalDate getUpdateAt() { return dateFormat(updatedAt.get()); }
-	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(dateFormat(value)); }
+	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(value); }
 	public void setIva(boolean isIva) { this.isIva = isIva;	}
 	public boolean getIsIva() {return isIva;	}
 	
@@ -159,29 +156,21 @@ public class Producto {
 	}
 	
 	public static LocalDate dateFormat(LocalDate date) {
-		String format = "dd/MM/yy";
 		
-		DateTimeFormatter formatters = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                .withLocale(Locale.FRENCH);
-		
-		LocalDate dates = LocalDate.parse("29/05/2019", formatters);
-		System.out.println(dates);
-
 		try {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-			return LocalDate.parse(date.format(formatter));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+			return LocalDate.parse(dateFormated(date), formatter);
 			
 		} catch (Exception e) {
-			System.out.println("Error al cnbertir la fecha de "+date+" a "+format);
+			
 			return date;
 		}
 		
 			
 	}
 	
-	public static String dateFormated(ObjectProperty<LocalDate> date,String format) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-		
-		return date.get().format(formatter);
+	public static String dateFormated(LocalDate date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+		return date.format(formatter);
 	}
 }

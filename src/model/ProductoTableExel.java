@@ -24,15 +24,15 @@ public class ProductoTableExel {
 	static private final String ROW_UPDATE_AT= "Ultima Modificacion";
 	static private final String ROW_LAST = ROW_UPDATE_AT; 
 	
-	static final String ROW_ID_NEGOCIO_ABBREVIATED = "Cod. Neg";
-	static final String ROW_ID_EMPRESA_ABBREVIATED = "Cod. Emp";
+	static final String ROW_ID_NEGOCIO_ABBREVIATED = "C.N";
+	static final String ROW_ID_EMPRESA_ABBREVIATED = "C.E";
 	static final String ROW_PRODUCTO_ABBREVIATED = "Producto";
-	static final String ROW_PRECIO_COSTO_ABBREVIATED = "P. Costo";
-	static final String ROW_PRECIO_VENTA_ABBREVIATED = "P. Venta";
-	static final String ROW_PRECIO_CANTIDAD_ABBREVIATED = "P x Cant";
+	static final String ROW_PRECIO_COSTO_ABBREVIATED = "P.C";
+	static final String ROW_PRECIO_VENTA_ABBREVIATED = "P.v";
+	static final String ROW_PRECIO_CANTIDAD_ABBREVIATED = "P.x.C";
 	static final String ROW_RECARGO_ABBREVIATED = "Recargo";
 	static final String ROW_DETALLE_ABBREVIATED = "Detalle";
-	static final String ROW_UPDATE_AT_ABBREVIATED= "Ult. Mod.";
+	static final String ROW_UPDATE_AT_ABBREVIATED= "F. Mod";
 	
 	// index columnas
 	private static final int INDEX_ID_EMPRESA = 0;
