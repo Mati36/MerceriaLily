@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.security.auth.callback.Callback;
 
 import org.apache.log4j.helpers.DateTimeDateFormat;
+import org.apache.poi.ss.formula.functions.Column;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -22,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
@@ -32,7 +34,7 @@ public class PrinterTable extends PrintPaper{
 	private static char[] alphabet = "abcdefghijklmnñopqrstuvwxyz".toCharArray();
 	private static int productoWidth = 0;
 	private static int detalleWidth = 0;
-	private static Pane pane;
+	private static AnchorPane pane;
 	private static Label dateLb;
 	private static Label numPageLb;
 	private static double topMargin;
@@ -43,9 +45,15 @@ public class PrinterTable extends PrintPaper{
 	private static double paperWidthPrint;
 	private static double paperHeight;
 	private static double paperWidth;
-	// solucion, ajustar el tamaño de todas las columnas, luego sumar el tamaño de las mismas y compararlo con el tamaño de la tabla.
-	// si es mas chica le aumentamos el tamaño a la columna mas grande hasta llegar al tamaño de la tabla
-	// si es ma chico le reducimos el tamaño a todas hasta llegar al tamaño de la tabla
+	/* 
+	 * el anchorPane tiene que tener el tamaño del area de impresion 
+	 * la fecha y el numero de hoja la posicion del topMargin 
+	 * la tabla la posicion marginLeft, marginRigh,MarginButtom y el MarginTop + 5
+	 * tener en cuenta que los margenes entan en el minimo por lo tanto tratar de calcular lor recomendados
+	 * ver como hacer que las columnas no se pasen del la tabla
+	*/ 
+	
+	
 	
 	public static <T> void printTable(TableView<Producto> tableView, PrinterJob jobArg) {
 		boolean createJob = jobArg == null;
@@ -68,21 +76,20 @@ public class PrinterTable extends PrintPaper{
 		
 		Printer printer = job.getPrinter();
 		PageLayout pageLayout = job.getJobSettings().getPageLayout();
-			
-		pageLayout = printer.createPageLayout(pageLayout.getPaper(),pageLayout.getPageOrientation(), 
+		
+		pageLayout = printer.createPageLayout(pageLayout.getPaper(),pageLayout.getPageOrientation(),
 												Printer.MarginType.HARDWARE_MINIMUM);
 		margin(pageLayout);
 		sizePaper(pageLayout);
-		pane = new Pane();
-		pane.setPrefSize(paperWidthPrint, paperHeightPrint);
+		pane = new AnchorPane();
+		pane.setPrefSize(paperWidth, paperHeight);
 		datePrint(pane);
 		TableView<Producto> copyView = createTableCopy(tableView, job,pageLayout);
-		autoResizetext(tableView);
 		printList(tableView, copyView, job, pageLayout,pane);
 	
 	}
 	
-	private static void printList(TableView<Producto> tableView, TableView<Producto> copyTableView,PrinterJob job,PageLayout pageLayout,Pane pane) {
+	private static void printList(TableView<Producto> tableView, TableView<Producto> copyTableView,PrinterJob job,PageLayout pageLayout,AnchorPane pane) {
 				
 		ArrayList<Producto> itemList;
 		// ver como ir cambiando la letra
@@ -91,20 +98,22 @@ public class PrinterTable extends PrintPaper{
 		
 			itemList =  new ArrayList<Producto>(tableView.getItems()
 					 									 .filtered(prod -> isLetterStart(prod.getIdNegocio(), letter)));
+			int num = 1;
 			while (itemList != null && !itemList.isEmpty()) {
-				int num = 1;
 				printPage(job, copyTableView, itemList,pageLayout,letter,pane,num);
+				 num+= 1;
 			}
 		}
 	
 	}
 	
-	protected static <T> void printPage(PrinterJob job, TableView<T> copyView, ArrayList<T> itemList,PageLayout pageLayout,char letter,Pane pane,int pageNum) {
-		ScrollBar verticalScrollbar = getVerticalScrollbar(copyView);
+	protected static <T> void printPage(PrinterJob job, TableView<T> copyView, ArrayList<T> itemList,PageLayout pageLayout,char letter,AnchorPane pane,int pageNum) {
+		
 		ObservableList<T> batchItemList = FXCollections.observableArrayList();
 		copyView.setItems(batchItemList);
+		ScrollBar verticalScrollbar = getVerticalScrollbar(copyView);
 		
-		batchItemList.add(itemList.remove(0));
+//		batchItemList.add(itemList.remove(0));
 		while (!verticalScrollbar.isVisible() && itemList.size() > 0) {
 			T item = itemList.remove(0);
 			batchItemList.add(item);
@@ -113,7 +122,7 @@ public class PrinterTable extends PrintPaper{
 		}
 		
 		
-		if (batchItemList.size() > 1 && verticalScrollbar.isVisible()) {
+		while (batchItemList.size() > 0 && verticalScrollbar.isVisible()) {
 			
 			T item = batchItemList.remove(batchItemList.size() - 1);
 			itemList.add(0, item);
@@ -121,10 +130,15 @@ public class PrinterTable extends PrintPaper{
 
 		}
 				
-		numPagePrint(pane, letter);
-	
+		numPagePrint(pane, letter,pageNum);
+
+//		pane.setRightAnchor(copyView, 10.0);
+//		pane.setLeftAnchor(copyView, 10.0);
+		
 		if (pane.getChildren().indexOf(copyView) < 0)
 			pane.getChildren().add(copyView);
+		
+		resizeColumns(copyView);
 		
 		job.printPage(pageLayout,pane);
 	
@@ -146,14 +160,13 @@ public class PrinterTable extends PrintPaper{
 		
 		copyView.setTranslateY(topMargin + dateLb.getPrefHeight() + 10);
 		copyView.setColumnResizePolicy(tableView.getColumnResizePolicy());
-		
-		
+
 		for (TableColumn<T, ?> colum : tableView.getColumns()) {
 			if (!colum.getText().equals(ProductoTableExel.getRowPrecioCosto()) 
 					&& !colum.getText().equals(ProductoTableExel.getRowRecargo())) {
 				TableColumn cloneColumn = columnText(colum);
 				
-				columnMaxWidth(tableView, cloneColumn, colum);
+//				columnMaxWidth(tableView, cloneColumn, colum);
 				
 				if (colum.getCellValueFactory() != null) 
 					cloneColumn.setCellValueFactory(colum.getCellValueFactory());
@@ -162,13 +175,15 @@ public class PrinterTable extends PrintPaper{
 					cloneColumn.setCellFactory(colum.getCellFactory());
 				
 				copyView.getColumns().add(cloneColumn);
-			
-			}
-		}
 				
+			}
+			
+		}
+		
 		new Scene(copyView);
 		copyView.getStylesheets().add(PrintPaper.class.getResource("PrinterTableStyle.css").toString());
 		copyView.getStyleClass().add("tablePrinter");
+		
 		return copyView;
 	}
 	
@@ -208,29 +223,7 @@ public class PrinterTable extends PrintPaper{
 		}
 		
 	}
-	
-	private static <T,S> void columnMaxWidth(TableView<T> tableView,TableColumn<S, Producto> cloneColumn,TableColumn<T, ?> colum) {
-		maxWidth((TableView<Producto>) tableView);
-		String title = colum.getText();
-		double maxWhidth = colum.getMaxWidth();
 		
-		if (title.equals(ProductoTableExel.getRowIdEmpresa())) {
-			cloneColumn.setMaxWidth(maxWhidth/2 + 1200);
-			cloneColumn.setStyle("-fx-alignment: CENTER;");
-		}
-		else if (title.equals(ProductoTableExel.getRowProducto())) { 
-			cloneColumn.setMaxWidth(maxWhidth/2);
-			cloneColumn.setStyle("-fx-alignment: CENTER;");
-		}
-		else if (title.equals(ProductoTableExel.getRowDetalle())) 
-			cloneColumn.setMaxWidth(maxWhidth + getDetalleWidth()+150);
-		
-		else { 
-			cloneColumn.setMaxWidth(maxWhidth/3);
-			cloneColumn.setStyle("-fx-alignment: CENTER;");
-		}
-	}
-	
 	private static void sizePaper(PageLayout pageLayout) {
 		paperHeight = pageLayout.getPaper().getHeight();
 		paperWidth = pageLayout.getPaper().getWidth();
@@ -246,10 +239,10 @@ public class PrinterTable extends PrintPaper{
 	}
 	
 	
-	private static void datePrint(Pane pane) {
+	private static void datePrint(AnchorPane pane) {
 		
 		LocalDate lDate = LocalDate.now();
-		String date = Producto.dateFormated(lDate).trim();
+		String date = "Fecha de impresion "+Producto.dateFormated(lDate).trim();
 				
 		double coordX =  paperWidthPrint - (paperWidthPrint / 4);
 		if (pane.getChildren().indexOf(dateLb) < 0) {
@@ -261,52 +254,84 @@ public class PrinterTable extends PrintPaper{
 		dateLb.setText(date);
 	}
 	
-	private static void numPagePrint(Pane pane, char letter) {
+	private static void numPagePrint(AnchorPane pane, char letter, int numPag) {
+		String pag = String.valueOf(letter).toUpperCase();
+		String num = String.format("%02d" , numPag);
+		
 		if (pane.getChildren().indexOf(numPageLb) < 0) {
 			numPageLb = new Label();
 			numPageLb.setTranslateX(leftMargin + rightMargin);
 			numPageLb.setTranslateY(5);
 			pane.getChildren().add(numPageLb);
 		}
-		numPageLb.setText(String.valueOf(letter).toUpperCase().trim());
+				
+		numPageLb.setText((pag+" "+num).trim());
 		
 		
 	}
-	
-	public static void autoResizeColumns( TableView<?> table )
-	{
+
+	public static <T> void resizeColumns( TableView<T> table )	{
+		//Set the right policy
 		
-	       //Set the right policy
-	       table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-	       table.getColumns().stream().forEach( (column) ->
-	       {
-	    	   String text = column.getText();
-	    	   if ( !( text.equals(ProductoTableExel.ROW_DETALLE_ABBREVIATED) 
-	    		)) {
-	    		 
-			    	   Text t = new Text( text );
-			           double max = t.getLayoutBounds().getWidth();
-			         
-			          
-			        	   for ( int i = 0; i < table.getItems().size(); i++ )
-				           {
-				               //cell must not be empty
-				               if ( column.getCellData( i ) != null )
-				               {
-				                   t = new Text( column.getCellData( i ).toString() );
-				                   double calcwidth = t.getLayoutBounds().getWidth();
-				                   //remember new max-width
-				                   if ( calcwidth > max )
-				                	   max = calcwidth;
-				                 
-				               }
-				            	            	   
-				           }
-				           //set the new max-widht with some extra space
-				           column.setPrefWidth( max + 10.0d );
-	    	   }   	           
-	       } );
-	      
+       table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
+       ObservableList<TableColumn<T, ?>> columns = table.getColumns();
+		
+		for (int i = 0; i < columns.size(); i++) {
+			TableColumn<T, ?> column = columns.get(i);
+			String text = column.getText();
+			Text t = new Text( text );
+			if (text != ProductoTableExel.ROW_DETALLE_ABBREVIATED) {
+				double max = t.getLayoutBounds().getWidth();
+				
+				for ( int j = 0; j < table.getItems().size(); j++ ){
+		           //cell must not be empty
+		           if ( column.getCellData( j ) != null ){
+		               
+		        	   t = new Text( column.getCellData( j ).toString() );
+		               double calcwidth = t.getLayoutBounds().getWidth();
+		               //remember new max-width
+		               if ( calcwidth > max )
+		            	   max = calcwidth;
+		           }
+				}
+				column.setResizable(true);
+				if (column.getText() != ProductoTableExel.ROW_DETALLE_ABBREVIATED) 
+					column.setPrefWidth( max + 6.0d );
+				}
+			
+		}
+      	fixresizeColums(table);      
+	}
+	
+	private static <T> void fixresizeColums(TableView<T> tableView) {
+		ObservableList<TableColumn<T, ?>> columns = tableView.getColumns();
+		double width = 0;
+		for (int i = 0; i < columns.size(); i++) {
+			if (i != 3 ) 
+				width += columns.get(i).widthProperty().get();
+						
+		}
+		
+		columns.get(3).prefWidthProperty().bind(tableView.widthProperty().subtract(width).divide(1));
+		Double size = columns.get(3).prefWidthProperty().get();
+		
+		if (width + size >= paperWidthPrint - leftMargin) {
+			
+			Double sobrante = (width + size)  -  (paperWidthPrint - leftMargin);
+
+			if (sobrante == 0) { 
+				Double num = (width + size) - paperWidthPrint;
+				size = size - 10;
+				System.out.println("ingreso");
+			}
+			else 			
+				size -= sobrante;
+				 
+			columns.get(3).prefWidthProperty().unbind();
+			columns.get(3).setPrefWidth(size);
+			
+		}
+		
 	}
 	
 	private static void autoResizetext( TableView<Producto> table )

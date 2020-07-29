@@ -351,7 +351,7 @@ public class ControllerPrincipal {
 	@FXML
 	public void printTable() {
 		PrinterJob printer = PrinterJob.createPrinterJob();
-		System.out.println(tableProducto.getColumns().get(0).getWidth());
+		
 		if (printer.showPrintDialog(stage))
 			PrinterTable.printTable(tableProducto, printer);
 		printer.endJob();
