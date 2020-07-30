@@ -1,21 +1,19 @@
 package app;
 
-
 import java.io.IOException;
 import Exeptions.AppExeption;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-import model.DialogAlert;
+import javafx.stage.WindowEvent;
 import model.Producto;
 import view.ControllerEditProducto;
 import view.ControllerPrincipal;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 
@@ -37,6 +35,7 @@ public class Main extends Application {
 			this.primaryStage.setTitle("Merceria Lili");
 			this.primaryStage.setMaximized(true);
 			this.primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/icon/icon.png")));
+			closeApplication(primaryStage);
 			mostrarProducto();
 			
 		} catch (Exception e) {
@@ -45,9 +44,21 @@ public class Main extends Application {
 		}
 	}
 
-	@Override
-	public void stop() throws Exception {
-		controllerPrincipal.closeClcik();
+	
+	public void closeApplication(Stage stage) {
+		if (stage != null) {
+		
+			stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+				
+				@Override
+				public void handle(WindowEvent event) {
+					controllerPrincipal.closeClcik();
+					Platform.exit();
+					
+				}
+			});
+			
+		}
 		
 	}
 	
