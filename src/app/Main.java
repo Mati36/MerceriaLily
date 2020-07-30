@@ -4,6 +4,7 @@ package app;
 import java.io.IOException;
 import Exeptions.AppExeption;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -34,7 +35,7 @@ public class Main extends Application {
 		try {
 			this.primaryStage = primaryStage; 
 			this.primaryStage.setTitle("Merceria Lili");
-			
+			this.primaryStage.setMaximized(true);
 			this.primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/icon/icon.png")));
 			mostrarProducto();
 			
@@ -44,6 +45,11 @@ public class Main extends Application {
 		}
 	}
 
+	@Override
+	public void stop() throws Exception {
+		controllerPrincipal.closeClcik();
+		
+	}
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -79,8 +85,6 @@ public class Main extends Application {
 			Scene seceneEditProducto = new Scene(layout);
 			this.stageEditProducto.setScene(seceneEditProducto);
 			ControllerEditProducto controllerEditProducto = viewLoader.getController();
-//			this.stageEditProducto.initModality(Modality.WINDOW_MODAL);
-//			this.stageEditProducto.initOwner(primaryStage);
 			controllerEditProducto.setProducto(prod);
 			controllerEditProducto.setControllerPrincipal(controllerPrincipal);
 			controllerEditProducto.setDialogStage(stageEditProducto);

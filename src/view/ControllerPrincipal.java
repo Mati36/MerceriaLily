@@ -1,13 +1,9 @@
 package view;
 
-import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-
-import javax.print.attribute.standard.PageRanges;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -15,7 +11,7 @@ import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
 import conection.MysqlProductoDao;
-import javafx.collections.ObservableList;
+import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.EventHandler;
@@ -73,8 +69,6 @@ public class ControllerPrincipal {
 		stageEditProducto = new Stage();
 		productoExel = new ProductoExel();
 		mysqlProductoDao = new MysqlProductoDao(); // para comunicarse con la base de datos
-
-		
 	}
 
 	@FXML
@@ -110,8 +104,7 @@ public class ControllerPrincipal {
 		
 		tableProducto.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		optionsSelection(tableProducto);
-		
-		
+			
 	}
 	
 	public void setMainApp(Main mainApp) { // se llama de main 
@@ -195,7 +188,6 @@ public class ControllerPrincipal {
 					getMainApp().getListProducto().remove(producto);
 			
 			}
-				
 		}
 	}
 	
@@ -213,8 +205,7 @@ public class ControllerPrincipal {
 	        
 	        tableProducto.setItems(sortedList);
 	        tableProducto.getSelectionModel().selectFirst();
-	        
-			
+	
 		} 
 
 	
@@ -260,6 +251,12 @@ public class ControllerPrincipal {
 	
 	@FXML
 	public void closeClcik() {
+		DialogShow.Confirmarion("Guardar", "¿Quieres Guardar antes de salir?");
+		if (DialogShow.isResultOption()){
+			File file = new File(defaultFileDirectory);
+			if (file.exists()) 
+				save(file);
+		}
 		app.getPrimaryStage().close();
 	}
 	
@@ -280,8 +277,7 @@ public class ControllerPrincipal {
 			mysqlProductoDao.mostrarProductoTabla(tableProducto.getItems());
 	
 	}
-	
-	
+		
 	@FXML
 	public void saveExel() {
 		File file = new File(defaultFileDirectory);
@@ -298,16 +294,22 @@ public class ControllerPrincipal {
 
 	}
 	
-	@FXML
-	public void saveAs() {
-		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG,true);
+	private void save(File file) {
 		try {
 			if (file != null)
 				productoExel.saveExel(app.getListProducto(),file);
+				
 		} catch (InvalidFormatException | IOException e) {
 			new ExelExeption("No es podible guardar el archivo exel \n"+e.getMessage());
 			
 		}
+		Platform.exit();
+	}
+	
+	@FXML
+	public void saveAs() {
+		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG,true);
+		save(file);
 
 	}
 	
@@ -366,8 +368,7 @@ public class ControllerPrincipal {
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
 		else
 			load();
-		
-		
+			
 	}
 		
 	private File fileSelection(String title, int action,boolean save) {
@@ -385,12 +386,10 @@ public class ControllerPrincipal {
 	}
 
 	private void optionsSelection(TableView<Producto> table) {
-		
-		
+				
 		tableProducto.setRowFactory(new Callback<TableView<Producto>, TableRow<Producto>>() {
 		    @Override
-		    public TableRow<Producto> call(TableView<Producto> tableView2)
-		    {
+		    public TableRow<Producto> call(TableView<Producto> tableView2) {
 		        final TableRow<Producto> row = new TableRow<>();
 
 		        row.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
