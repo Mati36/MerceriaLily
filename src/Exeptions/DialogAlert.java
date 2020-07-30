@@ -2,30 +2,31 @@ package Exeptions;
 
 import java.util.Optional;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.StageStyle;
 
 public class DialogAlert {
 
 	private String content;
-	private Alert alertType; 
+	private AlertType alertType; 
 	private String titel;
 	private String headerText;
 	private StageStyle stageStyle;
 	private boolean resultOption;
 	
-	public DialogAlert(String content, String titel,StageStyle stageStyle, String headerText, Alert alertType,boolean resultOption) {
+	public DialogAlert(String content, String titel,StageStyle stageStyle, String headerText, AlertType alertType,boolean resultOption) {
 		this.content = content;
 		this.alertType = alertType;
 		this.titel = titel;
 		this.headerText = headerText;
 		this.stageStyle = stageStyle;
 		this.resultOption = resultOption;
-		start();
+		start(alertType);
 	}
 		
 
-	public DialogAlert(String content, String titel,Alert alertType, StageStyle stageStyle) {
+	public DialogAlert(String content, String titel,AlertType alertType, StageStyle stageStyle) {
 		
 		this.content = content;
 		this.alertType = alertType;
@@ -33,35 +34,36 @@ public class DialogAlert {
 		this.headerText = null;
 		this.stageStyle = stageStyle;
 		this.resultOption = false;
-		start();
+		start(alertType);
 	}
 	
-	public DialogAlert(String content, String titel,Alert alertType) {
+	public DialogAlert(String content, String titel,AlertType warning) {
 		
 		this.content = content;
-		this.alertType = alertType;
+		this.alertType = warning;
 		this.titel = titel;
 		this.headerText = null;
 		this.stageStyle = StageStyle.UTILITY;
 		this.resultOption = false;
-		start();
+		start(warning);
 	}
 
-	protected void start() {
-		alertType.setTitle(titel);
-		alertType.setHeaderText(headerText);
-		alertType.initStyle(stageStyle);
-		alertType.setContentText(content);
-		Optional<ButtonType> resultOption = alertType.showAndWait();
+	protected void start(AlertType alertType) {
+		Alert alert = new Alert(alertType);
+		alert.setTitle(titel);
+		alert.setHeaderText(headerText);
+		alert.initStyle(stageStyle);
+		alert.setContentText(content);
+		Optional<ButtonType> resultOption = alert.showAndWait();
 		this.resultOption = resultOption.get() == ButtonType.OK;
 	}
 	
-	public Alert getalertType() {
+	public AlertType getalertType() {
 		return alertType;
 	}
 
 
-	public void setalertType(Alert alertType) {
+	public void setalertType(AlertType alertType) {
 		this.alertType = alertType;
 	}
 

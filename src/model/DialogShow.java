@@ -14,12 +14,16 @@ public class DialogShow {
 
 	public DialogShow() {	}
 	
+	@SuppressWarnings("null")
 	private static void start(String titel,String content, AlertType type) {
 		alertType = new Alert(type);
 		alertType.setTitle(titel);
 		alertType.setContentText(content);
 		Optional<ButtonType> option = alertType.showAndWait();
-		setResultOption(option.get() == ButtonType.OK);
+		if(option != null)
+			setResultOption(false);
+		else
+			setResultOption(option.get() == ButtonType.OK);
 		
 	}
 
@@ -36,6 +40,9 @@ public class DialogShow {
 		 start (titel,content, AlertType.INFORMATION);
 	}
 
+	public static final void Warning(String titel,String content) {
+		 start (titel,content, AlertType.INFORMATION);
+	}
 	public static boolean isResultOption() {
 		return resultOption;
 	}

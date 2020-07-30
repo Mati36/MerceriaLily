@@ -163,9 +163,10 @@ public class ControllerPrincipal {
 			}
 		}
 		else if (selectionSize > 1) 
-			new AppExeption("No se puede editar mas de un producto al mismo tiempo");
+			 DialogShow.Warning("Advertencia", "No se puede editar mas de un producto al mismo tiempo");
 		else 
-			new AppExeption("No selecciono ningun producto");
+			DialogShow.Warning("Advertencia", "No selecciono ningun producto");
+			
 	}
 	
 	@FXML
