@@ -4,6 +4,7 @@ import java.awt.Shape;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.print.attribute.standard.PageRanges;
@@ -14,23 +15,22 @@ import Exeptions.AppExeption;
 import Exeptions.ExelExeption;
 import app.Main;
 import conection.MysqlProductoDao;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Rectangle2D;
-import javafx.print.PageLayout;
-import javafx.print.PageRange;
-import javafx.print.Printer;
 import javafx.print.PrinterJob;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.TableViewSelectionModel;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import model.DialogShow;
-import model.PrintPaper;
 import model.PrinterTable;
 import model.Producto;
 import model.ProductoExel;
@@ -94,7 +94,7 @@ public class ControllerPrincipal {
 		precioCosto.setCellValueFactory(intValue -> intValue.getValue().getPrecioCostoProperty());
 		precioCantidad.setCellValueFactory(value -> value.getValue().getPrecioCantidadProperty());
 		precioVenta.setCellValueFactory(value -> value.getValue().getPrecioVentaProperty());
-		
+		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
 		create.setCellValueFactory(value -> value.getValue().getUpdatedAtProperty());
 		create.setCellFactory(column -> {
 	        return new TableCell<Producto, LocalDate>() {
@@ -108,7 +108,9 @@ public class ControllerPrincipal {
 	        };
 	    });
 		
-		detalle.setCellValueFactory(value -> value.getValue().getDetalleProperty());
+		tableProducto.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		optionsSelection(tableProducto);
+		
 		
 	}
 	
@@ -145,54 +147,56 @@ public class ControllerPrincipal {
 	
 	@FXML
 	public void editProducto() {
-		int selectIndex = tableProducto.getSelectionModel().getSelectedIndex();
-		Producto productoSelect = tableProducto.getSelectionModel().getSelectedItem();
-		app.setOnClickConfirmation(false);
-		
-		if (selectIndex >= 0 && productoSelect != null) {
-			String idNegocio = productoSelect.getIdNegocio();
-			try {
-				app.mostrarEditProducto(productoSelect,stageEditProducto);
-				
-				if (app.isOnClickConfirmation()) {
-					productoSelect.setUpdatedAt(LocalDate.now());
-					if (mysqlProductoDao.isConnectionSql()) {
-						mysqlProductoDao.update(productoSelect,idNegocio);
-						refrshTable();
+		TableViewSelectionModel<Producto> selectionItems = tableProducto.getSelectionModel();
+		int selectionSize = selectionItems.getSelectedItems().size(); 
+		if (selectionSize == 1 ) {
+			Producto productoSelect = selectionItems.getSelectedItem();
+			app.setOnClickConfirmation(false);
+			if (productoSelect != null) {
+				String idNegocio = productoSelect.getIdNegocio();
+				try {
+					app.mostrarEditProducto(productoSelect,stageEditProducto);
+					
+					if (app.isOnClickConfirmation()) {
+						productoSelect.setUpdatedAt(LocalDate.now());
+						if (mysqlProductoDao.isConnectionSql()) {
+							mysqlProductoDao.update(productoSelect,idNegocio);
+							refrshTable();
+						}
 					}
+				} catch (IOException e) {
+					new AppExeption("No es posible mostrar la ventada editar producto "+e.getMessage());
 				}
-			} catch (IOException e) {
-				new AppExeption("No es posible mostrar la ventada editar producto "+e.getMessage());
 			}
 		}
+		else if (selectionSize > 1) 
+			new AppExeption("No se puede editar mas de un producto al mismo tiempo");
 		else 
 			new AppExeption("No selecciono ningun producto");
-	
 	}
 	
 	@FXML
 	public void delProducto() {
-		int selectIndex = tableProducto.getSelectionModel().getSelectedIndex();
-		Producto productoSelect = tableProducto.getSelectionModel().getSelectedItem();
 		
-		if (selectIndex >= 0 && productoSelect !=null) {
-			 
+		ArrayList<Producto> selectItems = new ArrayList<Producto>(tableProducto.getSelectionModel().getSelectedItems());
+		
+		for (Producto producto : selectItems) {
+							
 			DialogShow.Confirmarion("" , "¿ Quieres eliminar el producto "
-					+productoSelect.getNombre()+" con el codigo de negocio "+productoSelect.getIdNegocio()+" ?");
+					+producto.getNombre()+" con el codigo de negocio "+producto.getIdNegocio()+" ?");
 					
 			if (DialogShow.isResultOption()) {
+					
 				if (mysqlProductoDao.isConnectionSql()) {
-					mysqlProductoDao.delete(productoSelect);
+					mysqlProductoDao.delete(producto);
 					refrshTable();
 				}
 				else 
-					getMainApp().getListProducto().remove(productoSelect);
-				
+					getMainApp().getListProducto().remove(producto);
+			
 			}
 				
 		}
-		else 
-			new AppExeption("No selecciono ningun producto");
 	}
 	
 	@FXML
@@ -208,8 +212,8 @@ public class ControllerPrincipal {
 	        sortedList.comparatorProperty().bind(tableProducto.comparatorProperty());
 	        
 	        tableProducto.setItems(sortedList);
-	        tableProducto.getSelectionModel().select(0);
-				
+	        tableProducto.getSelectionModel().selectFirst();
+	        
 			
 		} 
 
@@ -362,6 +366,8 @@ public class ControllerPrincipal {
 			mysqlProductoDao.mostrarProductoTabla(app.getListProducto());
 		else
 			load();
+		
+		
 	}
 		
 	private File fileSelection(String title, int action,boolean save) {
@@ -377,22 +383,45 @@ public class ControllerPrincipal {
 		return  save ? jFile.showSaveDialog(stage) : jFile.showOpenDialog(stage);
 			
 	}
-	
-	// metodos de test
-	private void mostrarProductoConsola(String string, Producto prod) { 
-		System.out.println(string);
-		System.out.println("Nombre: "+prod.getNombre());
-		System.out.println("Id empresa "+prod.getIdEmpresa());
-		System.out.println("Id negocio "+prod.getIdNegocio());
-		System.out.println("precio costo "+prod.getPrecioCosto());
-		System.out.println("precio venta "+prod.getPrecioVenta());
-		System.out.println("precio cantidad "+prod.getPrecioCantidad());
-		System.out.println();
+
+	private void optionsSelection(TableView<Producto> table) {
+		
+		
+		tableProducto.setRowFactory(new Callback<TableView<Producto>, TableRow<Producto>>() {
+		    @Override
+		    public TableRow<Producto> call(TableView<Producto> tableView2)
+		    {
+		        final TableRow<Producto> row = new TableRow<>();
+
+		        row.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
+		            @Override
+		            public void handle(MouseEvent event)
+		            {
+		                final int index = row.getIndex();
+
+		                if (index >= 0 && index < tableProducto.getItems().size())
+		                {
+		                	TableViewSelectionModel<Producto> selectionItems = tableProducto.getSelectionModel();		                	
+		                	ArrayList<Integer> indices = new ArrayList<Integer>( selectionItems.getSelectedIndices());
+		                	
+		                    if(indices.indexOf(index) >= 0) {
+		                    	selectionItems.clearSelection(index);
+		                    	indices.remove((Integer) index);
+		                    }
+		                    else {
+		                    	indices.add(index);
+		                    }
+		                    
+		                   for (Integer item : indices) {
+		                	   if (!selectionItems.isSelected(item))
+		                    		selectionItems.select(item);
+		                   }
+		                   event.consume();
+		                }
+		            }
+		        });
+		        return row;
+		    }
+		});
 	}
-	
-	private Producto  cargarProducto() {
-		return new Producto("PuebaFecha","B02", "B2","Boton", 5.0,0.0, 5.0, 10.0,LocalDate.now());
-	}
-	
-	
 }
