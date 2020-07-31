@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -18,8 +20,10 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.print.PrinterJob;
 import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
@@ -169,27 +173,61 @@ public class ControllerPrincipal {
 			
 	}
 	
+	@SuppressWarnings("static-access")
 	@FXML
-	public void delProducto() {
+	public Producto delProducto() {
 		
 		ArrayList<Producto> selectItems = new ArrayList<Producto>(tableProducto.getSelectionModel().getSelectedItems());
+		Producto producto = null;
+		int selectSize = selectItems.size();
 		
-		for (Producto producto : selectItems) {
-							
-			DialogShow.Confirmarion("" , "¿ Quieres eliminar el producto "
-					+producto.getNombre()+" con el codigo de negocio "+producto.getIdNegocio()+" ?");
-					
-			if (DialogShow.isResultOption()) {
-					
-				if (mysqlProductoDao.isConnectionSql()) {
-					mysqlProductoDao.delete(producto);
-					refrshTable();
-				}
-				else 
-					getMainApp().getListProducto().remove(producto);
+		if (! selectItems.isEmpty()) {
+			producto = selectItems.get(0);
+			DialogShow dialogShow = new DialogShow(AlertType.CONFIRMATION);
+			dialogShow.setTitle("");
+			if (selectSize > 1) {
+				
+				dialogShow.setContent("Quieres eliminar "+selectSize+" productos");
+				dialogShow.getAlertType().getButtonTypes().add(new ButtonType("Eliminar todos", ButtonData.YES));
+			}
+			else 
+				dialogShow.setContent("¿ Quieres eliminar el producto "
+						+producto.getNombre()+" con el codigo de negocio "+producto.getIdNegocio()+" ?");
+				
 			
+			dialogShow.show();
+			
+			
+			for (int i = 0; i < selectSize; i++) {
+				if (dialogShow.isYesButton()) {
+					for (Producto producto2 : selectItems) {
+						producto = producto2;
+						removeProducto(producto2);
+					}
+					selectItems.clear();
+				} 
+				else if (dialogShow.isOkButton()) {
+					removeProducto(producto);
+					if (i < selectSize - 1) { 
+						producto = selectItems.get(i+1);
+						dialogShow.setContent("¿ Quieres eliminar el producto "
+							+producto.getNombre()+" con el codigo de negocio "+producto.getIdNegocio()+" ?");
+						dialogShow.show();
+					}
+				}
 			}
 		}
+		
+		return producto;
+	}
+	
+	private void removeProducto(Producto producto) {
+		if (mysqlProductoDao.isConnectionSql()) {
+			mysqlProductoDao.delete(producto);
+			refrshTable();
+		}
+		else 
+			getMainApp().getListProducto().remove(producto);
 	}
 	
 	@FXML
