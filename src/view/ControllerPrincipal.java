@@ -187,7 +187,10 @@ public class ControllerPrincipal {
 			dialogShow.setTitle("");
 			if (selectSize > 1) {
 				
-				dialogShow.setContent("Quieres eliminar "+selectSize+" productos");
+				dialogShow.setContent("¿ Quieres eliminar el producto "
+						+producto.getNombre()+" con el codigo de negocio "+producto.getIdNegocio()+" ?" 
+						+ "\n A seleccionado "+selectSize+" productos, presionse si a todos si quiere eliminar los demas productos" );
+				
 				dialogShow.getAlertType().getButtonTypes().add(new ButtonType("Eliminar todos", ButtonData.YES));
 			}
 			else 
