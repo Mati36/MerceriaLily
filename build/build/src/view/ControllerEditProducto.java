@@ -129,8 +129,8 @@ public class ControllerEditProducto implements Initializable {
 	
 	@FXML // actualiza el precio de venta
 	public void keyReleased() {
-		String precioCosto = txtPrecioCosto.getText().trim();
-		String recargo = txtRecargo.getText().trim();
+		String precioCosto = getTxtValue(txtPrecioCosto);	
+		String recargo = getTxtValue(txtRecargo);
 			
 		if (!precioCosto.isEmpty() && !recargo.isEmpty()) {
 			producto.setPrecioCosto(stringToDouble(precioCosto,"PrecioCosto"));
@@ -138,38 +138,40 @@ public class ControllerEditProducto implements Initializable {
 			calculaPrecioVenta();
 		}
 		else 
-			txtPrecioVenta.setText(Double.toString(0.0));
+			setTxtValue(txtPrecioVenta, Double.toString(0.0));
+			
 	}
 	
 	// se llama cuado hago click en aceptar
 	private void cargarDatosProductos() { 
-		producto.setIdEmpresa(txtIdEmpresa.getText().toUpperCase().trim());
-		producto.setIdNegocio(txtIdNegocio.getText().toUpperCase().trim());
-		producto.setNombre(txtNombre.getText().toUpperCase().trim());
+		producto.setIdEmpresa(getTxtValue(txtIdEmpresa).toUpperCase());
+		producto.setIdNegocio(getTxtValue(txtIdNegocio).toUpperCase());
+		producto.setNombre(getTxtValue(txtNombre).toUpperCase());
 		
-		String precioCantidad = txtPrecioCantidad.getText().trim();
+		String precioCantidad = getTxtValue(txtPrecioCantidad);
 		
-		producto.setPrecioCosto(stringToDouble(txtPrecioCosto.getText(),"PrecioCosto"));
-		producto.setRecargo(stringToDouble(txtRecargo.getText(),"Recargo"));
-		producto.setPrecioVenta(stringToDouble(txtPrecioVenta.getText(), "Precio venta"));
+		producto.setPrecioCosto(stringToDouble(getTxtValue(txtPrecioCosto),"PrecioCosto"));
+		producto.setRecargo(stringToDouble(getTxtValue(txtRecargo),"Recargo"));
+		producto.setPrecioVenta(stringToDouble(getTxtValue(txtPrecioVenta), "Precio venta"));
 		producto.setPrecioCantidad(stringToDouble(precioCantidad,"Precio de costo"));
-		producto.setDetalle(txtDetalle.getText().toUpperCase().trim());
+		producto.setDetalle(getTxtValue(txtDetalle).toUpperCase());
 			
 	}	
 	
 	public void inicio() {
 				
 		if (!producto.isEmpty()) {
-			txtIdEmpresa.setText(producto.getIdEmpresa());
-			txtIdNegocio.setText(producto.getIdNegocio());
-			txtNombre.setText(producto.getNombre());
-			txtPrecioCosto.setText(Double.toString(producto.getPrecioCosto()));
-			txtRecargo.setText(Double.toString(producto.getRecargo()));
-			txtPrecioCantidad.setText(Double.toString(producto.getPrecioCantidad()));
-			txtPrecioVenta.setText(Double.toString(producto.getPrecioVenta()));
-			txtDetalle.setText(producto.getDetalle());
+			setTxtValue(txtIdEmpresa, producto.getIdEmpresa());
+			setTxtValue(txtIdNegocio, producto.getIdNegocio());
+			setTxtValue(txtNombre, producto.getNombre());
+			setTxtValue(txtPrecioCosto,  Double.toString(producto.getPrecioCosto()));
+			setTxtValue(txtRecargo, Double.toString(producto.getRecargo()));
+			setTxtValue(txtPrecioCantidad, Double.toString(producto.getPrecioCantidad()));
+			setTxtValue(txtPrecioVenta, Double.toString(producto.getPrecioVenta()));
+			setTxtValue(txtDetalle, producto.getDetalle());
 			checkIva.setSelected(producto.isIva(producto.getPrecioVenta()));
-			txtcantidad.setText("1");
+			setTxtValue(txtcantidad, "1");
+			
 		} 
 		else {
 			txtIdEmpresa.setText("");
@@ -207,14 +209,30 @@ public class ControllerEditProducto implements Initializable {
 
 	private void calculaPrecioVenta() {
 		int cantidad = 1;
-		if (!txtcantidad.getText().isEmpty()) {
-			cantidad = Integer.valueOf(txtcantidad.getText());
+		String precioCantidad = getTxtValue(txtcantidad); 
+		if (!precioCantidad.isEmpty()) {
+			cantidad = Integer.valueOf(precioCantidad);
 			if (cantidad > 1) {
-				txtPrecioCantidad.setText(Double.toString(producto.precioVentaCantidad()));
-				txtPrecioVenta.setText(Double.toString(producto.precioVentaPorUnidad(cantidad)));
+				setTxtValue(txtPrecioCantidad, Double.toString(producto.precioVentaCantidad()));
+				setTxtValue(txtPrecioVenta, Double.toString(producto.precioVentaPorUnidad(cantidad)));
+				
 			}
-			else 
-				txtPrecioVenta.setText(Double.toString(producto.precioVentaPorUnidad(cantidad)));
+			else
+				setTxtValue(txtPrecioVenta, Double.toString(producto.precioVentaPorUnidad(cantidad)));
 		}	
 	}
+	
+	private String removeManyBlanks(String text) {
+		
+		return text.replaceAll("( )+", " ").trim();
+	}
+
+	private String getTxtValue(TextField textField) {
+		return removeManyBlanks(textField.getText());
+	}
+
+	private void setTxtValue(TextField textField,String value) {
+		textField.setText(removeManyBlanks(value));
+	}
+	
 }

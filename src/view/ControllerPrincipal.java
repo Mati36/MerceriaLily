@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -293,8 +291,11 @@ public class ControllerPrincipal {
 	
 	@FXML
 	public void closeClcik() {
-		DialogShow.Confirmarion("Guardar", "¿Quieres Guardar antes de salir?");
-		if (DialogShow.isResultOption()){
+		DialogShow dialogShow = new DialogShow(AlertType.CONFIRMATION);
+		dialogShow.setTitle("Guardar");
+		dialogShow.setContent("¿Quieres Guardar antes de salir?");
+		dialogShow.show();
+		if (dialogShow.isOkButton()){
 			File file = new File(defaultFileDirectory);
 			if (file.exists()) 
 				save(file);

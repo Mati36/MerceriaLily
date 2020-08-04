@@ -7,19 +7,19 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ControllerPrincipal">
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.ControllerPrincipal">
    <children>
-      <BorderPane prefHeight="606.0" prefWidth="882.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TableView fx:id="tableProducto" prefHeight="569.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <TableView fx:id="tableProducto" prefHeight="569.0" prefWidth="800.0" styleClass="tablePrinter" stylesheets="@PrinterTableStyle.css" BorderPane.alignment="CENTER">
               <columns>
-                <TableColumn fx:id="codEmpresa" prefWidth="111.0" text="Codigo Empresa" />
-                <TableColumn fx:id="codNegocio" prefWidth="113.0" text="Codigo Negocio" />
-                  <TableColumn fx:id="nombre" prefWidth="75.0" text="Producto" />
-                  <TableColumn fx:id="detalle" prefWidth="75.0" text="Detalle" />
-                  <TableColumn fx:id="precioCosto" prefWidth="75.0" text="Precio de costo" />
-                  <TableColumn fx:id="precioVenta" prefWidth="75.0" text="Precio de venta" />
-                  <TableColumn fx:id="precioCantidad" prefWidth="75.0" text="Precio por cantidad" />
+                <TableColumn fx:id="codEmpresa" maxWidth="4000.0" prefWidth="111.0" text="Codigo Empresa" />
+                <TableColumn fx:id="codNegocio" maxWidth="4000.0" prefWidth="113.0" text="Codigo Negocio" />
+                  <TableColumn fx:id="nombre" maxWidth="4000.0" prefWidth="75.0" text="Producto" />
+                  <TableColumn fx:id="detalle" maxWidth="4000.0" prefWidth="75.0" text="Detalle" />
+                  <TableColumn fx:id="precioCosto" maxWidth="4000.0" prefWidth="75.0" text="Precio de costo" />
+                  <TableColumn fx:id="precioVenta" maxWidth="4000.0" prefWidth="75.0" text="Precio de venta" />
+                  <TableColumn fx:id="precioCantidad" maxWidth="4000.0" prefWidth="75.0" text="Precio por cantidad" />
                   <TableColumn fx:id="create" prefWidth="75.0" text="Ultima Modificacion" />
               </columns>
                <columnResizePolicy>
@@ -28,15 +28,16 @@
             </TableView>
          </center>
          <top>
-            <SplitPane fx:id="splitPane" dividerPositions="0.6" prefHeight="18.0" prefWidth="800.0" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="splitPane" dividerPositions="0.6090225563909775" prefHeight="18.0" prefWidth="800.0" BorderPane.alignment="CENTER">
                <items>
-                  <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="494.0">
+                  <MenuBar nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="458.0">
                     <menus>
                       <Menu mnemonicParsing="false" text="Archivo">
                         <items>
                           <MenuItem mnemonicParsing="false" onAction="#saveExel" text="Guardar" />
                               <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Guardar como" />
                               <MenuItem mnemonicParsing="false" onAction="#loadExel" text="Cargar " />
+                              <MenuItem mnemonicParsing="false" onAction="#printTable" text="Imprimir" />
                               <MenuItem mnemonicParsing="false" onAction="#closeClcik" text="Close" />
                         </items>
                       </Menu>
@@ -47,11 +48,11 @@
                               <MenuItem mnemonicParsing="false" onAction="#editProducto" text="Editar" />
                         </items>
                       </Menu>
-                      <Menu mnemonicParsing="false" text="Ayuda">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="About" />
-                        </items>
-                      </Menu>
+                        <Menu mnemonicParsing="false" text="Ayuda">
+                           <items>
+                              <MenuItem mnemonicParsing="false" text="About" />
+                           </items>
+                        </Menu>
                     </menus>
                   </MenuBar>
                   <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">

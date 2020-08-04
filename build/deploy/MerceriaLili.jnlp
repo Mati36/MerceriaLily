@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="MerceriaLili.jar" size="74126" download="eager" />
+    <jar href="MerceriaLili.jar" size="143910" download="eager" />
     <jar href="libs\activation-1.1.1.jar" size="69409" download="eager" />
     <jar href="libs\asm-8.0.1.jar" size="121772" download="eager" />
     <jar href="libs\asm-analysis-8.0.1.jar" size="33438" download="eager" />

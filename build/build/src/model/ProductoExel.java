@@ -107,6 +107,7 @@ public class ProductoExel{
 		
 			if (!isProductoTable(producto,tableList)) 
 				tableList.add(producto);
+			
 		}
 		else
 			new ExelExeption("Fila vacia");
@@ -125,7 +126,7 @@ public class ProductoExel{
 	}
 	
 	private void addCellContent(ExelFile exel,Row row,Producto producto,int cell) {
-		if (row != null && exel != null && producto != null) {
+		if (row != null && exel != null && producto != null ) {
 			if (cell == ProductoTableExel.getIndexIdEmpresa())
 				exel.addCellAndValue(row, cell,producto.getIdEmpresa());
 			else if (cell == ProductoTableExel.getIndexIdNegocio())
@@ -153,7 +154,7 @@ public class ProductoExel{
 	}
 
 	private void getCellContent(int index,Cell cell, Producto producto,ExelFile exelFile) {
-		if (cell != null && producto != null) {
+		if (cell != null && producto != null && exelFile.isValue(cell)) {
 			if (index == ProductoTableExel.getIndexIdEmpresa())
 				producto.setIdEmpresa(exelFile.getCellValueToString(cell) );
 			else if ( index == ProductoTableExel.getIndexIdNegocio())
@@ -171,9 +172,9 @@ public class ProductoExel{
 			else if (index == ProductoTableExel.getIndexDetalle())
 				producto.setDetalle(exelFile.getCellValueToString(cell));
 			else if (index == ProductoTableExel.getIndexCreatedAt())
-				producto.setCreatedAt(cell.getLocalDateTimeCellValue().toLocalDate());
+				producto.setCreatedAt(exelFile.getCellValueToDateTime(cell).toLocalDate());
 			else if (index == ProductoTableExel.getIndexUpdatedAt())
-				producto.setUpdatedAt(cell.getLocalDateTimeCellValue().toLocalDate());
+				producto.setUpdatedAt(exelFile.getCellValueToDateTime(cell).toLocalDate());
 			else
 				new ExelExeption("No se pudo extraer datos en la celda "+cell+" inidice"+ index 
 						+" puede que se paso de rango o el numero de celda no coincide con la base de datos");
