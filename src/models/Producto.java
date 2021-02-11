@@ -1,4 +1,4 @@
-package model;
+package models;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -76,8 +76,10 @@ public class Producto {
 	public final String getDetalle() { return detalle.get();}
 	public LocalDate getCreatedAt() { return  dateFormat(createdAt.get());	}
 	public void setCreatedAt(LocalDate value) { this.createdAt.set(value);	}
+	public void updateCreatedAt() { this.createdAt.set(LocalDate.now());	}
 	public LocalDate getUpdateAt() { return dateFormat(updatedAt.get()); }
 	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(value); }
+	public void UpdatedAt() { this.updatedAt.set(LocalDate.now()); }
 	public void setIva(boolean isIva) { this.isIva = isIva;	}
 	public boolean getIsIva() {return isIva;	}
 	
@@ -172,5 +174,10 @@ public class Producto {
 	public static String dateFormated(LocalDate date) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		return date.format(formatter);
+	}
+	
+	public void updateDate() {
+		updateCreatedAt();
+		UpdatedAt();
 	}
 }

@@ -1,7 +1,8 @@
 package Exeptions;
 
 import java.sql.SQLException;
-import model.DialogShow;
+
+import models.DialogShow;
 
 public class SqlExeptionAlert extends SQLException{
 	

@@ -1,6 +1,6 @@
 package Exeptions;
 
-import model.DialogShow;
+import models.DialogShow;
 
 public class AppExeption extends RuntimeException {
 	

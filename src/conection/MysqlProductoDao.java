@@ -7,8 +7,8 @@ import Exeptions.ExelExeption;
 import Exeptions.SqlExeptionAlert;
 import Exeptions.TableViewExeption;
 import javafx.collections.ObservableList;
-import model.Producto;
-import model.ProductoTableSql;
+import models.Producto;
+import models.ProductoTableSql;
 
 public class MysqlProductoDao   {
 

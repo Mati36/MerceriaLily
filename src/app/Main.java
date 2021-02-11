@@ -2,6 +2,8 @@ package app;
 
 import java.io.IOException;
 import Exeptions.AppExeption;
+import controllers.EditProductoController;
+import controllers.PrincipalController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -10,9 +12,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.Producto;
-import view.ControllerEditProducto;
-import view.ControllerPrincipal;
+import models.Producto;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -20,19 +20,18 @@ import javafx.scene.layout.AnchorPane;
 
 public class Main extends Application {
 	
-	private ObservableList<Producto> listProducto = FXCollections.observableArrayList();
-	private AnchorPane layout = new AnchorPane();
+	private AnchorPane layout = new AnchorPane(); // no se
 	private Stage primaryStage;
-	private Stage stageEditProducto;
-	ControllerPrincipal controllerPrincipal;
-	private boolean onClickConfirmation;
+
+	PrincipalController controllerPrincipal; 
+
 	
 	@Override
 	public void start(Stage primaryStage) {
 	
 		try {
 			this.primaryStage = primaryStage; 
-			this.primaryStage.setTitle("Merceria Lili");
+			this.primaryStage.setTitle("Merceria Lily");
 			this.primaryStage.setMaximized(true);
 			this.primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/icon/icon.png")));
 			closeApplication(primaryStage);
@@ -44,6 +43,9 @@ public class Main extends Application {
 		}
 	}
 
+	public static void main(String[] args) {
+		launch(args);
+	}
 	
 	public void closeApplication(Stage stage) {
 		if (stage != null) {
@@ -53,6 +55,7 @@ public class Main extends Application {
 				@Override
 				public void handle(WindowEvent event) {
 					controllerPrincipal.closeClcik();
+					primaryStage.close();
 					Platform.exit();
 					
 				}
@@ -62,14 +65,10 @@ public class Main extends Application {
 		
 	}
 	
-	public static void main(String[] args) {
-		launch(args);
-	}
-
-	public void mostrarProducto() throws IOException {
-		FXMLLoader viewLoader = new FXMLLoader();
-		viewLoader.setLocation(getClass().getResource("/view/Principal.fxml"));
-		
+	
+	public void mostrarProducto() throws IOException { // Re escribir
+		FXMLLoader viewLoader = new FXMLLoader(getClass().getResource("/views/Principal.fxml"));
+				
 		if(viewLoader.getLocation() != null) {
 			
 			layout = (AnchorPane) viewLoader.load();
@@ -79,52 +78,13 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			controllerPrincipal = viewLoader.getController();
-			controllerPrincipal.setStage(primaryStage);
-			controllerPrincipal.setMainApp(this);
+//			controllerPrincipal.setStage(primaryStage);
+		
 		}
 		else 
 			throw new IOException("RootLayout.fxml No encontrado");
 	}
 	
-	public void mostrarEditProducto(Producto prod, Stage stageEditProducto) throws IOException { // es llamado de ControllerPricipal
-		FXMLLoader viewLoader = new FXMLLoader();
-		viewLoader.setLocation(getClass().getResource("/view/EditProducto.fxml"));
-		
-		if( viewLoader.getLocation() != null) {
-			AnchorPane layout = (AnchorPane) viewLoader.load();
-			this.stageEditProducto = stageEditProducto;
-			Scene seceneEditProducto = new Scene(layout);
-			this.stageEditProducto.setScene(seceneEditProducto);
-			ControllerEditProducto controllerEditProducto = viewLoader.getController();
-			controllerEditProducto.setProducto(prod);
-			controllerEditProducto.setControllerPrincipal(controllerPrincipal);
-			controllerEditProducto.setDialogStage(stageEditProducto);
-			stageEditProducto.setResizable(false);
-			stageEditProducto.showAndWait(); 
-			onClickConfirmation = controllerEditProducto.getIsOnclickAceptar();
-		}
-		else
-			throw new IOException("RootLayout.fxml No encontrado");
-	}
-	
-	public ObservableList<Producto> getListProducto() {
-		return listProducto;
-	}
-	
-	public void closeEditProducto() {
-		stageEditProducto.close();
-	}
-
-
-	public boolean isOnClickConfirmation() {
-		return onClickConfirmation;
-	}
-
-
-	public void setOnClickConfirmation(boolean onClickConfirmation) {
-		this.onClickConfirmation = onClickConfirmation;
-	}
-
 
 	public Stage getPrimaryStage() {
 		return primaryStage;
@@ -136,13 +96,5 @@ public class Main extends Application {
 	}
 
 
-	public Stage getStageEditProducto() {
-		return stageEditProducto;
-	}
-
-
-	public void setStageEditProducto(Stage stageEditProducto) {
-		this.stageEditProducto = stageEditProducto;
-	}
-
+	
 }
