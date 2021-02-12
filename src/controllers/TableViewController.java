@@ -1,6 +1,7 @@
 package controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -77,8 +78,8 @@ public class TableViewController {
 		return tableProducto.getItems();
 	}
 	
-	public ObservableList<Producto> getSelectionItems(){
-		return tableProducto.getSelectionModel().getSelectedItems();
+	public ArrayList<Producto> getSelectionItems(){
+		return new ArrayList<Producto>(tableProducto.getSelectionModel().getSelectedItems());
 	}
 	
 	public Producto getSeletedItem() {
@@ -92,6 +93,6 @@ public class TableViewController {
 	public void clearSelection() {
 		tableProducto.getSelectionModel().clearSelection();
 	}
-	// añadir, eliminar, modificar (creo que no)
+	
 	//  refrescarTabla, 
 }

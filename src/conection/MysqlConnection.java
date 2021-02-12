@@ -1,7 +1,8 @@
 package conection;
 
 import java.sql.*;
-import Exeptions.SqlExeptionAlert;
+
+import exeptions.SqlExeptionAlert;
 
 public class MysqlConnection  implements IConnection{
 

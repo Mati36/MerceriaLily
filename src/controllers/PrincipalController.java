@@ -2,8 +2,8 @@ package controllers;
 
 import java.io.IOException;
 
-import Exeptions.AppExeption;
-import Exeptions.TableViewExeption;
+import exeptions.AppExeption;
+import exeptions.TableViewExeption;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -114,9 +114,8 @@ public class PrincipalController {
 			tableViewController.clearSelection();
 			return;
 		}
-			
+		System.out.println(tableViewController.getSelectionItemsSize());	
 		for (Producto prod : tableViewController.getSelectionItems()) {
-			
 			if (dialogShow.isOkButton()) {
 				listProductoController.del(prod);
 				// sql

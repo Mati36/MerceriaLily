@@ -1,4 +1,4 @@
-package Exeptions;
+package exeptions;
 
 import java.util.Optional;
 import javafx.scene.control.Alert;

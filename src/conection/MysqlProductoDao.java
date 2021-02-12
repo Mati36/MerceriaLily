@@ -3,9 +3,10 @@ package conection;
 import java.sql.*;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import Exeptions.ExelExeption;
-import Exeptions.SqlExeptionAlert;
-import Exeptions.TableViewExeption;
+
+import exeptions.ExelExeption;
+import exeptions.SqlExeptionAlert;
+import exeptions.TableViewExeption;
 import javafx.collections.ObservableList;
 import models.Producto;
 import models.ProductoTableSql;

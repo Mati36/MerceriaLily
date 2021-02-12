@@ -1,6 +1,6 @@
 package controllers;
 
-import Exeptions.ProductoExeption;
+import exeptions.ProductoExeption;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;

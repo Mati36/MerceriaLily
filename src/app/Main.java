@@ -1,9 +1,10 @@
 package app;
 
 import java.io.IOException;
-import Exeptions.AppExeption;
+
 import controllers.EditProductoController;
 import controllers.PrincipalController;
+import exeptions.AppExeption;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

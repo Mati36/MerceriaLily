@@ -1,4 +1,4 @@
-package Exeptions;
+package exeptions;
 
 import javax.annotation.processing.FilerException;
 
