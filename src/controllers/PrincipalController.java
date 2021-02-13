@@ -93,8 +93,7 @@ public class PrincipalController {
 	public void editProducto() {
 		if (tableViewController.getSelectionItemsSize() == 1) {
 			Producto item = tableViewController.getSeletedItem();
-			if (item == null) 
-				throw new AppExeption("Item vacio");
+			
 			String idNegocio = item.getIdNegocio();
 			showEditProducto(item);
 			if (editProductoController.isOnClickAceptar()) {
@@ -129,14 +128,8 @@ public class PrincipalController {
 			return;
 		}
 		
-		for (Producto prod : tableViewController.getSelectionItems()) {
-			if (dialogShow.isOkButton()) {
-				listProductoController.del(prod);
-				// sql
-				
-			} 
-		}
-		
+		listProductoController.removItemsSelection(tableViewController.getSelectionItems());
+		//sql
 		tableViewController.clearSelection();
 				
 	}

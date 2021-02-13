@@ -7,6 +7,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import exeptions.AppExeption;
@@ -30,7 +31,6 @@ public class ListProductoController implements Serializable {
 	public void add(Producto prod) {
 		if (listProducto != null) 
 			listProducto.add(prod);
-		
 	}
 	
 	public void del(Producto prod) {
@@ -38,6 +38,9 @@ public class ListProductoController implements Serializable {
 		listProducto.remove(prod);
 	}
 	
+	public void removItemsSelection(Collection<Producto> itemsSelection) {
+		listProducto.removeAll(itemsSelection);
+	}
 	public void edit() {
 		
 	}
