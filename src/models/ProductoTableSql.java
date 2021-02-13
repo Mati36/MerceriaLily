@@ -1,6 +1,7 @@
 package models;
 
-public class ProductoTableSql {
+
+public class ProductoTableSql{
 	
 	// esta clase tiene el modelo de la tabla sql
 	static private final String NAME_TABLE ="productos";

@@ -95,7 +95,7 @@ public class EditProductoController {
 		producto.setPrecioVenta(stringToDouble(getTxtValue(txtPrecioVenta), "Precio venta"));
 		producto.setPrecioCantidad(stringToDouble(precioCantidad,"Precio de costo"));
 		producto.setDetalle(getTxtValue(txtDetalle).toUpperCase());
-			
+		producto.updateDate();	
 	}	
 	
 	@FXML

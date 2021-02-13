@@ -1,17 +1,13 @@
 package controllers;
 
+import java.io.File;
 import java.io.IOException;
-
+import javax.swing.filechooser.FileSystemView;
 import exeptions.AppExeption;
-import exeptions.TableViewExeption;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -22,8 +18,10 @@ import models.Producto;
 
 public class PrincipalController {
 	
-	final String TABLE_VIEW_FXML = "/views/TableView.fxml";
-	final String EDIT_PRODUCTO_FXML ="/views/EditProducto.fxml";
+	private final String TABLE_VIEW_FXML = "/views/TableView.fxml";
+	private final String EDIT_PRODUCTO_FXML ="/views/EditProducto.fxml";
+	private final String DOCUMENT_DIRECTORY = FileSystemView.getFileSystemView().getDefaultDirectory().getPath()+"/MerceriaLili";
+	private final String DEFAUL_FILE = "lista_producto.dat";
 	private ListProductoController listProductoController;
 	private EditProductoController editProductoController;
 	private TableViewController tableViewController;
@@ -34,8 +32,9 @@ public class PrincipalController {
 	
 	@FXML 
 	public void initialize() {
-		listProductoController = new ListProductoController(FXCollections.observableArrayList());
+		listProductoController = new ListProductoController();
 		Pane table = TableViewLoad();
+		listProductoController.load(new File(DOCUMENT_DIRECTORY+"/"+DEFAUL_FILE));
 		tableViewController.setItems(listProductoController.getListProducto());
 		tableLayout.setCenter(table);
 			
@@ -47,8 +46,8 @@ public class PrincipalController {
 	}
 	
 	@FXML 
-	public void saveExel() {
-		
+	public void save() {
+		listProductoController.save(new File(DOCUMENT_DIRECTORY+"/"+DEFAUL_FILE));
 	}
 	
 	@FXML 
@@ -57,7 +56,7 @@ public class PrincipalController {
 	}
 	
 	@FXML 
-	public void loadExel() {
+	public void importFile() {
 		
 	}
 	
@@ -160,7 +159,8 @@ public class PrincipalController {
 		} catch (AppExeption | IOException e) {
 			throw new AppExeption("Error al cargar ", EDIT_PRODUCTO_FXML);
 		}  
-		
+
 	}
+	
 	
 }

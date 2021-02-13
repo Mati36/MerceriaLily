@@ -3,11 +3,10 @@ package models.dao.mysql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import models.dao.IDaoManager;
 import models.dao.IProductoDao;
 
-public class MysqlDaoManager implements IDaoManager {
+public class MysqlDaoManager implements IDaoManager{
 
 	private Connection connection;
 	IProductoDao productoDao = null;

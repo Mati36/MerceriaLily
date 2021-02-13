@@ -4,7 +4,7 @@ package models;
 import java.io.IOException;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class ProductoTableExel {
+public class ProductoTableExel{
 	
 	
 	private final static String FILE_NAME = "MerceriaLili"; 

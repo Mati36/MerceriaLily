@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.util.ZipSecureFile;
@@ -21,13 +19,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.google.api.client.util.DateTime;
-
-import javafx.util.converter.LocalDateStringConverter;
 
 
-
-public class ExelFile { // manejo de exel
+public class ExelFile{ // manejo de exel
 
 	private  XSSFWorkbook book = null;
 	private  Sheet sheet = null;

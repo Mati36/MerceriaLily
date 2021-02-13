@@ -1,31 +1,34 @@
 package models;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Producto {
+public class Producto implements Externalizable  {
 
-	private int IVA = 21;
-	private final SimpleStringProperty nombre;
-	private final SimpleStringProperty idEmpresa;
-	private final SimpleStringProperty idNegocio;
-	private final SimpleDoubleProperty precioCosto;
-	private final SimpleDoubleProperty precioCantidad;
-	private final SimpleDoubleProperty precioVenta;
-	private final SimpleDoubleProperty recargo;
-	private final SimpleStringProperty detalle;
-	private final ObjectProperty<LocalDate> createdAt;
-	private final ObjectProperty<LocalDate> updatedAt;
-	private boolean isIva;
-	private final int DECIMAL_LIMIT = 2;
-	private static final String DATE_FORMAT = "dd/MM/yy";
+	private transient int IVA = 21;
+	private final transient SimpleStringProperty nombre;
+	private final transient SimpleStringProperty idEmpresa;
+	private final transient SimpleStringProperty idNegocio;
+	private final transient SimpleDoubleProperty precioCosto;
+	private final transient SimpleDoubleProperty precioCantidad;
+	private final transient SimpleDoubleProperty precioVenta;
+	private final transient SimpleDoubleProperty recargo;
+	private final transient SimpleStringProperty detalle;
+	private final transient ObjectProperty<LocalDate> createdAt;
+	private final transient ObjectProperty<LocalDate> updatedAt;
+	private transient boolean isIva;
+	private transient final int DECIMAL_LIMIT = 2;
+	private transient static final String DATE_FORMAT = "dd/MM/yy";
 	public Producto() {
 		
 		this.nombre = new SimpleStringProperty();
@@ -59,27 +62,36 @@ public class Producto {
 	
 	
 	public final void setNombre(String value) { nombre.set(value);}
-	public final String getNombre() { return nombre.get();}
+	public final String getNombre() { return stringNullFormat(nombre); }
 	public final void setIdEmpresa(String value) { idEmpresa.set(value);}
-	public final String getIdEmpresa() { return idEmpresa.get();}
+	
+	public final String getIdEmpresa() { return stringNullFormat(idEmpresa); }
 	public final void setIdNegocio(String value) {idNegocio.set(value); }
-	public final String getIdNegocio() {return idNegocio.get();}
+	public final String getIdNegocio() {return stringNullFormat(idNegocio);}
+	
 	public final void setPrecioCosto(Double value) { precioCosto.set(value);}
 	public final Double getPrecioCosto() {return precioCosto.get();}
+	
 	public final void setPrecioCantidad( Double value) { precioCantidad.set(value);}
 	public final Double getPrecioCantidad() {return precioCantidad.get();}
+	
 	public final void setPrecioVenta(Double value) { precioVenta.set(value);}
 	public final Double getPrecioVenta() {return precioVenta.get();}
+	
 	public final void setRecargo(Double value) { recargo.set(value);}
 	public final Double getRecargo() {return recargo.get();}
+	
 	public final void setDetalle(String value) { detalle.set(value);}
-	public final String getDetalle() { return detalle.get();}
+	public final String getDetalle() { return stringNullFormat(detalle);}
+	
 	public LocalDate getCreatedAt() { return  dateFormat(createdAt.get());	}
 	public void setCreatedAt(LocalDate value) { this.createdAt.set(value);	}
 	public void updateCreatedAt() { this.createdAt.set(LocalDate.now());	}
+	
 	public LocalDate getUpdateAt() { return dateFormat(updatedAt.get()); }
 	public void setUpdatedAt(LocalDate value) { this.updatedAt.set(value); }
 	public void UpdatedAt() { this.updatedAt.set(LocalDate.now()); }
+	
 	public void setIva(boolean isIva) { this.isIva = isIva;	}
 	public boolean getIsIva() {return isIva;	}
 	
@@ -104,6 +116,10 @@ public class Producto {
 	
 	private boolean emptyString(String string) {
 		return string == null || string.length() <= 0;
+	}
+	
+	private String stringNullFormat(SimpleStringProperty value) {
+		return value != null ? value.getValueSafe() : "";
 	}
 	
 	private boolean emptyDouble(SimpleDoubleProperty number) {
@@ -179,5 +195,42 @@ public class Producto {
 	public void updateDate() {
 		updateCreatedAt();
 		UpdatedAt();
+	}
+
+	@Override
+	public void writeExternal(ObjectOutput out) throws IOException {
+		 out.writeUTF(nombre.getValueSafe());
+		 out.writeUTF(idEmpresa.getValueSafe());
+		 out.writeUTF(idNegocio.getValueSafe());
+		 out.writeUTF(detalle.getValueSafe());
+		 out.writeDouble(precioCantidad.get());
+		 out.writeDouble(precioCosto.get());
+		 out.writeDouble(precioVenta.get());
+		 out.writeDouble(recargo.get());
+		 out.writeUTF(updatedAt.getValue().toString());
+		 out.writeUTF(createdAt.getValue().toString());
+	}
+
+	@Override
+	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+		nombre.set(in.readUTF());
+		idEmpresa.set(in.readUTF());
+		idNegocio.set(in.readUTF());
+		detalle.set(in.readUTF());
+		precioCantidad.set(in.readDouble());
+		precioCosto.set(in.readDouble());
+		precioVenta.set(in.readDouble());
+		recargo.set(in.readDouble());
+		updatedAt.set(stringToLocalDate(in.readUTF()));
+		createdAt.set(stringToLocalDate(in.readUTF()));
+	}
+	
+	public LocalDate stringToLocalDate(String date) {
+		String format = date;
+		
+		if (format.isEmpty() || format == null )
+			format = ("2001-01-12T00:00"); // ver como devolver algo que no sea una fecha
+		return LocalDate.parse(format);
+
 	}
 }

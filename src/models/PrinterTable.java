@@ -1,19 +1,10 @@
 package models;
 
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.security.auth.callback.Callback;
-
-import org.apache.log4j.helpers.DateTimeDateFormat;
-import org.apache.poi.ss.formula.functions.Column;
-
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.print.PageLayout;
 import javafx.print.PageOrientation;
 import javafx.print.Printer;
@@ -24,7 +15,6 @@ import javafx.scene.control.ScrollBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 // duplica hijos en panel, entra varias veces. ver si el la copia de la tebla tambie se hace , muchas veces 

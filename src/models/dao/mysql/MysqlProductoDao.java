@@ -2,7 +2,6 @@ package models.dao.mysql;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
 import javafx.collections.ObservableList;
 import models.Producto;
 import models.dao.IProductoDao;

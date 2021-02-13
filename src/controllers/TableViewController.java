@@ -2,18 +2,16 @@ package controllers;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import models.Producto;
 import models.ProductoTableExel;
 
-public class TableViewController {
+public class TableViewController{
 
 
 	@FXML private TableView<Producto> tableProducto;
@@ -62,14 +60,7 @@ public class TableViewController {
 		
 	}
 	
-	public void save() {
 		
-	}
-	
-	public void load() {
-		
-	}
-	
 	public void setItems(ObservableList<Producto> items) {
 		tableProducto.setItems(items);
 	}
