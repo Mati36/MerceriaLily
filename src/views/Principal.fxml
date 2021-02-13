@@ -18,8 +18,8 @@
                       <Menu mnemonicParsing="false" text="Archivo">
                         <items>
                           <MenuItem mnemonicParsing="false" onAction="#save" text="Guardar" />
-                              <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Guardar como" />
-                              <MenuItem mnemonicParsing="false" onAction="#importFile" text="Cargar " />
+                              <MenuItem mnemonicParsing="false" onAction="#saveAs" text="Exportar" />
+                              <MenuItem mnemonicParsing="false" onAction="#importFile" text="Importar " />
                               <MenuItem mnemonicParsing="false" onAction="#printTable" text="Imprimir" />
                               <MenuItem mnemonicParsing="false" onAction="#closeClcik" text="Close" />
                         </items>

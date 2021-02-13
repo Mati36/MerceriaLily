@@ -2,6 +2,8 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
+
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import exeptions.AppExeption;
 import javafx.fxml.FXML;
@@ -12,6 +14,8 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import models.DialogShow;
 import models.Producto;
@@ -42,7 +46,16 @@ public class PrincipalController {
 
 	@FXML
 	public void closeClcik() {
-				
+		DialogShow dialogShow = new DialogShow(AlertType.CONFIRMATION);
+		dialogShow.setTitle("Guardar");
+		dialogShow.setContent("¿Quieres Guardar antes de salir?");
+		dialogShow.show();
+		if (dialogShow.isOkButton()){
+			File file = new File(DOCUMENT_DIRECTORY+"/"+DEFAUL_FILE);
+			if (file.exists()) 
+				listProductoController.save(file);
+		}
+			
 	}
 	
 	@FXML 
@@ -52,12 +65,14 @@ public class PrincipalController {
 	
 	@FXML 
 	public void saveAs() {
-		
+		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG,true);
+		listProductoController.save(file);
 	}
 	
 	@FXML 
 	public void importFile() {
-		
+		File file = fileSelection("Abrir", JFileChooser.OPEN_DIALOG,false);
+		listProductoController.load(file);
 	}
 	
 	@FXML 
@@ -113,7 +128,7 @@ public class PrincipalController {
 			tableViewController.clearSelection();
 			return;
 		}
-		System.out.println(tableViewController.getSelectionItemsSize());	
+		
 		for (Producto prod : tableViewController.getSelectionItems()) {
 			if (dialogShow.isOkButton()) {
 				listProductoController.del(prod);
@@ -162,5 +177,18 @@ public class PrincipalController {
 
 	}
 	
+private File fileSelection(String title, int action,boolean save) {
+		
+		File file = new File(DOCUMENT_DIRECTORY);
+		file.mkdir();
+		FileChooser jFile = new FileChooser();
+		jFile.setTitle(title);
+		jFile.setInitialDirectory(file);
+		jFile.getExtensionFilters().addAll(
+		         new ExtensionFilter("Tipo dato", "*.dat"));
+		Stage stage = new Stage();		
+		return  save ? jFile.showSaveDialog(stage) : jFile.showOpenDialog(stage);
+			
+	}
 	
 }

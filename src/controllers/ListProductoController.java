@@ -1,14 +1,9 @@
 package controllers;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -28,7 +23,9 @@ public class ListProductoController implements Serializable {
 		this.listProducto = listProducto; 
 	}
 	
-	public ListProductoController() {	}
+	public ListProductoController() {	
+		listProducto = FXCollections.observableArrayList();
+	}
 
 	public void add(Producto prod) {
 		if (listProducto != null) 
@@ -58,7 +55,8 @@ public class ListProductoController implements Serializable {
 	}
 	
 	public void save(File file) {
-		 try {
+		if(file == null) return;
+		try {
 	            ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
 	            oos.writeObject(new ArrayList<Producto>(listProducto));
 	            oos.close();
@@ -69,16 +67,12 @@ public class ListProductoController implements Serializable {
 	}
 	
 	public void load(File file) {
-		
-		if (!file.exists()) {
-			listProducto = FXCollections.observableArrayList();
-			return;
-		}
-		
+		if(file == null || !file.exists()) return;
+		if(!listProducto.isEmpty()) listProducto.clear();
 		try {
 			ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
             List<Producto> list = (List<Producto>) ois.readObject();
-            listProducto = FXCollections.observableArrayList(list);
+          	listProducto.setAll(list);
         }  catch (IOException | ClassNotFoundException e) {
         	throw new AppExeption("Archivo dañado error al leer "+e.getMessage());
         }
