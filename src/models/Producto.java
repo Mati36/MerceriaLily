@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class Producto implements Externalizable  {
+public class Producto implements Externalizable,Comparable<Producto>  {
 
 	private transient int IVA = 21;
 	private final transient SimpleStringProperty nombre;
@@ -29,6 +29,7 @@ public class Producto implements Externalizable  {
 	private transient boolean isIva;
 	private transient final int DECIMAL_LIMIT = 2;
 	private transient static final String DATE_FORMAT = "dd/MM/yy";
+	
 	public Producto() {
 		
 		this.nombre = new SimpleStringProperty();
@@ -110,8 +111,7 @@ public class Producto implements Externalizable  {
 	public boolean isEmpty() {
 		return   emptyString(this.getIdNegocioProperty().get())
 				|| emptyString(this.getNombreProperty().get());
-		//		|| emptyDouble(this.getPrecioCostoProperty())
-		//		|| emptyDouble(this.getPrecioCantidadProperty()) || emptyDouble(this.getPrecioVentaProperty())
+	
 	}
 	
 	private boolean emptyString(String string) {
@@ -129,7 +129,6 @@ public class Producto implements Externalizable  {
 	public Double precioVentaCantidad() {
 		Double temp = getIsIva() ? calcularIva(getPrecioCosto()) : getPrecioCosto();
 		temp = calcularRecargo(temp);
-		
 		return roundedNum(rondedDecimal(temp, DECIMAL_LIMIT)); 
 	}
 	
@@ -138,7 +137,6 @@ public class Producto implements Externalizable  {
 		if (cantidad > 1 ) {
 			double precio = precioVentaCantidad() / cantidad;
 			return roundedNum(rondedDecimal(precio, DECIMAL_LIMIT)); 
-		
 		}
 		return precioVentaCantidad();
 	}
@@ -159,12 +157,7 @@ public class Producto implements Externalizable  {
 					|| num == precio );
 		
 	}
-	@Override
-	public boolean equals(Object obj) {
-		Producto producto = (Producto) obj;
-		return producto.getIdNegocio() == this.getIdNegocio();
-	}
-	
+		
 	private double rondedDecimal(Double num,int decimalLimit) {
 		return new BigDecimal(num).setScale(decimalLimit, RoundingMode.UP).doubleValue();
 	}
@@ -173,7 +166,7 @@ public class Producto implements Externalizable  {
 		return (double) Math.round(num);
 	}
 	
-	public static LocalDate dateFormat(LocalDate date) {
+	public static LocalDate dateFormat(LocalDate date) { // creo no hace falta
 		
 		try {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
@@ -183,11 +176,10 @@ public class Producto implements Externalizable  {
 			
 			return date;
 		}
-		
-			
+				
 	}
 	
-	public static String dateFormated(LocalDate date) {
+	public static String dateFormated(LocalDate date) { // creo que no hace falta
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 		return date.format(formatter);
 	}
@@ -232,5 +224,29 @@ public class Producto implements Externalizable  {
 			format = ("2001-01-12T00:00"); // ver como devolver algo que no sea una fecha
 		return LocalDate.parse(format);
 
+	}
+
+	@Override
+	public int compareTo(Producto value) {
+		int value_idNegocio = stringToASCII(value.getIdNegocio());
+		int self_idNegocio = stringToASCII(this.idNegocio.getValueSafe());
+				
+		if (value_idNegocio < self_idNegocio) 
+			return -1;
+		else if (value_idNegocio > self_idNegocio) 
+			return 1;
+		
+		return 0;
+	}
+	
+	private int stringToASCII(String value) { // mejorar lo que hace es pasar a ACII todos los caracteres de una cadena
+		value = value.replaceAll("\\s+", "").trim();
+		if (value.isEmpty()) return 0;
+		String v = "";
+		for (int i = 0; i < value.length(); i++) { 
+			char c =value.charAt(i);
+			v += String.valueOf(Integer.valueOf((int) c));
+		}
+		return Integer.valueOf(v);
 	}
 }

@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import exeptions.AppExeption;
@@ -29,13 +30,22 @@ public class ListProductoController implements Serializable {
 	}
 
 	public void add(Producto prod) {
-		if (listProducto != null) 
+		if (listProducto == null)
+			return;
+					
+		if (!existItem(prod)) {
 			listProducto.add(prod);
+			sort();
+		}
+		else
+			new AppExeption("El producto con el codigo negocio: "+prod.getIdNegocio()+"ya se encuentra en la lista");
 	}
 	
 	public void del(Producto prod) {
-		if (listProducto != null) 
+		if (listProducto == null) return; 
+		
 		listProducto.remove(prod);
+		sort();
 	}
 	
 	public void removItemsSelection(Collection<Producto> itemsSelection) {
@@ -81,4 +91,26 @@ public class ListProductoController implements Serializable {
         }
 	}
 	
+	private Comparator<Producto> compartorProducto() {
+		return new Comparator<Producto>() {
+
+			@Override
+		 public int compare(Producto o1, Producto o2) {
+				return o1.compareTo(o2);
+			}
+		};
+	}
+	
+	private boolean existItem(Producto producto) {
+		for (Producto p : listProducto) {
+			if (p.compareTo(producto) == 0)
+				return true;
+		}
+		return false;
+	}
+	
+	private void sort() {
+		if (listProducto != null) 
+			listProducto.sort(compartorProducto().reversed());
+	}
 }
