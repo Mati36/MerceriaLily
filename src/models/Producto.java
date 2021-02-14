@@ -109,8 +109,7 @@ public class Producto implements Externalizable,Comparable<Producto>  {
 	public ObjectProperty<LocalDate> getUpdatedAtProperty(){ return updatedAt; }
 	
 	public boolean isEmpty() {
-		return   emptyString(this.getIdNegocioProperty().get())
-				|| emptyString(this.getNombreProperty().get());
+		return   emptyString(this.getIdNegocioProperty().get()) || emptyString(this.getNombreProperty().get());
 	
 	}
 	
@@ -227,9 +226,9 @@ public class Producto implements Externalizable,Comparable<Producto>  {
 	}
 
 	@Override
-	public int compareTo(Producto value) {
-		int value_idNegocio = stringToASCII(value.getIdNegocio());
-		int self_idNegocio = stringToASCII(this.idNegocio.getValueSafe());
+	public int compareTo(Producto value) { // optimizar tira error numero grandes
+		Integer value_idNegocio = stringToASCII(value.getIdNegocio());
+		Integer self_idNegocio = stringToASCII(this.idNegocio.getValueSafe());
 				
 		if (value_idNegocio < self_idNegocio) 
 			return -1;

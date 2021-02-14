@@ -52,8 +52,7 @@ public class PrincipalController {
 		dialogShow.show();
 		if (dialogShow.isOkButton()){
 			File file = new File(DOCUMENT_DIRECTORY+"/"+DEFAUL_FILE);
-			if (file.exists()) 
-				listProductoController.save(file);
+			listProductoController.save(file);
 		}
 			
 	}
@@ -83,23 +82,29 @@ public class PrincipalController {
 	@FXML 
 	public void addProducto() { // intentar que no guarde el mismo elemento
 		Producto producto = new Producto();
+		Stage stage = new Stage();
 		showEditProducto(producto);
 		if (editProductoController.isOnClickAceptar()) {
 			listProductoController.add(producto);
 		}
+	
+			
+			
+		
 	}
 	
 	@FXML 
 	public void editProducto() {
 		if (tableViewController.getSelectionItemsSize() == 1) {
-			Producto item = tableViewController.getSeletedItem();
 			
+			Producto item = tableViewController.getSeletedItem();
 			String idNegocio = item.getIdNegocio();
+			
 			showEditProducto(item);
 			if (editProductoController.isOnClickAceptar()) {
 				item.updateDate();
 				// conecta a sql
-			}
+			} 
 			
 		}
 		else if (tableViewController.getSelectionItemsSize() > 1) {
@@ -155,10 +160,9 @@ public class PrincipalController {
 	
 	private void showEditProducto(Producto producto) {
 		FXMLLoader editProductoFxml = new FXMLLoader(getClass().getResource(EDIT_PRODUCTO_FXML));
-		
+		Stage stage = new Stage();
 		try {
 			AnchorPane layout = (AnchorPane) editProductoFxml.load();
-			Stage stage = new Stage();
 			stage.setScene(new Scene(layout));
 			this.editProductoController = editProductoFxml.getController();
 			this.editProductoController.setProducto(producto);

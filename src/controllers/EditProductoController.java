@@ -109,7 +109,8 @@ public class EditProductoController {
 	
 	@FXML
 	public void clickCancelar() {
-		//close
+		isOnClickAceptar = false;
+		stage.close();
 	}
 
 	

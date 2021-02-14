@@ -9,8 +9,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-
 import exeptions.AppExeption;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -84,8 +82,8 @@ public class ListProductoController implements Serializable {
 		if(!listProducto.isEmpty()) listProducto.clear();
 		try {
 			ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
-            List<Producto> list = (List<Producto>) ois.readObject();
-          	listProducto.setAll(list);
+			ArrayList<Producto> list = (ArrayList<Producto>) ois.readObject();
+			listProducto = FXCollections.observableArrayList(list);
         }  catch (IOException | ClassNotFoundException e) {
         	throw new AppExeption("Archivo dañado error al leer "+e.getMessage());
         }
