@@ -82,15 +82,11 @@ public class PrincipalController {
 	@FXML 
 	public void addProducto() { // intentar que no guarde el mismo elemento
 		Producto producto = new Producto();
-		Stage stage = new Stage();
 		showEditProducto(producto);
 		if (editProductoController.isOnClickAceptar()) {
 			listProductoController.add(producto);
 		}
-	
-			
-			
-		
+
 	}
 	
 	@FXML 
@@ -98,11 +94,10 @@ public class PrincipalController {
 		if (tableViewController.getSelectionItemsSize() == 1) {
 			
 			Producto item = tableViewController.getSeletedItem();
-			String idNegocio = item.getIdNegocio();
-			
 			showEditProducto(item);
 			if (editProductoController.isOnClickAceptar()) {
 				item.updateDate();
+				String idNegocio = item.getIdNegocio();
 				// conecta a sql
 			} 
 			

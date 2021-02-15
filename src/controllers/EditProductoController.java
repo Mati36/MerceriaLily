@@ -1,27 +1,29 @@
 package controllers;
 
+import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.validation.RequiredFieldValidator;
 import exeptions.ProductoExeption;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import models.Producto;
 
 public class EditProductoController {
 
-	@FXML private TextField txtNombre ;
-	@FXML private TextField txtIdEmpresa;
-	@FXML private TextField txtIdNegocio;
-	@FXML private TextField txtPrecioCosto;
-	@FXML private TextField txtPrecioCantidad;
-	@FXML private TextField txtPrecioVenta;
-	@FXML private TextField txtRecargo;
-	@FXML private TextField txtDetalle;
-	@FXML private TextField txtcantidad;
+	@FXML private JFXTextField txtNombre ;
+	@FXML private JFXTextField txtIdEmpresa;
+	@FXML private JFXTextField txtIdNegocio;
+	@FXML private JFXTextField txtPrecioCosto;
+	@FXML private JFXTextField txtPrecioCantidad;
+	@FXML private JFXTextField txtPrecioVenta;
+	@FXML private JFXTextField txtRecargo;
+	@FXML private JFXTextField txtDetalle;
+	@FXML private JFXTextField txtcantidad;
 	@FXML private Button btnAceptar;
 	@FXML private Button btnCancelar;
-	@FXML private CheckBox checkIva;
+	@FXML private JFXCheckBox checkIva;
 	private Producto producto;
 	private boolean isOnClickAceptar  = false; // no tiene nungun uso por ahora
 	private Stage stage;
@@ -29,23 +31,25 @@ public class EditProductoController {
 	
 	@FXML 
 	public void initialize() {
-		
+						
 	}
 	
 	
-	public EditProductoController() {
-		this.txtNombre = new TextField();
-		this.txtIdEmpresa = new TextField();
-		this.txtIdNegocio = new TextField();
-		this.txtPrecioCosto = new TextField();
-		this.txtPrecioCantidad = new TextField();
-		this.txtPrecioVenta = new TextField();
-		this.txtRecargo = new TextField();
-		this.txtDetalle = new TextField();
-		this.txtcantidad = new TextField();
-		this.checkIva = new CheckBox();
+	public EditProductoController() {		
+		this.txtNombre = new JFXTextField();
+		this.txtIdEmpresa = new JFXTextField();
+		this.txtIdNegocio = new JFXTextField();
+		this.txtPrecioCosto = new JFXTextField();
+		this.txtPrecioCantidad = new JFXTextField();
+		this.txtPrecioVenta = new JFXTextField();
+		this.txtRecargo = new JFXTextField();
+		this.txtDetalle = new JFXTextField();
+		this.txtcantidad = new JFXTextField();
+		this.checkIva = new JFXCheckBox();
 		this.btnAceptar = new Button();
 		this.btnCancelar = new Button();
+		
+
 	}
 	
 	public void setProducto(Producto producto) {
@@ -55,6 +59,7 @@ public class EditProductoController {
 	}
 	
 	public void inicio() {
+		validate();
 		
 		if (!producto.isEmpty()) {
 			setTxtValue(txtIdEmpresa, producto.getIdEmpresa());
@@ -100,11 +105,13 @@ public class EditProductoController {
 	
 	@FXML
 	public void clickAceptar() {
-		isOnClickAceptar = true;
-		cargarDatosProductos();
-		// llena la tabla con los productos de la base de datos
-		if (isOnClickAceptar)
+				
+		if (txtNombre.validate() && txtIdNegocio.validate()) {
+			isOnClickAceptar = true;
+			cargarDatosProductos();
 			stage.close();
+		}
+		
 	}
 	
 	@FXML
@@ -184,15 +191,27 @@ public class EditProductoController {
 		return text.replaceAll("( )+", " ").trim();
 	}
 
-	private String getTxtValue(TextField textField) {
-		return removeManyBlanks(textField.getText());
+	private String getTxtValue(JFXTextField JFXTextField) {
+		return removeManyBlanks(JFXTextField.getText());
 	}
 
-	private void setTxtValue(TextField textField,String value) {
-		textField.setText(removeManyBlanks(value));
+	private void setTxtValue(JFXTextField JFXTextField,String value) {
+		JFXTextField.setText(removeManyBlanks(value));
 	}	
 	
 	public void setStage(Stage stage) {
 		this.stage = stage;
+	}
+	
+	private void validate() {
+		RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator("");
+		txtNombre.getValidators().add(requiredFieldValidator);
+		txtIdNegocio.getValidators().add(requiredFieldValidator);
+		txtNombre.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
+			if(!newValue) txtNombre.validate();
+		});
+		txtIdNegocio.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
+			if(!newValue) txtIdNegocio.validate();
+		});
 	}
 }

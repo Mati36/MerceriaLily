@@ -65,5 +65,7 @@
 	<classpathentry kind="lib" path="lib/googleCloud/mysql-socket-factory-connector-j-8-1.0.16.jar"/>
 	<classpathentry kind="lib" path="lib/googleCloud/opencensus-api-0.24.0.jar"/>
 	<classpathentry kind="lib" path="lib/googleCloud/opencensus-contrib-http-util-0.24.0.jar"/>
+	<classpathentry kind="lib" path="E:/mati/mis archivos/proyectos/java/eclipse/MerceriaLily/lib/jfoenix-8.0.10.jar"/>
+	<classpathentry kind="lib" path="lib/jfoenix-8.0.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

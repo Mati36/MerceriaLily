@@ -6,6 +6,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import javafx.beans.property.ObjectProperty;
@@ -200,6 +202,7 @@ public class Producto implements Externalizable,Comparable<Producto>  {
 		 out.writeDouble(recargo.get());
 		 out.writeUTF(updatedAt.getValue().toString());
 		 out.writeUTF(createdAt.getValue().toString());
+		 out.writeBoolean(isIva);
 	}
 
 	@Override
@@ -214,6 +217,7 @@ public class Producto implements Externalizable,Comparable<Producto>  {
 		recargo.set(in.readDouble());
 		updatedAt.set(stringToLocalDate(in.readUTF()));
 		createdAt.set(stringToLocalDate(in.readUTF()));
+		isIva = in.readBoolean();
 	}
 	
 	public LocalDate stringToLocalDate(String date) {
@@ -226,26 +230,20 @@ public class Producto implements Externalizable,Comparable<Producto>  {
 	}
 
 	@Override
-	public int compareTo(Producto value) { // optimizar tira error numero grandes
-		Integer value_idNegocio = stringToASCII(value.getIdNegocio());
-		Integer self_idNegocio = stringToASCII(this.idNegocio.getValueSafe());
-				
-		if (value_idNegocio < self_idNegocio) 
-			return -1;
-		else if (value_idNegocio > self_idNegocio) 
-			return 1;
+	public int compareTo(Producto value) {
+		byte [] valueId = value.getIdNegocio().getBytes(); 
+		byte [] selfId  = this.getIdNegocio().getBytes();
+		int valueIdLenght = valueId.length;
+		int selfIdLenght = selfId.length;
+		int minLenght = valueIdLenght < selfIdLenght ? valueIdLenght : selfIdLenght;
 		
+		for (int i = 0; i < minLenght; i++) {
+			if (valueId[i] < selfId[i]) return -1;
+			else if (valueId[i] > selfId[i]) return 1;
+		}
+		if(selfIdLenght > minLenght) return -1;
+		else if (valueIdLenght > minLenght) return 1;
 		return 0;
 	}
 	
-	private int stringToASCII(String value) { // mejorar lo que hace es pasar a ACII todos los caracteres de una cadena
-		value = value.replaceAll("\\s+", "").trim();
-		if (value.isEmpty()) return 0;
-		String v = "";
-		for (int i = 0; i < value.length(); i++) { 
-			char c =value.charAt(i);
-			v += String.valueOf(Integer.valueOf((int) c));
-		}
-		return Integer.valueOf(v);
-	}
 }
