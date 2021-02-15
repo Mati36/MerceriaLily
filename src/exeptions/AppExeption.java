@@ -1,4 +1,4 @@
-package exeptions;
+package Exeptions;
 
 import models.DialogShow;
 
