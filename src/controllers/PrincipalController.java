@@ -92,12 +92,12 @@ public class PrincipalController {
 	@FXML 
 	public void editProducto() {
 		if (tableViewController.getSelectionItemsSize() == 1) {
-			
 			Producto item = tableViewController.getSeletedItem();
+			String idNegocio = item.getIdNegocio();
 			showEditProducto(item);
 			if (editProductoController.isOnClickAceptar()) {
 				item.updateDate();
-				String idNegocio = item.getIdNegocio();
+				listProductoController.edit(idNegocio, item);
 				// conecta a sql
 			} 
 			

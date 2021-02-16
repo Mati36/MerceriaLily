@@ -49,8 +49,8 @@ public class ListProductoController implements Serializable {
 	public void removItemsSelection(Collection<Producto> itemsSelection) {
 		listProducto.removeAll(itemsSelection);
 	}
-	public void edit() {
-		
+	public void edit(String idNegocio,Producto prod) {
+		if (!prod.getIdNegocio().equals(idNegocio)) sort();
 	}
 
 	public ObservableList<Producto> getListProducto() {
