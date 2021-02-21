@@ -204,15 +204,18 @@ public class EditProductoController {
 		this.stage = stage;
 	}
 	
-	private void validate() {
-		RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator("");
+	private void validate() { //ver como desplazar el texto al medio del imput
+		RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator("Campo Obligatorio");
+		
 		txtNombre.getValidators().add(requiredFieldValidator);
 		txtIdNegocio.getValidators().add(requiredFieldValidator);
 		txtNombre.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
 			if(!newValue) txtNombre.validate();
+			else txtNombre.resetValidation();
 		});
 		txtIdNegocio.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
 			if(!newValue) txtIdNegocio.validate();
+			else txtIdNegocio.resetValidation();
 		});
 	}
 }

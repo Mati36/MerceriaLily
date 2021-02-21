@@ -1,2 +1,8 @@
-@charset "ISO-8859-1";
+.error-label {
+    -fx-text-fill: red;
+}
 
+.jfx-text-field > ValidationPane > .error-label-container {
+    -fx-alignment: center-right;
+    
+}
