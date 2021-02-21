@@ -2,9 +2,8 @@ package controllers;
 
 import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.validation.RegexValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
-import exeptions.ProductoExeption;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -158,17 +157,10 @@ public class EditProductoController {
 	
 	
 	private  Double stringToDouble(String number,String dato) {
-		Double num = 0.0;
-		
-		try {
-			 num = Double.parseDouble(number.trim());
-			
-		} catch (Exception e) {
-			new ProductoExeption("El dato "+dato+" no es de tipo numerico");
-			
-			this.isOnClickAceptar = false;
+		if (!number.matches("\\d")) {
+			return 0.0;
 		}
-		return num;
+		return Double.parseDouble(number.trim());
 	}
 	
 	
@@ -180,7 +172,6 @@ public class EditProductoController {
 			if (cantidad > 1) {
 				setTxtValue(txtPrecioCantidad, Double.toString(producto.precioVentaCantidad()));
 				setTxtValue(txtPrecioVenta, Double.toString(producto.precioVentaPorUnidad(cantidad)));
-				
 			}
 			else
 				setTxtValue(txtPrecioVenta, Double.toString(producto.precioVentaPorUnidad(cantidad)));
@@ -205,17 +196,29 @@ public class EditProductoController {
 	}
 	
 	private void validate() { //ver como desplazar el texto al medio del imput
-		RequiredFieldValidator requiredFieldValidator = new RequiredFieldValidator("Campo Obligatorio");
+		RequiredFieldValidator required = new RequiredFieldValidator("Campo Obligatorio");
+		RegexValidator numberValid = new RegexValidator("Introduzca un numero valido");
+		String regexDouble = "[0-9]+(\\.[0-9]+)|[0-9]+";
+		numberValid.setRegexPattern(regexDouble);
 		
-		txtNombre.getValidators().add(requiredFieldValidator);
-		txtIdNegocio.getValidators().add(requiredFieldValidator);
-		txtNombre.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
-			if(!newValue) txtNombre.validate();
-			else txtNombre.resetValidation();
-		});
-		txtIdNegocio.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
-			if(!newValue) txtIdNegocio.validate();
-			else txtIdNegocio.resetValidation();
+		txtNombre.getValidators().add(required);
+		txtIdNegocio.getValidators().add(required);
+		txtPrecioCantidad.getValidators().add(numberValid);
+		txtPrecioCosto.getValidators().add(numberValid);
+		txtPrecioVenta.getValidators().add(numberValid);
+		txtRecargo.getValidators().add(numberValid);
+		isValid(txtNombre);
+		isValid(txtIdNegocio);
+		isValid(txtPrecioCantidad);
+		isValid(txtPrecioCosto);
+		isValid(txtPrecioVenta);
+		isValid(txtRecargo);	
+	}
+	
+	private void isValid(JFXTextField textField) {
+		textField.focusedProperty().addListener((observableValue,oldValue,newValue) ->{
+			if(!newValue) textField.validate();
+			else textField.resetValidation();
 		});
 	}
 }

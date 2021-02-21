@@ -9,9 +9,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+
+import org.controlsfx.dialog.DialogStyle;
+
 import exeptions.AppExeption;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Alert.AlertType;
+import models.DialogShow;
 import models.Producto;
 
 public class ListProductoController implements Serializable {
@@ -30,13 +35,14 @@ public class ListProductoController implements Serializable {
 	public void add(Producto prod) {
 		if (listProducto == null)
 			return;
-					
-		if (!existItem(prod)) {
-			listProducto.add(prod);
-			sort();
+		else if (existItem(prod)) {
+			new DialogShow("", "El producto con el codigo negocio: "+prod.getIdNegocio()+" ya se encuentra en la lista",AlertType.INFORMATION).show();
+			return;
 		}
-		else
-			new AppExeption("El producto con el codigo negocio: "+prod.getIdNegocio()+"ya se encuentra en la lista");
+		
+		listProducto.add(prod);
+		sort();
+		
 	}
 	
 	public void del(Producto prod) {
@@ -65,28 +71,29 @@ public class ListProductoController implements Serializable {
 		listProducto.size();
 	}
 	
-	public void save(File file) {
+	public void save(File file){
 		if(file == null) return;
+        ObjectOutputStream oos;
 		try {
-	            ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
-	            oos.writeObject(new ArrayList<Producto>(listProducto));
-	            oos.close();
-	        } catch (IOException e) {
-	            throw new AppExeption("Archivo dañado error al guardar "+e.getMessage());
-	        }
-			 
-	}
+			oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
+			oos.writeObject(new ArrayList<Producto>(listProducto));
+		    oos.close();
+		} catch (IOException e) {
+			throw new AppExeption("Error fatal", "No se puede cargar el archivo "+e.getMessage());
+		}
+   	}
 	
-	public void load(File file) {
+	public void load(File file){
 		if(file == null || !file.exists()) return;
 		if(!listProducto.isEmpty()) listProducto.clear();
 		try {
 			ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
-			ArrayList<Producto> list = (ArrayList<Producto>) ois.readObject();
+			ArrayList<Producto> list;
+			list = (ArrayList<Producto>) ois.readObject();
 			listProducto = FXCollections.observableArrayList(list);
-        }  catch (IOException | ClassNotFoundException e) {
-        	throw new AppExeption("Archivo dañado error al leer "+e.getMessage());
-        }
+		} catch (ClassNotFoundException | IOException e) {
+			throw new AppExeption("Error fatal", "No se puede guardar el archivo "+e.getMessage());
+		}
 	}
 	
 	private Comparator<Producto> compartorProducto() {

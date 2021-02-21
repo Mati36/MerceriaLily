@@ -2,7 +2,6 @@ package controllers;
 
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
 import exeptions.AppExeption;
@@ -45,33 +44,33 @@ public class PrincipalController {
 	}
 
 	@FXML
-	public void closeClcik() {
-		DialogShow dialogShow = new DialogShow(AlertType.CONFIRMATION);
-		dialogShow.setTitle("Guardar");
-		dialogShow.setContent("¿Quieres Guardar antes de salir?");
+	public void closeClcik(){
+		DialogShow dialogShow = new DialogShow("Guardar", "¿Quieres Guardar antes de salir?", AlertType.CONFIRMATION);
 		dialogShow.show();
 		if (dialogShow.isOkButton()){
 			File file = new File(DOCUMENT_DIRECTORY+"/"+DEFAUL_FILE);
 			listProductoController.save(file);
 		}
-			
 	}
 	
 	@FXML 
-	public void save() {
+	public void save(){
 		listProductoController.save(new File(DOCUMENT_DIRECTORY+"/"+DEFAUL_FILE));
+	
 	}
 	
 	@FXML 
-	public void saveAs() {
+	public void saveAs(){
 		File file = fileSelection("Guardar",JFileChooser.SAVE_DIALOG,true);
 		listProductoController.save(file);
+		
 	}
 	
 	@FXML 
-	public void importFile() {
+	public void importFile(){
 		File file = fileSelection("Abrir", JFileChooser.OPEN_DIALOG,false);
 		listProductoController.load(file);
+		
 	}
 	
 	@FXML 

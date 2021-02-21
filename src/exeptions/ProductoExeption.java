@@ -2,7 +2,7 @@ package exeptions;
 
 import models.DialogShow;
 
-public class ProductoExeption extends RuntimeException {
+public class ProductoExeption extends Exception {
 	
 	public ProductoExeption(String content) {
 		super(content);
