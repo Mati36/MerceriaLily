@@ -18,8 +18,7 @@ public class Main extends Application {
 	
 	private AnchorPane layout = new AnchorPane(); // no se
 	private Stage primaryStage;
-
-	PrincipalController controllerPrincipal; 
+	private PrincipalController controllerPrincipal; 
 
 	
 	@Override
@@ -66,19 +65,14 @@ public class Main extends Application {
 		FXMLLoader viewLoader = new FXMLLoader(getClass().getResource("/views/Principal.fxml"));
 				
 		if(viewLoader.getLocation() != null) {
-			
 			layout = (AnchorPane) viewLoader.load();
-			
 			Scene scene = new Scene(layout);
 //			scene.getStylesheets().add(getClass().getResource("bootstrap3.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			controllerPrincipal = viewLoader.getController();
-//			controllerPrincipal.setStage(primaryStage);
-		
 		}
-		else 
-			throw new IOException("RootLayout.fxml No encontrado");
+		
 	}
 	
 

@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -31,7 +32,7 @@ public class PrincipalController {
 	@FXML private BorderPane tableLayout;
 	@FXML private SplitPane splitPane; 
 	@FXML private Pane pane;
-	
+	@FXML private TextField txtSearch;
 	
 	@FXML 
 	public void initialize() {
@@ -135,7 +136,7 @@ public class PrincipalController {
 
 	@FXML 
 	public void searchProducto() {
-		
+		tableViewController.searchProducto(txtSearch.getText().trim());
 	}
 	
 	
