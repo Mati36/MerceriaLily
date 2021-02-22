@@ -87,7 +87,7 @@ public class ListProductoController implements Serializable {
 			ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
 			ArrayList<Producto> list;
 			list = (ArrayList<Producto>) ois.readObject();
-			listProducto = FXCollections.observableArrayList(list);
+			listProducto.addAll(list);
 		} catch (ClassNotFoundException | IOException e) {
 			throw new AppExeption("Error fatal", "No se puede guardar el archivo "+e.getMessage());
 		}
