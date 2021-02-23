@@ -1,15 +1,17 @@
 package exeptions;
 
+import java.io.IOException;
+
 import models.DialogShow;
 
-public class AppExeption extends RuntimeException {
+public class FileExeption extends IOException {
 	
-	public AppExeption(String content) {
+	public FileExeption(String content) {
 		super(content);
 		DialogShow.Error("Error Aplication", content);
 	}
 	
-	public AppExeption(String title,String content) {
+	public FileExeption(String title,String content) {
 		super(content);
 		DialogShow.Error(title, content);
 	}

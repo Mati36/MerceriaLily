@@ -2,13 +2,13 @@ package app;
 
 import java.io.IOException;
 import controllers.PrincipalController;
-import exeptions.AppExeption;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import models.DialogShow;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -24,18 +24,19 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 	
-		try {
+		
 			this.primaryStage = primaryStage; 
 			this.primaryStage.setTitle("Merceria Lily");
 			this.primaryStage.setMaximized(true);
 			this.primaryStage.getIcons().add( new Image(getClass().getResourceAsStream("/icon/icon.png")));
 			closeApplication(primaryStage);
-			mostrarProducto();
+			try {
+				mostrarProducto();
+			} catch (IOException e) {
+				DialogShow.Error("Error", "Error al cargar /views/Principal.fxml");
+			}
 			
-		} catch (Exception e) {
-			new AppExeption("Error al inicar la app, \n"+e.getMessage()+"\n"+e.getCause());
-			
-		}
+		
 	}
 
 	public static void main(String[] args) {
@@ -61,7 +62,7 @@ public class Main extends Application {
 	}
 	
 	
-	public void mostrarProducto() throws IOException { // Re escribir
+	public void mostrarProducto() throws IOException{ // Re escribir
 		FXMLLoader viewLoader = new FXMLLoader(getClass().getResource("/views/Principal.fxml"));
 				
 		if(viewLoader.getLocation() != null) {

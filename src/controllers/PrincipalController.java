@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileSystemView;
-import exeptions.AppExeption;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -18,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import models.DialogShow;
+import models.ExelFile;
 import models.Producto;
 
 public class PrincipalController {
@@ -148,7 +148,7 @@ public class PrincipalController {
 			pane = tableFxmlLoader.load();
 			this.tableViewController = tableFxmlLoader.getController(); 
 		} catch (IOException e) {
-			throw new AppExeption("Error al cargar ", TABLE_VIEW_FXML);
+			DialogShow.Error("Error", "Error al cargar "+TABLE_VIEW_FXML);
 		}
 		return pane;
 	}
@@ -163,13 +163,13 @@ public class PrincipalController {
 			this.editProductoController.setProducto(producto);
 			this.editProductoController.setStage(stage);
 			stage.showAndWait();
-		} catch (AppExeption | IOException e) {
-			throw new AppExeption("Error al cargar ", EDIT_PRODUCTO_FXML);
+		} catch (IOException e) {
+			DialogShow.Error("Error", "Error al cargar "+EDIT_PRODUCTO_FXML);
 		}  
 
 	}
 	
-private File fileSelection(String title, int action,boolean save) {
+	private File fileSelection(String title, int action,boolean save) {
 		
 		File file = new File(DOCUMENT_DIRECTORY);
 		file.mkdir();
@@ -177,7 +177,8 @@ private File fileSelection(String title, int action,boolean save) {
 		jFile.setTitle(title);
 		jFile.setInitialDirectory(file);
 		jFile.getExtensionFilters().addAll(
-		         new ExtensionFilter("Tipo dato", "*.dat"));
+		         new ExtensionFilter("Tipo dato", "*.dat"),
+		         new ExtensionFilter("Excel","*"+ExelFile.extensionExel));
 		Stage stage = new Stage();		
 		return  save ? jFile.showSaveDialog(stage) : jFile.showOpenDialog(stage);
 			

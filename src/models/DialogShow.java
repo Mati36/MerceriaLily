@@ -23,12 +23,11 @@ public class DialogShow{
 		alertType.setContentText(content);
 	}
 	
-	@SuppressWarnings("null")
 	private static void start(String titel,String content, AlertType type) {
 		alertType = new Alert(type);
 		alertType.setTitle(titel);
 		alertType.setContentText(content);
-			
+		alertType.show();	
 	}
 
 	public static final void Error(String titel,String content) {

@@ -22,7 +22,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
 public class ExelFile{ // manejo de exel
-
+	
+	public final static String extensionExel = ".xlsx";
 	private  XSSFWorkbook book = null;
 	private  Sheet sheet = null;
 	private  Row row = null;

@@ -1,6 +1,7 @@
 package controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,12 +10,14 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import exeptions.AppExeption;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert.AlertType;
 import models.DialogShow;
+import models.ExelFile;
 import models.Producto;
+import models.ProductoExel;
 
 public class ListProductoController implements Serializable {
 
@@ -72,24 +75,31 @@ public class ListProductoController implements Serializable {
 		if(file == null) return;
         ObjectOutputStream oos;
 		try {
+			if (file.getPath().endsWith(ExelFile.extensionExel)) { 
+				importExel(file);
+				
+			}
 			oos = new ObjectOutputStream(Files.newOutputStream(file.toPath()));
 			oos.writeObject(new ArrayList<Producto>(listProducto));
 		    oos.close();
-		} catch (IOException e) {
-			throw new AppExeption("Error fatal", "No se puede cargar el archivo "+e.getMessage());
+		} catch (IOException | InvalidFormatException e) {
+			DialogShow.Error("Error fatal", "No se puede guardar el archivo "+e.getMessage());
 		}
    	}
 	
 	public void load(File file){
 		if(file == null || !file.exists()) return;
-		if(!listProducto.isEmpty()) listProducto.clear();
+		
 		try {
+			if (file.getPath().endsWith(ExelFile.extensionExel)) 
+				exportExel(file);
+			
 			ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()));
 			ArrayList<Producto> list;
 			list = (ArrayList<Producto>) ois.readObject();
-			listProducto.addAll(list);
-		} catch (ClassNotFoundException | IOException e) {
-			throw new AppExeption("Error fatal", "No se puede guardar el archivo "+e.getMessage());
+			addAllItems(list);
+		} catch (ClassNotFoundException | IOException | InvalidFormatException e) {
+			DialogShow.Error("Error fatal", "No se puede cargar el archivo \n"+e.getMessage());
 		}
 	}
 	
@@ -114,5 +124,18 @@ public class ListProductoController implements Serializable {
 	private void sort() {
 		if (listProducto != null) 
 			listProducto.sort(compartorProducto().reversed());
+	}
+	
+	public void addAllItems(ArrayList<Producto> list) {
+		if(!listProducto.isEmpty() && !list.isEmpty()) listProducto.clear();
+		listProducto.addAll(list);
+	}
+	
+	public void exportExel(File file) throws InvalidFormatException, FileNotFoundException, IOException {
+		new ProductoExel().loadExel(this, file);
+	}
+	
+	public void importExel(File file) throws InvalidFormatException, IOException {
+		new ProductoExel().saveExel(this, file);
 	}
 }
