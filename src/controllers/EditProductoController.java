@@ -34,24 +34,6 @@ public class EditProductoController {
 						
 	}
 	
-	
-	public EditProductoController() {		
-		this.txtNombre = new JFXTextField();
-		this.txtIdEmpresa = new JFXTextField();
-		this.txtIdNegocio = new JFXTextField();
-		this.txtPrecioCosto = new JFXTextField();
-		this.txtPrecioCantidad = new JFXTextField();
-		this.txtPrecioVenta = new JFXTextField();
-		this.txtRecargo = new JFXTextField();
-		this.txtDetalle = new JFXTextField();
-		this.txtcantidad = new JFXTextField();
-		this.checkIva = new JFXCheckBox();
-		this.btnAceptar = new Button();
-		this.btnCancelar = new Button();
-		
-
-	}
-	
 	public void setProducto(Producto producto) {
 		this.producto = producto;
 		inicio();

@@ -28,7 +28,7 @@ public class PrincipalController {
 	private final String DEFAUL_FILE = "lista_producto.dat";
 	private ListProductoController listProductoController;
 	private EditProductoController editProductoController;
-	private TableViewController tableViewController;
+	private TableViewProductoController tableViewController;
 	@FXML private BorderPane tableLayout;
 	@FXML private SplitPane splitPane; 
 	@FXML private Pane pane;
