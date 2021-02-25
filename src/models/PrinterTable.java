@@ -35,14 +35,6 @@ public class PrinterTable extends PrintPaper{
 	private static double paperWidthPrint;
 	private static double paperHeight;
 	private static double paperWidth;
-	/* 
-	 * el anchorPane tiene que tener el tamaño del area de impresion 
-	 * la fecha y el numero de hoja la posicion del topMargin 
-	 * la tabla la posicion marginLeft, marginRigh,MarginButtom y el MarginTop + 5
-	 * tener en cuenta que los margenes entan en el minimo por lo tanto tratar de calcular lor recomendados
-	 * ver como hacer que las columnas no se pasen del la tabla
-	*/ 
-	
 	
 	
 	public static <T> void printTable(TableView<Producto> tableView, PrinterJob jobArg) {
@@ -86,8 +78,9 @@ public class PrinterTable extends PrintPaper{
 		for (int i = 0; i < alphabet.length; i++) {
 			char letter = alphabet[i];
 		
-			itemList =  new ArrayList<Producto>(tableView.getItems()
-					 									 .filtered(prod -> isLetterStart(prod.getIdNegocio(), letter)));
+			itemList =  new ArrayList<Producto>(tableView
+												.getItems()
+					 							.filtered(prod -> isLetterStart(prod.getIdNegocio(), letter)));
 			int num = 1;
 			while (itemList != null && !itemList.isEmpty()) {
 				printPage(job, copyTableView, itemList,pageLayout,letter,pane,num);
@@ -260,121 +253,35 @@ public class PrinterTable extends PrintPaper{
 		
 	}
 
-	public static <T> void resizeColumns( TableView<T> table )	{
-		//Set the right policy
-		
-       table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-       ObservableList<TableColumn<T, ?>> columns = table.getColumns();
-		
-		for (int i = 0; i < columns.size(); i++) {
-			TableColumn<T, ?> column = columns.get(i);
-			String text = column.getText();
-			Text t = new Text( text );
-			if (text != ProductoTableExel.ROW_DETALLE_ABBREVIATED) {
-				double max = t.getLayoutBounds().getWidth();
-				
-				for ( int j = 0; j < table.getItems().size(); j++ ){
-		           //cell must not be empty
-		           if ( column.getCellData( j ) != null ){
-		               
-		        	   t = new Text( column.getCellData( j ).toString() );
-		               double calcwidth = t.getLayoutBounds().getWidth();
-		               //remember new max-width
-		               if ( calcwidth > max )
-		            	   max = calcwidth;
-		           }
-				}
-				column.setResizable(true);
-				if (column.getText() != ProductoTableExel.ROW_DETALLE_ABBREVIATED) 
-					column.setPrefWidth( max + 6.0d );
-				}
+	public static <T> void resizeColumns(TableView<T> tableView)	{
+		//divide la tabla a la mitad
+			double primaryPrioritySize =  tableView.getPrefWidth() / 2;   
+		// agarra 1/3 de la mitad, que seran usadas en 3 columnas
+			double secondPrioritySize = primaryPrioritySize / 3; 
+		// dividimos por la cantidad de celdas restantes que serian 4 menos que lo que tiamos
+			double defultSize = primaryPrioritySize / (tableView.getColumns().size() - 2 ); 
+		// por ultimo restamos la 	
+			primaryPrioritySize -=secondPrioritySize; 
 			
-		}
-      	fixresizeColums(table);      
-	}
-	
-	private static <T> void fixresizeColums(TableView<T> tableView) {
-		ObservableList<TableColumn<T, ?>> columns = tableView.getColumns();
-		double width = 0;
-		for (int i = 0; i < columns.size(); i++) {
-			if (i != 3 ) 
-				width += columns.get(i).widthProperty().get();
-						
-		}
-		
-		columns.get(3).prefWidthProperty().bind(tableView.widthProperty().subtract(width).divide(1));
-		Double size = columns.get(3).prefWidthProperty().get();
-		
-		if (width + size >= paperWidthPrint - leftMargin) {
 			
-			Double sobrante = (width + size)  -  (paperWidthPrint - leftMargin);
-
-			if (sobrante == 0) { 
-				Double num = (width + size) - paperWidthPrint;
-				size = size - 10;
-				System.out.println("ingreso");
+			for (TableColumn<T, ?> column : tableView.getColumns()) {
+				if(column.getText() == ProductoTableExel.ROW_DETALLE_ABBREVIATED) { 
+					column.setMinWidth(primaryPrioritySize);
+					column.setMaxWidth(primaryPrioritySize);
+				}
+				else if (column.getText() == ProductoTableExel.ROW_PRODUCTO_ABBREVIATED) { 
+					column.setMinWidth(secondPrioritySize);
+					column.setMaxWidth(secondPrioritySize);
+				}
+				else { 
+					column.setMinWidth(defultSize);
+					column.setMaxWidth(defultSize);
+				}
 			}
-			else 			
-				size -= sobrante;
-				 
-			columns.get(3).prefWidthProperty().unbind();
-			columns.get(3).setPrefWidth(size);
 			
-		}
+			
+	}
 		
-	}
-	
-	private static void autoResizetext( TableView<Producto> table )
-	{
-		for (int i = 0; i < table.getItems().size(); i++) {
-			Producto item = table.getItems().get(i);
-			
-			if (item != null) 
-				table.getItems().set(i, productSizeText(item));
-						
-		}
-     
-	}
-	
-	private static String resizeText(String value,int max) {
-		value = value.replaceAll("\n", " ").trim();
-		if (value.length() > max) {
-     	   
-			String[] aux = value.split(" ");
-			String temp = "";
-			int textSize = 0;
-	 	   	for (int i = 0; i < aux.length; i++) {
-	 	   		
-	 	   		int wordSize = aux[i].length();
-	 	   		
-	 	   		if (textSize + wordSize >= max && wordSize > 4) {
-	 	   			temp += "\n"+aux[i];
-					textSize = wordSize;
-				}
-	 	   		else {
-	 	   			temp += " "+aux[i];
-	 	   			textSize += wordSize;
-	 	   		}		   
-	 	   	}
-			value = temp.trim();
-		}
-		return value;
-	}	
-	
-	private static Producto productSizeText(Producto producto ) {
-		int max = 16;
-		String idNegocio = producto.getIdNegocio();
-		String idEmpresa = producto.getIdEmpresa();
-		String name = producto.getNombre();
-		String detalle = producto.getDetalle();
-			
-		producto.setIdNegocio(resizeText(idNegocio, max));
-		producto.setIdEmpresa(resizeText(idEmpresa, max));
-		producto.setNombre(resizeText(name, max));
-		producto.setDetalle(resizeText(detalle, max));
-		return producto;
-	
-	}
 	public static int getProductoWidth() { return productoWidth;	}
 
 	public static void setProductoWidth(int productoWidth) { PrinterTable.productoWidth = productoWidth;	}

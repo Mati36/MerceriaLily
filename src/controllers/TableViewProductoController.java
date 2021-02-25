@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import models.DialogShow;
+import models.PrinterTable;
 import models.Producto;
 import models.ProductoTableExel;
 
@@ -64,6 +65,14 @@ public class TableViewProductoController extends TableViewController<Producto>{
 	        };
 	    });
 		
+		columnWrapp(codEmpresa, 10);
+		columnWrapp(codNegocio, 10);
+		columnWrapp(nombre, 10);
+		columnWrapp(precioCantidad, 10);
+		columnWrapp(precioCosto, 10);
+		columnWrapp(precioVenta, 10);
+		columnWrapp(detalle, 10);
+		columnWrapp(create, 10);
 		setSelectionModeType(SelectionMode.MULTIPLE);
 		
 	}
@@ -94,23 +103,37 @@ public class TableViewProductoController extends TableViewController<Producto>{
 		};
 	}
 	
-	public void printed() {
-		FXMLLoader printerFxml= new FXMLLoader(getClass().getResource(TABLE_PRINTER_FXML));
-		if (printerFxml == null) return;
+	public void printed(Stage stage) {
+		PrinterJob printer = PrinterJob.createPrinterJob();
 		
-		try {
-			printerFxml.load();
-			PrinterJob printer = PrinterJob.createPrinterJob();
-			Stage stage = new Stage();
-			PrinterTableController p = printerFxml.getController();
-//			if (printer.showPrintDialog(stage))
-				p.print(tableProducto, printer);
-			printer.endJob();
-		} catch (IOException e) {
-			DialogShow.Error("Error de impresion", "No se pudo cargar el archivo "+TABLE_PRINTER_FXML+"\n"+e.getMessage());
-		}
+		if (printer.showPrintDialog(stage))
+			PrinterTable.printTable(tableProducto, printer);
+		printer.endJob();
+	}
 		
-	}		
+	private <T> String valueToString(T value) {
+		if (value instanceof Integer || value instanceof Float || value instanceof Double || value instanceof Long)
+			return String.valueOf(value);
+		else if (value instanceof LocalDate)
+			return Producto.dateFormated((LocalDate) value);
+		else return (String) value;
 		
+	}
 
+	private <T> void columnWrapp(TableColumn<Producto, T> column, int wrappingSize) {
+		column.setCellFactory(param -> {
+			return new TableCell<Producto, T>() {
+	            @Override
+	            protected void updateItem(T item, boolean empty) {
+	                super.updateItem(item, empty);
+		                if (item != null || !empty) {
+		                Text text = new Text(valueToString(item));
+		                text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(wrappingSize));
+		                setGraphic(text);
+	                }            
+	            }
+	        };
+	    });
+	}
+	
 }
