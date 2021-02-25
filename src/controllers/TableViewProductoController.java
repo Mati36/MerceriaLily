@@ -65,14 +65,14 @@ public class TableViewProductoController extends TableViewController<Producto>{
 	        };
 	    });
 		
-		columnWrapp(codEmpresa, 10);
-		columnWrapp(codNegocio, 10);
-		columnWrapp(nombre, 10);
-		columnWrapp(precioCantidad, 10);
-		columnWrapp(precioCosto, 10);
-		columnWrapp(precioVenta, 10);
-		columnWrapp(detalle, 10);
-		columnWrapp(create, 10);
+		columnWrapp(codEmpresa, 3);
+		columnWrapp(codNegocio, 3);
+		columnWrapp(nombre, 3);
+		columnWrapp(precioCantidad, 3);
+		columnWrapp(precioCosto, 3);
+		columnWrapp(precioVenta, 3);
+		columnWrapp(detalle, 3);
+		columnWrapp(create, 3);
 		setSelectionModeType(SelectionMode.MULTIPLE);
 		
 	}

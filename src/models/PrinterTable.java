@@ -96,7 +96,6 @@ public class PrinterTable extends PrintPaper{
 		copyView.setItems(batchItemList);
 		ScrollBar verticalScrollbar = getVerticalScrollbar(copyView);
 		
-//		batchItemList.add(itemList.remove(0));
 		while (!verticalScrollbar.isVisible() && itemList.size() > 0) {
 			T item = itemList.remove(0);
 			batchItemList.add(item);
@@ -114,9 +113,6 @@ public class PrinterTable extends PrintPaper{
 		}
 				
 		numPagePrint(pane, letter,pageNum);
-
-//		pane.setRightAnchor(copyView, 10.0);
-//		pane.setLeftAnchor(copyView, 10.0);
 		
 		if (pane.getChildren().indexOf(copyView) < 0)
 			pane.getChildren().add(copyView);
@@ -148,8 +144,6 @@ public class PrinterTable extends PrintPaper{
 			if (!colum.getText().equals(ProductoTableExel.getRowPrecioCosto()) 
 					&& !colum.getText().equals(ProductoTableExel.getRowRecargo())) {
 				TableColumn cloneColumn = columnText(colum);
-				
-//				columnMaxWidth(tableView, cloneColumn, colum);
 				
 				if (colum.getCellValueFactory() != null) 
 					cloneColumn.setCellValueFactory(colum.getCellValueFactory());
@@ -194,23 +188,10 @@ public class PrinterTable extends PrintPaper{
 		return new TableColumn<S, Producto>(text);
 	}
 	
-	private static void maxWidth(TableView<Producto> tableView) {
-		
-		for (Producto prod : tableView.getItems()) {
-			int name = prod.getNombre().length();
-			int detalle = prod.getDetalle().length();
-			if(detalleWidth < detalle)
-				detalleWidth = detalle;
-			else if (productoWidth < name)
-				productoWidth = name;
-		}
-		
-	}
-		
 	private static void sizePaper(PageLayout pageLayout) {
 		paperHeight = pageLayout.getPaper().getHeight();
 		paperWidth = pageLayout.getPaper().getWidth();
-		paperHeightPrint = pageLayout.getPrintableHeight() - bottomMargin - topMargin; 
+		paperHeightPrint = pageLayout.getPrintableHeight() - topMargin; 
 		paperWidthPrint = pageLayout.getPrintableWidth();
 	}
 	
