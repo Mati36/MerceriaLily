@@ -29,6 +29,7 @@ public class PrincipalController {
 	private ListProductoController listProductoController;
 	private EditProductoController editProductoController;
 	private TableViewProductoController tableViewController;
+	private Stage primaryStage;
 	@FXML private BorderPane tableLayout;
 	@FXML private SplitPane splitPane; 
 	@FXML private Pane pane;
@@ -76,7 +77,7 @@ public class PrincipalController {
 	
 	@FXML 
 	public void printTable() {
-		
+		tableViewController.printed(primaryStage);
 	}
 
 	@FXML 
@@ -182,6 +183,14 @@ public class PrincipalController {
 		Stage stage = new Stage();		
 		return  save ? jFile.showSaveDialog(stage) : jFile.showOpenDialog(stage);
 			
+	}
+
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
+
+	public void setPrimaryStage(Stage primaryStage) {
+		this.primaryStage = primaryStage;
 	}
 	
 }

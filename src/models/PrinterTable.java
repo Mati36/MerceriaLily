@@ -254,22 +254,25 @@ public class PrinterTable extends PrintPaper{
 	}
 
 	public static <T> void resizeColumns(TableView<T> tableView)	{
-		//divide la tabla a la mitad
-			double primaryPrioritySize =  tableView.getPrefWidth() / 2;   
-		// agarra 1/3 de la mitad, que seran usadas en 3 columnas
-			double secondPrioritySize = primaryPrioritySize / 3; 
-		// dividimos por la cantidad de celdas restantes que serian 4 menos que lo que tiamos
-			double defultSize = primaryPrioritySize / (tableView.getColumns().size() - 2 ); 
-		// por ultimo restamos la 	
-			primaryPrioritySize -=secondPrioritySize; 
-			
+		//divide la tabla a la mitad la tabla 
+			double mid =  tableView.getPrefWidth() / 2;   
+		// agarra 1/3 de la mitad, que seran usadas en 2 columnas
+			double secondPrioritySize = mid / 3; 
+		// Tamaño de la columnas de proridad, es 2.3 de la mitad
+			double prioritySize = mid  / 2.3;
+		// la demas columnas son el tercio de la diferencia de la mitad y la columnas de prioridad   
+			double defultSize = (mid - prioritySize) / 3; 
+		// por ultimo a la selda de prioridad le sumamos la pequeña particion que sobra entre las 2 columnas
+		// 	y las columnas por defacult
+			prioritySize += (secondPrioritySize - defultSize);	
 			
 			for (TableColumn<T, ?> column : tableView.getColumns()) {
 				if(column.getText() == ProductoTableExel.ROW_DETALLE_ABBREVIATED) { 
-					column.setMinWidth(primaryPrioritySize);
-					column.setMaxWidth(primaryPrioritySize);
+					column.setMinWidth(prioritySize);
+					column.setMaxWidth(prioritySize);
 				}
-				else if (column.getText() == ProductoTableExel.ROW_PRODUCTO_ABBREVIATED) { 
+				else if (column.getText() == ProductoTableExel.ROW_PRODUCTO_ABBREVIATED
+						|| column.getText() == ProductoTableExel.ROW_ID_EMPRESA_ABBREVIATED) { 
 					column.setMinWidth(secondPrioritySize);
 					column.setMaxWidth(secondPrioritySize);
 				}
